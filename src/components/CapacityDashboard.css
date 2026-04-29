@@ -1,0 +1,99 @@
+/* ── CAPACITY DASHBOARD ── */
+.capacity-dashboard {
+  background: var(--bg, #ffffff);
+  border: 1px solid var(--border, #e5e4e7);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: 'Inter', system-ui, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Información Importante ── */
+.capacity-info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: rgba(127, 181, 54, 0.08); /* Verde claro */
+  border-left: 4px solid #7FB536;
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .capacity-info-card {
+    background: rgba(127, 181, 54, 0.15);
+  }
+}
+
+.capacity-info-icon {
+  flex-shrink: 0;
+  color: #7FB536;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+}
+
+.capacity-info-text strong {
+  display: block;
+  font-size: 14px;
+  color: var(--text-h, #1a1e2a);
+  margin-bottom: 4px;
+}
+
+.capacity-info-text p {
+  font-size: 13px;
+  color: var(--text, #6b7280);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Barras de progreso ── */
+.capacity-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-h, #1a1e2a);
+  margin: 0;
+}
+
+.capacity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.capacity-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.capacity-item-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-h, #374151);
+}
+
+.capacity-item-ratio {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.capacity-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border, #f3f4f6);
+  border-radius: 100px;
+  overflow: hidden;
+  position: relative;
+}
+
+.capacity-bar-fill {
+  height: 100%;
+  border-radius: 100px;
+}

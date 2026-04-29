@@ -1,0 +1,517 @@
+/* ───────────────────────────────────────────
+   PERSONAL INFO FORM — Paso 1
+─────────────────────────────────────────────*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.pif-card {
+  display: flex;               /* stripe + content side by side */
+  flex-direction: row;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.06);
+  margin: 24px 0 0;
+  overflow: hidden;
+  text-align: left;            /* override global center */
+}
+
+
+.pif-content {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 32px 32px;
+  text-align: left;
+  /* override global center */
+}
+
+/* ── Franja verde izquierda de la tarjeta ── */
+.pif-stripe {
+  width: 7px;
+  flex-shrink: 0;
+  background: linear-gradient(180deg, #7FB536 0%, #6a9a2c 100%);
+}
+
+/* ── Título con franja verde izquierda ── */
+.pif-section-title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1e2a;
+  margin: 0 0 24px;
+  padding-left: 14px;
+  border-left: 4px solid #7FB536;
+  line-height: 1.3;
+  letter-spacing: -0.1px;
+}
+
+/* ── Grid del formulario ── */
+.pif-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 32px;
+}
+
+/* ── Campo individual ── */
+.pif-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.pif-field--empty {
+  /* mantiene el grid balanceado */
+}
+
+/* ── Label ── */
+.pif-label {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.1px;
+}
+
+/* ── Input base ── */
+.pif-input {
+  width: 100%;
+  padding: 11px 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.pif-input::placeholder {
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.pif-input:hover {
+  background: #eceef1;
+  border-color: #d1d5db;
+}
+
+.pif-input:focus {
+  background: #ffffff;
+  border-color: #7FB536;
+  box-shadow: 0 0 0 3px rgba(127, 181, 54, 0.12);
+}
+
+/* ── Date input ── */
+.pif-input--date {
+  color: #9ca3af;
+}
+
+.pif-input--date:valid,
+.pif-input--date:not([value=""]) {
+  color: #374151;
+}
+
+/* ── Textarea ── */
+textarea.pif-input {
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ── Select wrapper ── */
+.pif-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pif-select {
+  cursor: pointer;
+  padding-right: 38px;
+  color: #9ca3af;
+}
+
+.pif-select:focus,
+.pif-select option:not([value=""]) {
+  color: #374151;
+}
+
+.pif-select-arrow {
+  position: absolute;
+  right: 13px;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.pif-select-arrow svg {
+  width: 11px;
+  height: 8px;
+}
+
+/* ── Acciones ── */
+.pif-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px solid #f0f1f3;
+  margin-top: 4px;
+}
+
+/* ── Botón Siguiente ── */
+.pif-btn-next {
+  margin-left: auto;
+  /* always pushes to the right */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #7FB536 0%, #6a9a2c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 26px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.15px;
+  transition: opacity 0.2s, box-shadow 0.2s, transform 0.15s;
+  box-shadow: 0 2px 10px rgba(127, 181, 54, 0.30);
+}
+
+/* ── Botón Anterior ── */
+.pif-btn-prev {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #7FB536;
+  border: 1.5px solid #7FB536;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.15px;
+  transition: all 0.2s;
+}
+
+.pif-btn-prev svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.2s;
+}
+
+.pif-btn-prev:hover {
+  background: rgba(127, 181, 54, 0.08);
+  color: #6a9a2c;
+  border-color: #6a9a2c;
+}
+
+.pif-btn-prev:hover svg {
+  transform: translateX(-3px);
+}
+
+.pif-btn-prev:active {
+  transform: scale(0.97);
+}
+
+.pif-btn-next svg {
+  width: 17px;
+  height: 17px;
+  transition: transform 0.2s;
+}
+
+.pif-btn-next:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 16px rgba(127, 181, 54, 0.40);
+  transform: translateY(-1px);
+}
+
+.pif-btn-next:hover svg {
+  transform: translateX(3px);
+}
+
+.pif-btn-next:active {
+  transform: scale(0.97);
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────*/
+
+@media (max-width: 900px) {
+  .pif-card    { margin: 20px 0 0; }
+
+  .pif-content { padding: 24px 24px 28px; }
+}
+
+@media (max-width: 640px) {
+  .pif-card    { margin: 16px 0 0; }
+
+  .pif-content {
+    padding: 20px 18px 24px;
+  }
+
+  .pif-form {
+    grid-template-columns: 1fr;
+  }
+
+  .pif-field--empty {
+    display: none;
+  }
+
+  /* Ajuste de botones en móvil */
+  .pif-actions {
+    flex-direction: column-reverse;
+    /* Anterior abajo, Siguiente arriba */
+    gap: 12px;
+  }
+
+  .pif-btn-next {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pif-btn-prev {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Schedule Grid ── */
+.schedule-section {
+  margin-top: 8px;
+}
+
+.schedule-header {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1e2a;
+  margin: 0 0 8px;
+}
+
+.schedule-subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0 0 24px;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.schedule-day-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-day-header {
+  background: #E8EDE6;
+  padding: 10px 0;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: #4b5563;
+  letter-spacing: 1.5px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.schedule-card {
+  border: 1.5px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.schedule-card:hover:not(.is-full) {
+  border-color: #7FB536;
+  box-shadow: 0 4px 12px rgba(127, 181, 54, 0.1);
+  transform: translateY(-2px);
+}
+
+.schedule-card.is-selected {
+  border-color: #7FB536;
+  background: rgba(127, 181, 54, 0.05);
+  box-shadow: 0 0 0 1px #7FB536;
+}
+
+.schedule-card.is-full {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: #fafafa;
+}
+
+.schedule-shift-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: #8c9097;
+  letter-spacing: 0.5px;
+}
+
+.schedule-card.is-selected .schedule-shift-name {
+  color: #6a9a2c;
+}
+
+.schedule-shift-time {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1e2a;
+  margin-bottom: 8px;
+}
+
+.schedule-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.schedule-pill::before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.schedule-pill.green {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.schedule-pill.green::before {
+  background: #22c55e;
+}
+
+.schedule-pill.orange {
+  background: #fff7ed;
+  color: #c2410c;
+}
+
+.schedule-pill.orange::before {
+  background: #f97316;
+}
+
+.schedule-pill.red {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.schedule-pill.red::before {
+  background: #ef4444;
+}
+
+.lif-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lif-upload-dropzone {
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  min-height: 140px;
+  padding: 18px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #64748b;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+
+.lif-upload-dropzone:hover {
+  border-color: #7FB536;
+  background: #f4f9ec;
+  color: #4b5563;
+}
+
+.lif-upload-dropzone svg {
+  width: 28px;
+  height: 28px;
+}
+
+.lif-upload-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.lif-upload-subtitle {
+  font-size: 13px;
+  color: #64748b;
+}
+
+/* ── RESPONSIVE SCHEDULE ── */
+@media (max-width: 1024px) {
+  .schedule-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+
+  /* En móvil el usuario solicitó mantener 3 columnas */
+  .schedule-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    /* Reducir gap para que quepan */
+  }
+
+  .schedule-card {
+    padding: 12px 4px;
+    gap: 4px;
+  }
+
+  .schedule-day-header {
+    font-size: 11px;
+    padding: 8px 0;
+  }
+
+  .schedule-shift-time {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+
+  .schedule-shift-name {
+    font-size: 10px;
+  }
+
+  .schedule-pill {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+}

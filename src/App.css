@@ -1,0 +1,47 @@
+/* ── APP LAYOUT ── */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  /* ensure it takes full screen height */
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+.main-left {
+  flex: 1;
+  min-width: 0;
+  /* Prevents overflow */
+  margin-top: 0 !important;
+  /* Override index.css margin-top */
+}
+
+.main-right {
+  width: 340px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1100px) {
+  .main-content {
+    flex-direction: column;
+    padding: 16px 12px;
+  }
+
+  .main-right {
+    width: 100%;
+    position: static;
+  }
+}

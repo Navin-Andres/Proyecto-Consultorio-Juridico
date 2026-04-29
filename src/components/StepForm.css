@@ -1,0 +1,285 @@
+/* ───────────────────────────────────────────
+   STEPFORM — Inscripción Consultorio Jurídico
+─────────────────────────────────────────────*/
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── Design tokens ── */
+:root {
+  --step-green: #7FB536;
+  --step-green-light: rgba(127, 181, 54, 0.14);
+  --step-gray: #b0b7c3;
+  --step-gray-text: #8a929e;
+  --step-label-done: #5a6476;
+  --step-line-done: #7FB536;
+  --step-line-idle: #d5d8df;
+}
+
+/* ── Section wrapper ── */
+.stepform-section {
+  width: 100%;
+  background: #ffffff;
+  padding: 28px 12px 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Header ── */
+.stepform-header {
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.stepform-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1e2a;
+  margin: 0 0 8px;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.stepform-subtitle {
+  font-size: 13.5px;
+  color: #6b7280;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ─────────────────────────────────────
+   STEPPER
+──────────────────────────────────────*/
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+  padding-bottom: 0;
+}
+
+/* ── Each step item ── */
+.stepper-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+
+/* ── Connector lines ── */
+.stepper-line {
+  position: absolute;
+  top: 18px;
+  /* vertically centred on circle (36px/2) */
+  height: 2px;
+  background: var(--step-line-idle);
+  transition: background 0.3s ease;
+  z-index: 0;
+}
+
+.stepper-line--before {
+  right: 50%;
+  left: -50%;
+  /* stretch from the mid of previous item to mid of this item */
+  left: 0;
+  right: 50%;
+  /* Actually: from the right edge of prev item to the centre of this */
+}
+
+.stepper-line--after {
+  left: 50%;
+  right: 0;
+}
+
+/* Filled (completed) line becomes green */
+.stepper-line.is-filled {
+  background: var(--step-line-done);
+}
+
+/* ── Circle button ── */
+.stepper-circle {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--step-gray);
+  background: #ffffff;
+  color: var(--step-gray-text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.25s, background 0.25s, color 0.25s, box-shadow 0.25s, transform 0.2s;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.stepper-circle svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Active step */
+.stepper-item.is-active .stepper-circle {
+  background: var(--step-green);
+  border-color: var(--step-green);
+  color: #ffffff;
+  box-shadow: 0 0 0 4px var(--step-green-light), 0 2px 8px rgba(127, 181, 54, 0.35);
+}
+
+/* Completed step */
+.stepper-item.is-completed .stepper-circle {
+  background: var(--step-green);
+  border-color: var(--step-green);
+  color: #ffffff;
+}
+
+/* Hover on idle circles */
+.stepper-item:not(.is-active) .stepper-circle:hover {
+  border-color: var(--step-green);
+  color: var(--step-green);
+  transform: scale(1.08);
+}
+
+/* ── Label ── */
+.stepper-label {
+  margin-top: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--step-gray-text);
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.3;
+  max-width: 90px;
+  transition: color 0.25s;
+}
+
+.stepper-item.is-active .stepper-label {
+  color: var(--step-green);
+  font-weight: 700;
+}
+
+.stepper-item.is-completed .stepper-label {
+  color: var(--step-label-done);
+}
+
+/* ── Bottom border ── */
+.stepform-section::after {
+  content: '';
+  display: block;
+  margin-top: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ── Mobile Step Indicator (Hidden on Desktop) ── */
+.mobile-step-indicator {
+  display: none;
+}
+
+/* ─────────────────────────────────────
+   RESPONSIVE
+──────────────────────────────────────*/
+
+/* Tablet */
+@media (max-width: 900px) {
+  .stepform-section {
+    padding: 28px 24px 0;
+  }
+
+  .stepform-title {
+    font-size: 22px;
+  }
+
+  .stepper-label {
+    font-size: 9.5px;
+    max-width: 72px;
+  }
+
+  .stepper-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .stepper-line {
+    top: 16px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .stepform-section {
+    padding: 20px 16px 0;
+  }
+
+  .stepform-title {
+    font-size: 18px;
+  }
+
+  .stepform-subtitle {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  /* Ajustar stepper a la imagen: ocultar labels, círculos con colores suaves */
+  .stepper-label {
+    display: none;
+    /* oculta las etiquetas debajo de los círculos */
+  }
+
+  .stepper-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 12.5px;
+    border: 1.5px solid #eaecee;
+    background: #f4f5f7;
+    color: #4b5563;
+  }
+
+  .stepper-circle svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .stepper-line {
+    top: 16px;
+    background: #e5e7eb;
+  }
+
+  /* El círculo activo (verde) */
+  .stepper-item.is-active .stepper-circle {
+    box-shadow: none;
+    /* quitar sombra para un look más flat como en la imagen */
+    border: none;
+  }
+
+  /* Mostrar la tarjeta indicadora de móvil */
+  .mobile-step-indicator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    padding: 14px 18px;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+  }
+
+  .mobile-step-count {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1e2a;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .mobile-step-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--step-green);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
