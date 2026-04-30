@@ -72,6 +72,19 @@ function ContactInfoForm({ onPrev, onNext }) {
           {/* Celda vacía para mantener el grid */}
           <div className="pif-field pif-field--empty" aria-hidden="true" />
 
+          <div style={{ gridColumn: '1 / -1', marginTop: '4px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'stretch', overflow: 'hidden' }}>
+            <div style={{ width: '6px', background: 'linear-gradient(180deg, #7FB536 0%, #6a9a2c 100%)' }} aria-hidden="true" />
+            <div style={{ padding: '12px 14px', display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+              <div style={{ width: '20px', height: '20px', borderRadius: '999px', background: '#7FB536', color: '#ffffff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 700, flexShrink: 0 }} aria-hidden="true">
+                i
+              </div>
+              <p style={{ margin: 0, color: '#4b5563', fontSize: '13px', lineHeight: 1.5 }}>
+                Asegúrese de que sus datos de contacto sean correctos. Utilizaremos esta información para enviarle
+                notificaciones sobre el estado de su caso jurídico.
+              </p>
+            </div>
+          </div>
+
           {/* ── Botones de acción ── */}
           <div className="pif-actions">
             <button type="button" onClick={onPrev} id="btn-anterior-step2" className="pif-btn-prev">

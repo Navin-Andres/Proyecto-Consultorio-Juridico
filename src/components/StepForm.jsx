@@ -4,6 +4,8 @@ import PersonalInfoForm from './PersonalInfoForm'
 import ContactInfoForm from './ContactInfoForm'
 import AcademicInfoForm from './AcademicInfoForm'
 import LaborInfoForm from './LaborInfoForm'
+import AnnexesForm from './AnnexesForm'
+import FinalDeclarationsForm from './FinalDeclarationsForm'
 
 const STEPS = [
   { id: 1, label: 'INFORMACIÓN PERSONAL' },
@@ -91,6 +93,8 @@ function StepForm() {
       {currentStep === 2 && <ContactInfoForm onPrev={() => handleStepChange(1)} onNext={() => handleStepChange(3)} />}
       {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleStepChange(4)} />}
       {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleStepChange(5)} />}
+      {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleStepChange(6)} />}
+      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} />}
     </section>
   )
 }

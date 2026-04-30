@@ -475,10 +475,159 @@ textarea.pif-input {
   color: #64748b;
 }
 
+.anx-guide-card {
+  grid-column: 1 / -1;
+  margin-top: 12px;
+  border: 1px solid #d8e2cb;
+  border-radius: 10px;
+  background: #eef3e8;
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.anx-guide-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #7FB536;
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.anx-guide-title {
+  margin: 0 0 4px;
+  color: #3f5f18;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.anx-guide-subtitle {
+  margin: 0;
+  color: #4b5563;
+  font-size: 13px;
+}
+
+.anx-card {
+  margin: 12px 0 0;
+}
+
+.anx-content {
+  padding: 16px 20px;
+  display: grid;
+  grid-template-columns: 1fr 1.7fr;
+  align-items: center;
+  gap: 18px;
+}
+
+.anx-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: #222;
+}
+
+.anx-subtitle {
+  margin: 0;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.anx-subtitle a {
+  margin-left: 8px;
+  color: #7FB536;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.anx-uploader-wrap {
+  width: 100%;
+}
+
+.anx-upload-dropzone {
+  border: 2px dashed #d9ddd1;
+  border-radius: 8px;
+  background: #f9faf8;
+  min-height: 84px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.anx-upload-dropzone:hover {
+  border-color: #7FB536;
+  background: #f5f9ee;
+}
+
+.anx-upload-dropzone svg {
+  width: 22px;
+  height: 22px;
+}
+
+.anx-upload-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.anx-upload-title {
+  color: #2f343f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.anx-upload-subtitle {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.anx-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 94px;
+  height: 34px;
+  border: 1px solid #c5cbb9;
+  border-radius: 6px;
+  background: #fff;
+  color: #3f3f3f;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 14px;
+}
+
 /* ── RESPONSIVE SCHEDULE ── */
 @media (max-width: 1024px) {
   .schedule-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .anx-title {
+    font-size: 17px;
+  }
+
+  .anx-subtitle {
+    font-size: 13px;
+  }
+
+  .anx-subtitle a {
+    font-size: 12px;
   }
 }
 
@@ -513,5 +662,25 @@ textarea.pif-input {
   .schedule-pill {
     padding: 2px 6px;
     font-size: 10px;
+  }
+
+  .anx-content {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .anx-title {
+    font-size: 16px;
+  }
+
+  .anx-subtitle {
+    font-size: 13px;
+  }
+
+  .anx-upload-dropzone {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+    padding: 14px;
   }
 }

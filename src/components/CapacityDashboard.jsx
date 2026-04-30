@@ -12,7 +12,7 @@ export default function CapacityDashboard() {
   return (
     <aside className="capacity-dashboard">
       {/* ── Título ── */}
-      <h3 className="capacity-title">Ocupación por Consultorio</h3>
+      <h3 className="capacity-title">Disponibilidad de Cupos</h3>
 
       {/* ── Barras de Progreso ── */}
       <div className="capacity-list">
@@ -50,7 +50,9 @@ export default function CapacityDashboard() {
         </div>
         <div className="capacity-info-text">
           <strong>Información Importante</strong>
-          <p>Los cupos son limitados y se asignan por orden de inscripción. Verifica la disponibilidad actual.</p>
+          <p style={{ textAlign: 'left' }}>
+            La asignación de cupos se realiza por orden de llegada y verificación de documentos. Complete todos los pasos del formulario.
+          </p>
         </div>
       </div>
     </aside>
