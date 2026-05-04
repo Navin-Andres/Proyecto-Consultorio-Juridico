@@ -31,7 +31,7 @@ function PersonalInfoForm({ onNext }) {
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Información Personal
+            Información Personal & Disponibilidad 
           </h2>
 
           <div className="pif-form">

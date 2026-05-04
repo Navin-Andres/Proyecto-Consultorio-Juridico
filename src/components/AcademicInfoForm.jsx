@@ -11,13 +11,13 @@ function AcademicInfoForm({ onPrev, onNext }) {
 
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Información Académica
+            Semestre que cursa actualmente *
           </h2>
 
           <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
             <div className="pif-field">
               <label htmlFor="aif-semestre" className="pif-label">
-                Semestre que cursa actualmente
+                Seleccione el semestre en el cual se encuentra matriculado.
               </label>
               <div className="pif-select-wrapper">
                 <select id="aif-semestre" className="pif-input pif-select" defaultValue="">
@@ -52,13 +52,13 @@ function AcademicInfoForm({ onPrev, onNext }) {
 
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Área de interés
+            Área de Interés *
           </h2>
 
           <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
             <div className="pif-field">
               <label htmlFor="aif-area" className="pif-label">
-                Seleccione el área de interés
+                Seleccione su área de mayor interés para la práctica jurídica.
               </label>
               <div className="pif-select-wrapper">
                 <select id="aif-area" className="pif-input pif-select" defaultValue="">
@@ -95,13 +95,11 @@ function AcademicInfoForm({ onPrev, onNext }) {
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Experiencia en Consultorio
+            ¿Cuántos consultorios ha realizado en sede? *
           </h2>
           <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
             <div className="pif-field">
-              <label htmlFor="aif-consultorios" className="pif-label">
-                ¿Cuántos consultorios ha realizado en sede?
-              </label>
+              
               <div className="pif-select-wrapper">
                 <select id="aif-consultorios" className="pif-input pif-select" defaultValue="">
                   <option value="" disabled>Seleccione una opción</option>
@@ -127,17 +125,17 @@ function AcademicInfoForm({ onPrev, onNext }) {
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Procesos Activos
+            Consecutivos de consultas y procesos activos *
           </h2>
           <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
             <div className="pif-field">
               <label htmlFor="aif-consecutivos" className="pif-label">
-                Consecutivos de consultas y procesos activos
+                Ingrese los números de radicado separados por comas o saltos de línea.
               </label>
               <textarea 
                 id="aif-consecutivos" 
                 className="pif-input" 
-                placeholder="Ingrese los números radicados separados por comas o saltos de línea..."
+                placeholder="Ej: 2023-00124, 2023-00567..."
               />
             </div>
 

@@ -10,6 +10,14 @@ const ANNEXES = [
     inputId: 'anx-identidad',
   },
   {
+    id: 'eps',
+    title: 'Certificado EPS *',
+    subtitle: 'Vigencia máxima de 30 días.',
+    dropTitle: 'Arrastra tu certificado EPS aquí',
+    dropSubtitle: 'Click para cargar PDF',
+    inputId: 'anx-eps',
+  },
+  {
     id: 'consentimiento',
     title: 'Consentimiento Informado',
     subtitle: 'Debe estar firmado.',
@@ -46,12 +54,12 @@ function AnnexesForm({ onPrev, onNext }) {
       noValidate
       onSubmit={(e) => { e.preventDefault(); if (onNext) onNext() }}
     >
-      <div className="anx-guide-card">
+      <div className="anx-guide-card" style={{ marginTop: '20px' }}>
         <div className="anx-guide-icon" aria-hidden="true">i</div>
         <div>
           <h2 className="anx-guide-title">Instrucciones de Carga</h2>
           <p className="anx-guide-subtitle">
-            Archivos en formato PDF (máx 5MB). Nombrar: <strong>DOCUMENTO_APELLIDO_NOMBRE.pdf</strong>
+            Archivos en formato PDF (máx 10MB). Nombrar: <strong>DOCUMENTO_APELLIDO_NOMBRE.pdf</strong>
           </p>
         </div>
       </div>

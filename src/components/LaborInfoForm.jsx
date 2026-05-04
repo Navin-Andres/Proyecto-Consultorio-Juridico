@@ -28,7 +28,7 @@ function LaborInfoForm({ onPrev, onNext }) {
             />
           </div>
 
-          <div className="pif-field">
+          <div className="pif-field" style={{ marginTop: '20px' }}>
             <label htmlFor="lif-cargo" className="pif-label">
               Cargo
             </label>
@@ -36,7 +36,7 @@ function LaborInfoForm({ onPrev, onNext }) {
               id="lif-cargo"
               type="text"
               className="pif-input"
-              placeholder="Ingrese su cargo actual"
+              placeholder="Cargo que desempeña en la empresa "
             />
           </div>
         </div>
@@ -49,9 +49,7 @@ function LaborInfoForm({ onPrev, onNext }) {
             Certificación de funciones jurídicas (Ley 2113 de 2021)
           </h2>
           <div className="pif-field">
-            <label htmlFor="lif-certificacion-funciones" className="pif-label">
-              Documento de certificación
-            </label>
+            
             <p style={{ margin: '6px 0 10px', color: '#4b5563', fontSize: '14px' }}>
               Si la empresa o la entidad donde labora desempeña funciones jurídicas, suba la respectiva certificación.
             </p>
@@ -60,7 +58,7 @@ function LaborInfoForm({ onPrev, onNext }) {
                 <path d="M12 16V8M12 8l-3 3M12 8l3 3M5 16.5A3.5 3.5 0 0 1 5.5 9.6a5 5 0 0 1 9.7-1.2A4 4 0 1 1 18.5 16.5H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="lif-upload-title">Arrastra tu archivo aquí</span>
-              <span className="lif-upload-subtitle">Sube 1 archivo compatible. Tamaño: 5MB</span>
+              <span className="lif-upload-subtitle">Sube 1 archivo compatible. Tamaño: 10MB</span>
             </label>
             <input
               id="lif-certificacion-funciones"
