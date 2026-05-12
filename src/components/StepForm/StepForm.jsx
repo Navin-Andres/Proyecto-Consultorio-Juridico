@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import './StepForm.css'
-import PersonalInfoForm from './PersonalInfoForm'
-import ContactInfoForm from './ContactInfoForm'
-import AcademicInfoForm from './AcademicInfoForm'
-import LaborInfoForm from './LaborInfoForm'
-import AnnexesForm from './AnnexesForm'
-import FinalDeclarationsForm from './FinalDeclarationsForm'
+
+// Agregamos la subcarpeta student/ a cada importación
+import PersonalInfoForm from '../student/PersonalInfoForm'
+import ContactInfoForm from '../student/ContactInfoForm'
+import AcademicInfoForm from '../student/AcademicInfoForm'
+import LaborInfoForm from '../student/LaborInfoForm'
+import AnnexesForm from '../student/AnnexesForm'
+import FinalDeclarationsForm from '../student/FinalDeclarationsForm'
 
 const STEPS = [
   { id: 1, label: 'INFORMACIÓN PERSONAL' },

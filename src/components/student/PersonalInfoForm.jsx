@@ -1,26 +1,51 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './PersonalInfoForm.css'
 
-const SCHEDULE_DATA = [
-  { day: 'LUNES', morning: { time: '8:00 - 12:00', booked: 0, total: 11 }, afternoon: { time: '2:00 - 6:00', booked: 0, total: 11 } },
-  { day: 'MARTES', morning: { time: '8:00 - 12:00', booked: 2, total: 11 }, afternoon: { time: '2:00 - 6:00', booked: 9, total: 11 } },
-  { day: 'MIÉRCOLES', morning: { time: '8:00 - 12:00', booked: 1, total: 11 }, afternoon: { time: '2:00 - 6:00', booked: 11, total: 11 } },
-  { day: 'JUEVES', morning: { time: '8:00 - 12:00', booked: 0, total: 11 }, afternoon: { time: '2:00 - 6:00', booked: 3, total: 11 } },
-  { day: 'VIERNES', morning: { time: '8:00 - 12:00', booked: 0, total: 11 }, afternoon: { time: '2:00 - 6:00', booked: 0, total: 11 } },
-]
-
 function getPillClass(booked, total) {
-  if (booked === total) return 'red'
+  if (booked >= total) return 'red'
   if (booked >= total - 3) return 'orange'
   return 'green'
 }
 
+function formatTime12h(timeStr) {
+  if (!timeStr) return '';
+  const [hourStr, minStr] = timeStr.split(':');
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12 || 12;
+  return `${hour}:${minStr} ${ampm}`;
+}
+
 function PersonalInfoForm({ onNext }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
+  const [turnos, setTurnos] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const handleSelectSlot = (day, shiftName, isFull) => {
+  useEffect(() => {
+    const fetchTurnos = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/turnos')
+        const data = await response.json()
+        setTurnos(data.filter(t => t.activo))
+      } catch (error) {
+        console.error('Error fetching turnos:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchTurnos()
+  }, [])
+
+  const handleSelectSlot = (turnoId, isFull) => {
     if (isFull) return
-    setSelectedSlot(`${day}-${shiftName}`)
+    setSelectedSlot(turnoId)
+  }
+
+  // Agrupar turnos por día
+  const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']
+  
+  const getTurnoPorJornada = (dia, jornada) => {
+    return turnos.find(t => t.dia.toLowerCase() === dia && t.jornada.toLowerCase() === jornada)
   }
 
   return (
@@ -88,37 +113,52 @@ function PersonalInfoForm({ onNext }) {
             <h2 className="schedule-header">Seleccione día y hora de realización de su turno</h2>
             <p className="schedule-subtitle">Seleccione un día y horario que no presente cruce con las asignaturas matriculadas.</p>
 
-            <div className="schedule-grid">
-              {SCHEDULE_DATA.map((dayData) => (
-                <div key={dayData.day} className="schedule-day-col">
-                  <div className="schedule-day-header">{dayData.day}</div>
+            {loading ? (
+              <p>Cargando turnos disponibles...</p>
+            ) : (
+              <div className="schedule-grid">
+                {diasSemana.map((dia) => {
+                  const turnoManana = getTurnoPorJornada(dia, 'mañana')
+                  const turnoTarde = getTurnoPorJornada(dia, 'tarde')
+                  
+                  if (!turnoManana && !turnoTarde) return null;
 
-                  {/* Turno Mañana */}
-                  <div
-                    className={`schedule-card ${dayData.morning.booked === dayData.morning.total ? 'is-full' : ''} ${selectedSlot === `${dayData.day}-MAÑANA` ? 'is-selected' : ''}`}
-                    onClick={() => handleSelectSlot(dayData.day, 'MAÑANA', dayData.morning.booked === dayData.morning.total)}
-                  >
-                    <span className="schedule-shift-name">MAÑANA</span>
-                    <span className="schedule-shift-time">{dayData.morning.time}</span>
-                    <span className={`schedule-pill ${getPillClass(dayData.morning.booked, dayData.morning.total)}`}>
-                      {dayData.morning.booked} / {dayData.morning.total} Cupos
-                    </span>
-                  </div>
+                  return (
+                    <div key={dia} className="schedule-day-col">
+                      <div className="schedule-day-header">{dia.toUpperCase()}</div>
 
-                  {/* Turno Tarde */}
-                  <div
-                    className={`schedule-card ${dayData.afternoon.booked === dayData.afternoon.total ? 'is-full' : ''} ${selectedSlot === `${dayData.day}-TARDE` ? 'is-selected' : ''}`}
-                    onClick={() => handleSelectSlot(dayData.day, 'TARDE', dayData.afternoon.booked === dayData.afternoon.total)}
-                  >
-                    <span className="schedule-shift-name">TARDE</span>
-                    <span className="schedule-shift-time">{dayData.afternoon.time}</span>
-                    <span className={`schedule-pill ${getPillClass(dayData.afternoon.booked, dayData.afternoon.total)}`}>
-                      {dayData.afternoon.booked} / {dayData.afternoon.total} Cupos
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+                      {/* Turno Mañana */}
+                      {turnoManana && (
+                        <div
+                          className={`schedule-card ${turnoManana.cupos_ocupados >= turnoManana.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoManana.id ? 'is-selected' : ''}`}
+                          onClick={() => handleSelectSlot(turnoManana.id, turnoManana.cupos_ocupados >= turnoManana.cupos_totales)}
+                        >
+                          <span className="schedule-shift-name">MAÑANA</span>
+                          <span className="schedule-shift-time">{formatTime12h(turnoManana.hora_inicio)} - {formatTime12h(turnoManana.hora_fin)}</span>
+                          <span className={`schedule-pill ${getPillClass(turnoManana.cupos_ocupados, turnoManana.cupos_totales)}`}>
+                            {turnoManana.cupos_ocupados} / {turnoManana.cupos_totales} Cupos
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Turno Tarde */}
+                      {turnoTarde && (
+                        <div
+                          className={`schedule-card ${turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoTarde.id ? 'is-selected' : ''}`}
+                          onClick={() => handleSelectSlot(turnoTarde.id, turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales)}
+                        >
+                          <span className="schedule-shift-name">TARDE</span>
+                          <span className="schedule-shift-time">{formatTime12h(turnoTarde.hora_inicio)} - {formatTime12h(turnoTarde.hora_fin)}</span>
+                          <span className={`schedule-pill ${getPillClass(turnoTarde.cupos_ocupados, turnoTarde.cupos_totales)}`}>
+                            {turnoTarde.cupos_ocupados} / {turnoTarde.cupos_totales} Cupos
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
           {/* ── Botones de acción ── */}

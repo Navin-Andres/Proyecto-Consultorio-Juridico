@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './CapacityDashboard.css'
-import heroImg from '../assets/hero.png'
-import unnamedImg from '../assets/unnamed.png'
+import heroImg from '../../assets/hero.png'
+import unnamedImg from '../../assets/unnamed.png'
 
 const DATA = [
   { id: 'I', name: 'Consultorio I', booked: 12, total: 50, color: '#7FB536' }, // Verde
