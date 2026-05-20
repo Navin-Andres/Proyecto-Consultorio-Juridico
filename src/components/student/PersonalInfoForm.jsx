@@ -16,7 +16,7 @@ function formatTime12h(timeStr) {
   return `${hour}:${minStr} ${ampm}`;
 }
 
-function PersonalInfoForm({ onNext }) {
+function PersonalInfoForm({ onNext, onChangeDatos }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [turnos, setTurnos] = useState([])
   const [loading, setLoading] = useState(true)
@@ -48,8 +48,21 @@ function PersonalInfoForm({ onNext }) {
     return turnos.find(t => t.dia.toLowerCase() === dia && t.jornada.toLowerCase() === jornada)
   }
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (onChangeDatos) {
+      onChangeDatos({
+        nombres: document.getElementById('pif-nombre')?.value,
+        email: document.getElementById('pif-email')?.value,
+        documento: document.getElementById('pif-documento')?.value,
+        fechaNacimiento: document.getElementById('pif-fecha')?.value,
+      });
+    }
+    if (onNext) onNext();
+  };
+
   return (
-    <form id="form-personal-info" noValidate onSubmit={(e) => { e.preventDefault(); if (onNext) onNext(); }}>
+    <form id="form-personal-info" noValidate onSubmit={handleFormSubmit}>
 
       {/* ── TARJETA 1: Información Personal ── */}
       <div className="pif-card" style={{ marginBottom: '24px' }}>

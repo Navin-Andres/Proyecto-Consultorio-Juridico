@@ -187,3 +187,21 @@
     font-style: italic;
     background-color: white;
 }
+.btn-delete-estudiante {
+    background: none;
+    border: none;
+    color: #ef4444; /* Rojo para eliminar */
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.btn-delete-estudiante:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+

@@ -1,13 +1,16 @@
 import './PersonalInfoForm.css'
 
-function FinalDeclarationsForm({ onPrev }) {
+function FinalDeclarationsForm({ onPrev, onSubmitFinal }) {
   return (
     <form
       className="pif-form"
       id="form-final-declarations"
       style={{ gridTemplateColumns: '1fr' }}
       noValidate
-      onSubmit={(e) => { e.preventDefault() }}
+      onSubmit={(e) => { 
+        e.preventDefault();
+        if (onSubmitFinal) onSubmitFinal();
+      }}
     >
       <div className="pif-card" style={{ margin: '12px 0 0' }}>
         <div className="pif-stripe" aria-hidden="true" />

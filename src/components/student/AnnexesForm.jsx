@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import './PersonalInfoForm.css'
 
 const ANNEXES = [
@@ -45,14 +46,36 @@ const ANNEXES = [
   },
 ]
 
-function AnnexesForm({ onPrev, onNext }) {
+function AnnexesForm({ onPrev, onNext, onChangeDatos }) {
+  // Estado para guardar cómo se llama el archivo seleccionado de cada input
+  const [fileNames, setFileNames] = useState({});
+  // Estado para guardar los archivos reales
+  const [archivosReales, setArchivosReales] = useState({});
+
+  const handleFileChange = (e, annexId, inputId) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFileNames(prev => ({ ...prev, [annexId]: file.name }));
+      setArchivosReales(prev => ({ ...prev, [inputId]: file }));
+    }
+  };
+
+  const handleSiguiente = (e) => {
+    e.preventDefault();
+    // Guardamos los archivos reales en el estado global (StepForm) antes de ir al siguiente paso
+    if (onChangeDatos) {
+        onChangeDatos({ archivosSubidos: archivosReales });
+    }
+    if (onNext) onNext();
+  };
+
   return (
     <form
       className="pif-form"
       id="form-annexes"
       style={{ gridTemplateColumns: '1fr' }}
       noValidate
-      onSubmit={(e) => { e.preventDefault(); if (onNext) onNext() }}
+      onSubmit={handleSiguiente}
     >
       <div className="anx-guide-card" style={{ marginTop: '20px' }}>
         <div className="anx-guide-icon" aria-hidden="true">i</div>
@@ -82,10 +105,19 @@ function AnnexesForm({ onPrev, onNext }) {
                   <path d="M12 16V8M12 8l-3 3M12 8l3 3M5 16.5A3.5 3.5 0 0 1 5.5 9.6a5 5 0 0 1 9.7-1.2A4 4 0 1 1 18.5 16.5H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <div className="anx-upload-text">
-                  <span className="anx-upload-title">{annex.dropTitle}</span>
-                  <span className="anx-upload-subtitle">{annex.dropSubtitle}</span>
+                  <span className="anx-upload-title">
+                    {/* MOSTRAMOS EL NOMBRE DEL ARCHIVO SI EXISTE, SI NO EL TEXTO POR DEFECTO */}
+                    {fileNames[annex.id] 
+                      ? <span style={{color: '#7FB536', fontWeight: 600}}>✓ {fileNames[annex.id]}</span> 
+                      : annex.dropTitle}
+                  </span>
+                  <span className="anx-upload-subtitle">
+                    {fileNames[annex.id] ? 'Archivo cargado. Click para cambiar.' : annex.dropSubtitle}
+                  </span>
                 </div>
-                <span className="anx-upload-button">Seleccionar</span>
+                <span className="anx-upload-button">
+                  {fileNames[annex.id] ? 'Cambiar' : 'Seleccionar'}
+                </span>
               </label>
             </div>
 
@@ -94,6 +126,7 @@ function AnnexesForm({ onPrev, onNext }) {
               type="file"
               className="lif-upload-input"
               accept=".pdf"
+              onChange={(e) => handleFileChange(e, annex.id, annex.inputId)}
             />
           </div>
         </div>

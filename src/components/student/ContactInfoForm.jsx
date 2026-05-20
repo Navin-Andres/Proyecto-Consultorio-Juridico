@@ -1,6 +1,20 @@
 import './PersonalInfoForm.css' // Reusing the same CSS for identical design
 
-function ContactInfoForm({ onPrev, onNext }) {
+function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (onChangeDatos) {
+      onChangeDatos({
+        departamento: document.getElementById('cif-departamento')?.value,
+        municipio: document.getElementById('cif-municipio')?.value,
+        direccion: document.getElementById('cif-direccion')?.value,
+        telefono: document.getElementById('cif-telefono')?.value,
+        correoInstitucional: document.getElementById('cif-correo')?.value,
+      });
+    }
+    if (onNext) onNext();
+  };
+
   return (
     <div className="pif-card">
       {/* ── Franja verde izquierda ── */}
@@ -14,7 +28,7 @@ function ContactInfoForm({ onPrev, onNext }) {
         </h2>
 
         {/* ── Formulario en grid ── */}
-        <form className="pif-form" id="form-contact-info" noValidate onSubmit={(e) => { e.preventDefault(); if (onNext) onNext(); }}>
+        <form className="pif-form" id="form-contact-info" noValidate onSubmit={handleFormSubmit}>
 
           {/* Fila 1 */}
           <div className="pif-field">

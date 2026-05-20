@@ -20,10 +20,67 @@ const STEPS = [
 
 function StepForm() {
   const [currentStep, setCurrentStep] = useState(1)
+  const [formData, setFormData] = useState({})
 
   const handleStepChange = (stepId) => {
     setCurrentStep(stepId)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Guardamos la información que llega desde otros sub-formularios
+  const updateFormData = (newData) => {
+    setFormData((prev) => ({ ...prev, ...newData }))
+  }
+
+  const handleFinalizar = async () => {
+    try {
+      // Intenta capturar valores actualmente en pantalla si no se han guardado aún
+      const nombres = document.getElementById('pif-nombre')?.value || formData.nombres || 'Ejemplo Nombres';
+      const documento = document.getElementById('pif-documento')?.value || formData.documento || '123456789';
+      const email = document.getElementById('pif-email')?.value || formData.email || 'ejemplo@correo.com';
+
+      // 1. Usamos FormData en lugar de JSON para enviar texto y Archivos juntos
+      const dataAEnviar = new FormData();
+      
+      // Textos del paso 1 y otros
+      dataAEnviar.append('nombres', nombres);
+      dataAEnviar.append('email', email);
+      dataAEnviar.append('documento', documento);
+      dataAEnviar.append('tipoDoc', formData.tipoDoc || 'CC');
+      dataAEnviar.append('fechaNacimiento', formData.fechaNacimiento || '2000-01-01');
+      dataAEnviar.append('semestre', formData.semestre || '7');
+      
+      // Textos del paso de Contacto
+      dataAEnviar.append('departamento', formData.departamento || '');
+      dataAEnviar.append('municipio', formData.municipio || '');
+      dataAEnviar.append('direccion', formData.direccion || '');
+      dataAEnviar.append('telefono', formData.telefono || '');
+      dataAEnviar.append('correoInstitucional', formData.correoInstitucional || '');
+
+      // 2. Archivos (recuperados de formData.archivosSubidos ya que el paso 5 está desmontado)
+      const archivos = formData.archivosSubidos || {};
+
+      if (archivos['anx-identidad']) dataAEnviar.append('doc_identidad', archivos['anx-identidad']);
+      if (archivos['anx-eps']) dataAEnviar.append('doc_eps', archivos['anx-eps']);
+      if (archivos['anx-consentimiento']) dataAEnviar.append('doc_consentimiento', archivos['anx-consentimiento']);
+      if (archivos['anx-acta-compromiso']) dataAEnviar.append('doc_acta', archivos['anx-acta-compromiso']);
+      if (archivos['anx-hoja-vida']) dataAEnviar.append('doc_hoja_vida', archivos['anx-hoja-vida']);
+
+      // 3. Enviamos sin { Content-Type: json }
+      const respuesta = await fetch('http://localhost:5000/api/estudiantes', {
+        method: 'POST',
+        body: dataAEnviar
+      });
+
+      if (respuesta.ok) {
+        alert("¡Tus datos e información adjunta se registraron correctamente!");
+      } else {
+        const errorData = await respuesta.json();
+        alert(errorData.message || "Error al guardar en el servidor.");
+      }
+    } catch (error) {
+      console.error("Error al registrar:", error);
+    }
   }
 
   return (
@@ -91,12 +148,12 @@ function StepForm() {
       </div>
 
       {/* ── Contenido del paso activo ── */}
-      {currentStep === 1 && <PersonalInfoForm onNext={() => handleStepChange(2)} />}
-      {currentStep === 2 && <ContactInfoForm onPrev={() => handleStepChange(1)} onNext={() => handleStepChange(3)} />}
-      {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleStepChange(4)} />}
-      {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleStepChange(5)} />}
-      {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleStepChange(6)} />}
-      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} />}
+      {currentStep === 1 && <PersonalInfoForm onNext={() => handleStepChange(2)} onChangeDatos={updateFormData} />}
+      {currentStep === 2 && <ContactInfoForm onPrev={() => handleStepChange(1)} onNext={() => handleStepChange(3)} onChangeDatos={updateFormData} />}
+      {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleStepChange(4)} onChangeDatos={updateFormData} />}
+      {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleStepChange(5)} onChangeDatos={updateFormData} />}
+      {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleStepChange(6)} onChangeDatos={updateFormData} />}
+      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} onSubmitFinal={handleFinalizar} />}
     </section>
   )
 }
