@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './StepForm.css'
 
 // Agregamos la subcarpeta student/ a cada importación
@@ -8,6 +8,7 @@ import AcademicInfoForm from '../student/AcademicInfoForm'
 import LaborInfoForm from '../student/LaborInfoForm'
 import AnnexesForm from '../student/AnnexesForm'
 import FinalDeclarationsForm from '../student/FinalDeclarationsForm'
+import SuccessScreen from '../SuccessScreen/SuccessScreen'
 
 const STEPS = [
   { id: 1, label: 'INFORMACIÓN PERSONAL' },
@@ -18,9 +19,21 @@ const STEPS = [
   { id: 6, label: 'FINAL' },
 ]
 
-function StepForm() {
+function StepForm({ onSuccess }) {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({})
+  const [nombrePeriodo, setNombrePeriodo] = useState('...')
+  const [isSuccess, setIsSuccess] = useState(false)
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/periodos/activo')
+      .then(res => {
+        if (!res.ok) throw new Error('No hay periodo activo')
+        return res.json()
+      })
+      .then(data => setNombrePeriodo(data.nombre))
+      .catch(err => console.error("Error cargando periodo activo:", err))
+  }, [])
 
   const handleStepChange = (stepId) => {
     setCurrentStep(stepId)
@@ -29,7 +42,18 @@ function StepForm() {
 
   // Guardamos la información que llega desde otros sub-formularios
   const updateFormData = (newData) => {
-    setFormData((prev) => ({ ...prev, ...newData }))
+    setFormData((prev) => {
+      const mergedArchivos = {
+        ...(prev.archivosSubidos || {}),
+        ...(newData.archivosSubidos || {})
+      };
+
+      return {
+        ...prev,
+        ...newData,
+        archivosSubidos: Object.keys(mergedArchivos).length ? mergedArchivos : prev.archivosSubidos
+      };
+    });
   }
 
   const handleFinalizar = async () => {
@@ -41,7 +65,7 @@ function StepForm() {
 
       // 1. Usamos FormData en lugar de JSON para enviar texto y Archivos juntos
       const dataAEnviar = new FormData();
-      
+
       // Textos del paso 1 y otros
       dataAEnviar.append('nombres', nombres);
       dataAEnviar.append('email', email);
@@ -49,13 +73,28 @@ function StepForm() {
       dataAEnviar.append('tipoDoc', formData.tipoDoc || 'CC');
       dataAEnviar.append('fechaNacimiento', formData.fechaNacimiento || '2000-01-01');
       dataAEnviar.append('semestre', formData.semestre || '7');
-      
+      dataAEnviar.append('jornada_asignaturas', formData.jornada_asignaturas || '');
+      dataAEnviar.append('turnoId', formData.turnoId || '');
+
       // Textos del paso de Contacto
       dataAEnviar.append('departamento', formData.departamento || '');
       dataAEnviar.append('municipio', formData.municipio || '');
       dataAEnviar.append('direccion', formData.direccion || '');
       dataAEnviar.append('telefono', formData.telefono || '');
       dataAEnviar.append('correoInstitucional', formData.correoInstitucional || '');
+      dataAEnviar.append('eps', formData.eps || '');
+
+      // Textos académicos
+      dataAEnviar.append('consultorio_inscrito', formData.consultorio_inscrito || 'I');
+      dataAEnviar.append('area_interes', formData.area_interes || '');
+      dataAEnviar.append('consultorios_realizados', formData.consultorios_realizados || '0');
+      dataAEnviar.append('consultorio_externo', formData.consultorio_externo || '0');
+      dataAEnviar.append('radicados', formData.radicados || '');
+
+      // Textos laborales
+      dataAEnviar.append('trabaja', formData.trabaja || false);
+      dataAEnviar.append('empresa', formData.empresa || '');
+      dataAEnviar.append('cargo', formData.cargo || '');
 
       // 2. Archivos (recuperados de formData.archivosSubidos ya que el paso 5 está desmontado)
       const archivos = formData.archivosSubidos || {};
@@ -65,6 +104,8 @@ function StepForm() {
       if (archivos['anx-consentimiento']) dataAEnviar.append('doc_consentimiento', archivos['anx-consentimiento']);
       if (archivos['anx-acta-compromiso']) dataAEnviar.append('doc_acta', archivos['anx-acta-compromiso']);
       if (archivos['anx-hoja-vida']) dataAEnviar.append('doc_hoja_vida', archivos['anx-hoja-vida']);
+      if (archivos['lif-certificacion-funciones']) dataAEnviar.append('doc_certificacion_funciones', archivos['lif-certificacion-funciones']);
+
 
       // 3. Enviamos sin { Content-Type: json }
       const respuesta = await fetch('http://localhost:5000/api/estudiantes', {
@@ -73,7 +114,18 @@ function StepForm() {
       });
 
       if (respuesta.ok) {
-        alert("¡Tus datos e información adjunta se registraron correctamente!");
+        const respuestaData = await respuesta.json().catch(() => ({}));
+        
+        if (onSuccess) {
+          // Generamos un radicado basado en el ID de la base de datos si está disponible
+          const numRadicado = respuestaData.estudianteId 
+            ? `#CJ-${new Date().getFullYear()}-${respuestaData.estudianteId.toString().padStart(4, '0')}`
+            : `#CJ-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
+            
+          onSuccess({ ...formData, radicado: numRadicado });
+        } else {
+          setIsSuccess(true);
+        }
       } else {
         const errorData = await respuesta.json();
         alert(errorData.message || "Error al guardar en el servidor.");
@@ -83,11 +135,19 @@ function StepForm() {
     }
   }
 
+  if (isSuccess) {
+    return (
+      <section className="stepform-section" id="inscripciones">
+        <SuccessScreen formData={formData} />
+      </section>
+    );
+  }
+
   return (
     <section className="stepform-section" id="inscripciones">
       {/* ── Header ── */}
       <div className="stepform-header">
-        <h1 className="stepform-title">Inscripción Consultorio Jurídico 2026-1</h1>
+        <h1 className="stepform-title">Inscripción {nombrePeriodo}</h1>
         <p className="stepform-subtitle">
           Fundación Universitaria del Área Andina &mdash; Límite: 11 estudiantes por día y horario
         </p>

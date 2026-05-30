@@ -8,6 +8,8 @@
 /* Sidebar Styles */
 .admin-sidebar {
     width: 260px;
+    min-width: 260px; /* Previene que la tabla achique el panel */
+    flex-shrink: 0; /* Mantiene su tamaño fijo */
     background-color: #eceee5; /* Color basado en la imagen */
     display: flex;
     flex-direction: column;
@@ -125,6 +127,8 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    min-width: 0; /* Permite que el contenedor se ajuste y prevenga que rompa la vista */
+    overflow-x: hidden; 
 }
 
 .main-header {

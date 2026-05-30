@@ -22,7 +22,8 @@ const documentosEsperados = upload.fields([
   { name: 'doc_eps', maxCount: 1 },
   { name: 'doc_consentimiento', maxCount: 1 },
   { name: 'doc_acta', maxCount: 1 },
-  { name: 'doc_hoja_vida', maxCount: 1 }
+  { name: 'doc_hoja_vida', maxCount: 1 },
+  { name: 'doc_certificacion_funciones', maxCount: 1 }
 ]);
 
 // Ruta para obtener todos los estudiantes (GET /api/estudiantes)

@@ -1,9 +1,24 @@
 import './PersonalInfoForm.css' // Reusing the same CSS for identical design
 
-function AcademicInfoForm({ onPrev, onNext }) {
+function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (onChangeDatos) {
+      onChangeDatos({
+        semestre: document.getElementById('aif-semestre')?.value,
+        consultorio_inscrito: document.getElementById('aif-consultorio-inscrito')?.value,
+        area_interes: document.getElementById('aif-area')?.value,
+        consultorios_realizados: document.getElementById('aif-consultorios')?.value,
+        consultorio_externo: document.getElementById('aif-consultorio-externo')?.value,
+        radicados: document.getElementById('aif-consecutivos')?.value,
+      });
+    }
+    if (onNext) onNext();
+  };
+
   return (
-    <form id="form-academic-info" noValidate onSubmit={(e) => { e.preventDefault(); if (onNext) onNext(); }}>
-      
+    <form id="form-academic-info" noValidate onSubmit={handleFormSubmit}>
+
       {/* ── TARJETA 1: Semestre ── */}
       <div className="pif-card" style={{ marginBottom: '24px' }}>
         {/* Franja verde izquierda */}
@@ -36,7 +51,41 @@ function AcademicInfoForm({ onPrev, onNext }) {
                 <span className="pif-select-arrow" aria-hidden="true">
                   <svg viewBox="0 0 12 8" fill="none">
                     <path d="M1 1l5 5 5-5" stroke="#6b7280" strokeWidth="1.6"
-                      strokeLinecap="round" strokeLinejoin="round"/>
+                      strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── TARJETA 1.5: Consultorio al cual se está inscribiendo ── */}
+      <div className="pif-card" style={{ marginBottom: '24px' }}>
+        <div className="pif-stripe" aria-hidden="true" />
+
+        <div className="pif-content">
+          <h2 className="pif-section-title">
+            Consultorio al cual se está inscribiendo *
+          </h2>
+
+          <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
+            <div className="pif-field">
+              <label htmlFor="aif-consultorio-inscrito" className="pif-label">
+                Seleccione el consultorio en el que desea realizar la práctica.
+              </label>
+              <div className="pif-select-wrapper">
+                <select id="aif-consultorio-inscrito" className="pif-input pif-select" defaultValue="">
+                  <option value="" disabled>Seleccione el consultorio</option>
+                  <option value="I">Consultorio I</option>
+                  <option value="II">Consultorio II</option>
+                  <option value="III">Consultorio III</option>
+                  <option value="IV">Consultorio IV</option>
+                </select>
+                <span className="pif-select-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 12 8" fill="none">
+                    <path d="M1 1l5 5 5-5" stroke="#6b7280" strokeWidth="1.6"
+                      strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
               </div>
@@ -46,7 +95,7 @@ function AcademicInfoForm({ onPrev, onNext }) {
       </div>
 
       {/* ── TARJETA 2: Área de interés ── */}
-      <div className="pif-card">
+      <div className="pif-card" style={{ marginBottom: '24px' }}>
         {/* Franja verde izquierda */}
         <div className="pif-stripe" aria-hidden="true" />
 
@@ -74,14 +123,14 @@ function AcademicInfoForm({ onPrev, onNext }) {
                   <option value="investigacion">Investigación</option>
                   <option value="consumo">Derecho del consumo</option>
                   <option value="conciliacion">Conciliación Penal</option>
-                  <option value="asistencia">Programa de asistencia legal a población con necesidad de protección internacional</option>
+                  <option value="asistencia">Atención a población migrante</option>
                   <option value="purpura">Purpura</option>
                   <option value="tierra">De la Tierra</option>
                 </select>
                 <span className="pif-select-arrow" aria-hidden="true">
                   <svg viewBox="0 0 12 8" fill="none">
                     <path d="M1 1l5 5 5-5" stroke="#6b7280" strokeWidth="1.6"
-                      strokeLinecap="round" strokeLinejoin="round"/>
+                      strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
               </div>
@@ -90,31 +139,40 @@ function AcademicInfoForm({ onPrev, onNext }) {
         </div>
       </div>
 
-      {/* ── TARJETA 3: Consultorios realizados ── */}
+      {/* ── TARJETA 3: Historial de Consultorios Realizados ── */}
       <div className="pif-card" style={{ marginBottom: '24px' }}>
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">
           <h2 className="pif-section-title">
-            ¿Cuántos consultorios ha realizado en sede? *
+            Historial de Consultorios Realizados
           </h2>
-          <div className="pif-form" style={{ gridTemplateColumns: '1fr' }}>
+          <div className="pif-form">
             <div className="pif-field">
-              
-              <div className="pif-select-wrapper">
-                <select id="aif-consultorios" className="pif-input pif-select" defaultValue="">
-                  <option value="" disabled>Seleccione una opción</option>
-                  <option value="0">Ninguno (0)</option>
-                  <option value="1">1 Consultorio</option>
-                  <option value="2">2 Consultorios</option>
-                  <option value="3">3 Consultorios</option>
-                  <option value="4">4 o más Consultorios</option>
-                </select>
-                <span className="pif-select-arrow" aria-hidden="true">
-                  <svg viewBox="0 0 12 8" fill="none">
-                    <path d="M1 1l5 5 5-5" stroke="#6b7280" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </div>
+              <label htmlFor="aif-consultorios" className="pif-label">
+                ¿Cuántos consultorios ha realizado en sede? *
+              </label>
+              <input
+                type="number"
+                id="aif-consultorios"
+                className="pif-input"
+                min="0"
+                placeholder="Ej: 0"
+                required
+              />
+            </div>
+
+            <div className="pif-field">
+              <label htmlFor="aif-consultorio-externo" className="pif-label">
+                ¿Cuántos consultorios externos ha realizado? *
+              </label>
+              <input
+                type="number"
+                id="aif-consultorio-externo"
+                className="pif-input"
+                min="0"
+                placeholder="Ej: 0"
+                required
+              />
             </div>
           </div>
         </div>
@@ -132,9 +190,9 @@ function AcademicInfoForm({ onPrev, onNext }) {
               <label htmlFor="aif-consecutivos" className="pif-label">
                 Ingrese los números de radicado separados por comas o saltos de línea.
               </label>
-              <textarea 
-                id="aif-consecutivos" 
-                className="pif-input" 
+              <textarea
+                id="aif-consecutivos"
+                className="pif-input"
                 placeholder="Ej: 2023-00124, 2023-00567..."
               />
             </div>
@@ -144,7 +202,7 @@ function AcademicInfoForm({ onPrev, onNext }) {
               <button type="button" onClick={onPrev} id="btn-anterior-step3" className="pif-btn-prev">
                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <path d="M16 10H4M9 15l-5-5 5-5" stroke="currentColor"
-                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 Anterior
               </button>
@@ -152,7 +210,7 @@ function AcademicInfoForm({ onPrev, onNext }) {
                 Siguiente
                 <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                   <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor"
-                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </div>

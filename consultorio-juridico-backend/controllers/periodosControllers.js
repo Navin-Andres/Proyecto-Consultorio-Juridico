@@ -10,6 +10,19 @@ const obtenerPeriodos = async (req, res) => {
   }
 };
 
+const obtenerPeriodoActivo = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM periodos_academicos WHERE activo = true LIMIT 1');
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: 'No hay un periodo activo' });
+    }
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error al obtener el periodo activo' });
+  }
+};
+
 const crearPeriodo = async (req, res) => {
   const { nombre, fecha_inicio, fecha_fin } = req.body;
   try {
@@ -74,6 +87,7 @@ const eliminarPeriodo = async (req, res) => {
 
 module.exports = {
   obtenerPeriodos,
+  obtenerPeriodoActivo,
   crearPeriodo,
   activarPeriodo,
   actualizarPeriodo,

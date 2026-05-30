@@ -1,0 +1,202 @@
+import React from 'react';
+
+const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
+    return (
+        <div className="ficha-wrapper">
+            <div className="ficha-header-bar">
+                <button className="btn-back" onClick={onBack}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    Volver al directorio
+                </button>
+                <h2 className="ficha-title">Ficha Completa del Estudiante</h2>
+            </div>
+
+            <div className="ficha-profile-banner">
+                <div className="ficha-avatar">{selectedEstudiante.iniciales}</div>
+                <div className="ficha-profile-info">
+                    <h3 className="ficha-profile-name">{selectedEstudiante.nombres} {selectedEstudiante.apellidos}</h3>
+                    <div className="ficha-profile-meta">
+                        <span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            {selectedEstudiante.correoInstitucional !== 'N/A' ? selectedEstudiante.correoInstitucional : selectedEstudiante.email}
+                        </span>
+                        <span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                            {selectedEstudiante.telefono || 'Sin teléfono'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="ficha-grid">
+                {/* Tarjeta Información Académica */}
+                <div className="ficha-card">
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Información Académica</h4>
+                    </div>
+                    <div className="ficha-data-grid">
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Consultorio</span>
+                            <span className="ficha-value"><span className="badge badge-nivel">{selectedEstudiante.nivel}</span></span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Semestre</span>
+                            <span className="ficha-value">{selectedEstudiante.semestre}° Semestre</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Consultorios en Sede</span>
+                            <span className="ficha-value">{selectedEstudiante.consultoriosRealizados}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Consultorios Externos</span>
+                            <span className="ficha-value">{selectedEstudiante.consultorioExterno}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Consecutivos (Radicados)</span>
+                            <span className="ficha-value" style={{ whiteSpace: 'pre-line' }}>{selectedEstudiante.radicados || 'Ninguno'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tarjeta Identificación */}
+                <div className="ficha-card">
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Datos Personales</h4>
+                    </div>
+                    <div className="ficha-data-grid">
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Tipo Documento</span>
+                            <span className="ficha-value">{selectedEstudiante.tipoDoc}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Nro. de Documento</span>
+                            <span className="ficha-value">{selectedEstudiante.documento}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Fecha Nacimiento</span>
+                            <span className="ficha-value">{selectedEstudiante.fechaNacimiento}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Salud (EPS)</span>
+                            <span className="ficha-value">{selectedEstudiante.eps}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tarjeta Contacto */}
+                <div className="ficha-card">
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Ubicación</h4>
+                    </div>
+                    <div className="ficha-data-grid">
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Municipio / Depto.</span>
+                            <span className="ficha-value">{selectedEstudiante.municipio_depto}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Dirección de Residencia</span>
+                            <span className="ficha-value">{selectedEstudiante.residencia}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tarjeta Laboral */}
+                <div className="ficha-card">
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Información Laboral</h4>
+                    </div>
+                    <div className="ficha-data-grid">
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">¿Trabaja?</span>
+                            <span className="ficha-value">{selectedEstudiante.trabaja || 'No'}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Empresa</span>
+                            <span className="ficha-value">{selectedEstudiante.empresa || 'N/A'}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Cargo</span>
+                            <span className="ficha-value">{selectedEstudiante.cargo || 'N/A'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tarjeta Turno */}
+                <div className="ficha-card" style={{ gridColumn: 'span 1' }}>
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon" style={{color: '#16a34a', background: '#dcfce7'}}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Práctica Asignada</h4>
+                    </div>
+                    <div className="ficha-turno-box">
+                        <div className="ficha-turno-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                        </div>
+                        <div className="ficha-turno-details">
+                            <span className="ficha-turno-day">{selectedEstudiante.turnoObj?.dia || 'Sin asignar'}</span>
+                            {selectedEstudiante.turnoObj?.detalle && (
+                                <span className="ficha-turno-desc">{selectedEstudiante.turnoObj.detalle}</span>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Tarjeta Documentos */}
+                <div className="ficha-card" style={{ gridColumn: '1 / -1' }}>
+                    <div className="ficha-card-header">
+                        <div className="ficha-card-icon" style={{color: '#8b5cf6', background: '#ede9fe'}}>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                        </div>
+                        <h4 className="ficha-card-title">Documentación Anexa</h4>
+                    </div>
+                    
+                    {selectedEstudiante.anexos && selectedEstudiante.anexos.length > 0 ? (
+                        <div className="drawer-anexos-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '15px'}}>
+                            {selectedEstudiante.anexos.map((a, i) => (
+                                <div className="drawer-anexo-item" key={i}>
+                                    <div className="anexo-file-icon">📄</div>
+                                    <div className="anexo-file-info">
+                                        <span className="anexo-file-title">{a.tipo}</span>
+                                        <span className="anexo-file-subtitle">Archivo cargado</span>
+                                    </div>
+                                    <a
+                                        href={`http://localhost:5000/${a.ruta.replace(/\\\\/g, '/')}`}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        className="btn-download-anexo"
+                                        title="Ver archivo"
+                                    >
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                                    </a>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="drawer-no-anexos" style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', background: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1', color: '#64748b' }}>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                            <span>No se han cargado documentos para este estudiante.</span>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default FichaEstudiante;

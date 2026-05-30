@@ -1,0 +1,242 @@
+.success-screen-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 10px 20px 40px 20px;
+  background-color: transparent;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.success-screen-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 90vw;
+  height: 90vh;
+  background: radial-gradient(circle at top right, rgba(186, 244, 109, 0.3) 0%, transparent 75%);
+  z-index: -1;
+  pointer-events: none;
+}
+.success-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background-color: #507B19;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(80, 123, 25, 0.2);
+  margin-bottom: 24px;
+}
+
+.success-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.success-title {
+  color: #4C721D;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+  text-align: center;
+}
+
+.success-message {
+  color: #555;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 40px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #507B19;
+  padding: 30px;
+}
+
+.summary-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.summary-card-header h2 {
+  font-size: 1.25rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.badge-confirmed {
+  background-color: #BBE598;
+  color: #4C721D;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 8px;
+}
+
+.summary-item.full-width {
+  grid-column: 1 / -1;
+  border-top: 1px solid #eee;
+  padding-top: 24px;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.summary-label {
+  font-size: 0.75rem;
+  color: #888;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.summary-value {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.summary-value.with-icon {
+  color: #555;
+}
+
+.radicado-value {
+  color: #C21360;
+  font-weight: 600;
+}
+
+.next-steps-section {
+  width: 100%;
+  max-width: 600px;
+  box-sizing: border-box;
+  margin-top: 12px;
+  margin-bottom: 24px;
+}
+
+.next-steps-title {
+  font-size: 1.15rem;
+  color: #333;
+  margin-bottom: 16px;
+  font-weight: 700;
+  text-align: left;
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  background-color: #f5f7f4;
+  padding: 18px 24px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  gap: 16px;
+  box-sizing: border-box;
+}
+
+.step-number {
+  background-color: #BBE598;
+  color: #111;
+  min-width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.step-text {
+  color: #444;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.success-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 24px;
+  width: 100%;
+  max-width: 600px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: #C21360;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: #a00f4e;
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: #4C721D;
+  border: 2px solid #4C721D;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #f1f8e9;
+}
+
+@media (max-width: 600px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+  .success-actions {
+    flex-direction: column;
+  }
+  .success-actions button {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -51,11 +51,25 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     if (onChangeDatos) {
+      let diaAsignado = '';
+      let horarioAsignado = '';
+      if (selectedSlot) {
+        const turno = turnos.find(t => t.id === selectedSlot);
+        if (turno) {
+          diaAsignado = turno.dia.charAt(0).toUpperCase() + turno.dia.slice(1);
+          horarioAsignado = `${turno.jornada.charAt(0).toUpperCase() + turno.jornada.slice(1)} (${formatTime12h(turno.hora_inicio)} - ${formatTime12h(turno.hora_fin)})`;
+        }
+      }
+
       onChangeDatos({
         nombres: document.getElementById('pif-nombre')?.value,
         email: document.getElementById('pif-email')?.value,
         documento: document.getElementById('pif-documento')?.value,
         fechaNacimiento: document.getElementById('pif-fecha')?.value,
+        jornada_asignaturas: document.getElementById('pif-jornada')?.value,
+        turnoId: selectedSlot,
+        diaAsignado,
+        horarioAsignado
       });
     }
     if (onNext) onNext();

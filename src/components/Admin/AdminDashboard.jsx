@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PeriodosManager from './PeriodosManager';
 import TurnosManager from './TurnosManager';
-import EstudiantesInscriptos from './EstudiantesInscriptos';
+import EstudiantesInscriptos from './EstudiantesInscriptos/EstudiantesInscriptos';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {

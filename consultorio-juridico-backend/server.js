@@ -1,6 +1,7 @@
 // consultorio-juridico-backend/server.js
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 // Importar rutas separadas
@@ -12,6 +13,9 @@ const estudiantesRoutes = require('./routes/estudiantes');
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Servir la carpeta de subida de archivos (uploads)
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Definir los prefijos para las rutas
 app.use('/api/admin', authRoutes);

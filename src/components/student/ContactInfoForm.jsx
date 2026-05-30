@@ -10,6 +10,7 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
         direccion: document.getElementById('cif-direccion')?.value,
         telefono: document.getElementById('cif-telefono')?.value,
         correoInstitucional: document.getElementById('cif-correo')?.value,
+        eps: document.getElementById('cif-eps')?.value,
       });
     }
     if (onNext) onNext();
@@ -83,8 +84,15 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
             />
           </div>
 
-          {/* Celda vacía para mantener el grid */}
-          <div className="pif-field pif-field--empty" aria-hidden="true" />
+          <div className="pif-field">
+            <label htmlFor="cif-eps" className="pif-label">EPS actualizada</label>
+            <input
+              id="cif-eps"
+              type="text"
+              className="pif-input"
+              placeholder="Ej. Sanitas, Sura, Compensar"
+            />
+          </div>
 
           <div style={{ gridColumn: '1 / -1', marginTop: '4px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'stretch', overflow: 'hidden' }}>
             <div style={{ width: '6px', background: 'linear-gradient(180deg, #7FB536 0%, #6a9a2c 100%)' }} aria-hidden="true" />
@@ -104,7 +112,7 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
             <button type="button" onClick={onPrev} id="btn-anterior-step2" className="pif-btn-prev">
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="M16 10H4M9 15l-5-5 5-5" stroke="currentColor"
-                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               Anterior
             </button>
@@ -112,7 +120,7 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
               Siguiente
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor"
-                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
