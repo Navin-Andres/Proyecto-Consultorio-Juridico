@@ -228,7 +228,18 @@ const EstudiantesInscriptos = () => {
         return (
             <FichaEstudiante 
                 selectedEstudiante={selectedEstudiante} 
-                onBack={() => setSelectedEstudiante(null)} 
+                onBack={() => {
+                    setSelectedEstudiante(null);
+                    fetchEstudiantes();
+                }} 
+                onUpdate={(id, nuevoEstado, nuevasObs) => {
+                    setEstudiantes(prev => prev.map(est => {
+                        if (est.id === id) {
+                            return { ...est, estado: nuevoEstado, observacionesAdmin: nuevasObs };
+                        }
+                        return est;
+                    }));
+                }}
             />
         );
     }
@@ -318,7 +329,7 @@ const EstudiantesInscriptos = () => {
                             <th className="col-nivel-semestre">NIVEL / SEMESTRE</th>
                             <th className="col-identificacion">IDENTIFICACIÓN</th>
                             <th className="col-turno">DÍA/JORNADA</th>
-                            <th className="col-anexos text-center">ANEXOS</th>
+                            <th className="col-telefono">TELÉFONO</th>
                             <th className="col-acciones text-center">ACCIONES</th>
                         </tr>
                     </thead>
@@ -357,18 +368,8 @@ const EstudiantesInscriptos = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="col-anexos text-center">
-                                            {est.anexos && est.anexos.length > 0 ? (
-                                                <div className="anexos-links">
-                                                    {est.anexos.map((a, i) => (
-                                                        <a key={i} href={`http://localhost:5000/${a.ruta.replace(/\\\\/g, '/')}`} target="_blank" rel="noreferrer" title={a.tipo} className="anexo-icon-link">
-                                                            📄
-                                                        </a>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <span className="text-muted text-sin-anexos">Sin anexos</span>
-                                            )}
+                                        <td className="col-telefono">
+                                            <span className="telefono-texto">{est.telefono || 'Sin teléfono'}</span>
                                         </td>
                                         <td className="col-acciones text-center">
                                             <div className="acciones-buttons-wrapper">
@@ -410,36 +411,46 @@ const EstudiantesInscriptos = () => {
                 </table>
             </div>
 
-            {/* Renderizado de controles de paginación */}
-            {totalPages > 1 && (
-                <div className="pagination">
-                    <button 
-                        onClick={() => paginate(currentPage - 1)} 
-                        disabled={currentPage === 1}
-                        className="btn-pagina prev-next"
-                    >
-                        Anterior
-                    </button>
-                    
-                    {[...Array(totalPages)].map((_, index) => (
+            <div className="table-footer">
+                <span className="table-status-text">
+                    {estudiantesFiltrados.length > 0 ? (
+                        `Mostrando ${indexOfFirstItem + 1} a ${Math.min(indexOfLastItem, estudiantesFiltrados.length)} de ${estudiantesFiltrados.length} estudiantes`
+                    ) : (
+                        'Mostrando 0 estudiantes'
+                    )}
+                </span>
+
+                {/* Renderizado de controles de paginación */}
+                {totalPages > 1 && (
+                    <div className="pagination">
                         <button 
-                            key={index + 1} 
-                            onClick={() => paginate(index + 1)} 
-                            className={`btn-pagina ${currentPage === index + 1 ? 'active' : ''}`}
+                            onClick={() => paginate(currentPage - 1)} 
+                            disabled={currentPage === 1}
+                            className="btn-pagina prev-next"
                         >
-                            {index + 1}
+                            Anterior
                         </button>
-                    ))}
-                    
-                    <button 
-                        onClick={() => paginate(currentPage + 1)} 
-                        disabled={currentPage === totalPages}
-                        className="btn-pagina prev-next"
-                    >
-                        Siguiente
-                    </button>
-                </div>
-            )}
+                        
+                        {[...Array(totalPages)].map((_, index) => (
+                            <button 
+                                key={index + 1} 
+                                onClick={() => paginate(index + 1)} 
+                                className={`btn-pagina ${currentPage === index + 1 ? 'active' : ''}`}
+                            >
+                                {index + 1}
+                            </button>
+                        ))}
+                        
+                        <button 
+                            onClick={() => paginate(currentPage + 1)} 
+                            disabled={currentPage === totalPages}
+                            className="btn-pagina prev-next"
+                        >
+                            Siguiente
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

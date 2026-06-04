@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { obtenerEstudiantes, crearEstudiante, eliminarEstudiante } = require('../controllers/estudiantesController');
+const { obtenerEstudiantes, crearEstudiante, eliminarEstudiante, consultarEstudiante, actualizarEstadoEstudiante } = require('../controllers/estudiantesController');
 
 // Configuración de multer
 const storage = multer.diskStorage({
@@ -29,10 +29,16 @@ const documentosEsperados = upload.fields([
 // Ruta para obtener todos los estudiantes (GET /api/estudiantes)
 router.get('/', obtenerEstudiantes);
 
+// Ruta para consultar el estado de un estudiante (público) (GET /api/estudiantes/consulta)
+router.get('/consulta', consultarEstudiante);
+
 // Ruta para crear un estudiante (POST /api/estudiantes)
 router.post('/', documentosEsperados, crearEstudiante);
 
 // Ruta para eliminar un estudiante (DELETE /api/estudiantes/:id)
 router.delete('/:id', eliminarEstudiante);
+
+// Ruta para actualizar el estado de un estudiante (administrador) (PUT /api/estudiantes/:id/estado)
+router.put('/:id/estado', actualizarEstadoEstudiante);
 
 module.exports = router;

@@ -1,16 +1,86 @@
 import { useEffect, useState } from 'react'
 import './CapacityDashboard.css'
-import heroImg from '../../assets/hero.png'
 import unnamedImg from '../../assets/unnamed.png'
 
-const DATA = [
-  { id: 'I', name: 'Consultorio I', booked: 12, total: 50, color: '#7FB536' }, // Verde
-  { id: 'II', name: 'Consultorio II', booked: 48, total: 50, color: '#E6007E' }, // Rosa/Rojo
-  { id: 'III', name: 'Consultorio III', booked: 38, total: 50, color: '#D97706' }, // Naranja
-  { id: 'IV', name: 'Consultorio IV', booked: 15, total: 50, color: '#7FB536' }, // Verde
+const DEFAULT_DATA = [
+  { id: 'lunes', name: 'Lunes', booked: 12, total: 50, color: '#7FB536' }, // Verde
+  { id: 'martes', name: 'Martes', booked: 48, total: 50, color: '#E6007E' }, // Rosa/Rojo
+  { id: 'miercoles', name: 'Miércoles', booked: 38, total: 50, color: '#D97706' }, // Naranja
+  { id: 'jueves', name: 'Jueves', booked: 15, total: 50, color: '#7FB536' }, // Verde
+  { id: 'viernes', name: 'Viernes', booked: 8, total: 50, color: '#7FB536' }, // Verde
 ]
 
 export default function CapacityDashboard() {
+  const [capacityData, setCapacityData] = useState(DEFAULT_DATA)
+
+  useEffect(() => {
+    const fetchCapacity = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/turnos')
+        if (!response.ok) throw new Error('Error en la respuesta del servidor')
+        const data = await response.json()
+        const activeTurnos = data.filter(t => t.activo)
+        
+        if (activeTurnos.length === 0) {
+          setCapacityData(DEFAULT_DATA)
+          return
+        }
+
+        // Agrupar por día
+        const daysMap = {
+          lunes: { name: 'Lunes', booked: 0, total: 0 },
+          martes: { name: 'Martes', booked: 0, total: 0 },
+          miercoles: { name: 'Miércoles', booked: 0, total: 0 },
+          jueves: { name: 'Jueves', booked: 0, total: 0 },
+          viernes: { name: 'Viernes', booked: 0, total: 0 },
+        }
+
+        activeTurnos.forEach(turno => {
+          const diaKey = turno.dia.toLowerCase()
+          if (daysMap[diaKey]) {
+            daysMap[diaKey].booked += turno.cupos_ocupados || 0
+            daysMap[diaKey].total += turno.cupos_totales || 0
+          }
+        })
+
+        // Mapear a array y determinar color
+        const result = Object.entries(daysMap)
+          .filter(([_, value]) => value.total > 0)
+          .map(([key, value]) => {
+            const percentage = Math.round((value.booked / value.total) * 100)
+            let color = '#7FB536' // Verde
+            if (percentage >= 90) {
+              color = '#E6007E' // Rosa/Rojo
+            } else if (percentage >= 70) {
+              color = '#D97706' // Naranja
+            }
+            return {
+              id: key,
+              name: value.name,
+              booked: value.booked,
+              total: value.total,
+              color
+            }
+          })
+
+        if (result.length === 0) {
+          setCapacityData(DEFAULT_DATA)
+        } else {
+          setCapacityData(result)
+        }
+      } catch (error) {
+        console.error('Error fetching capacity:', error)
+        setCapacityData(DEFAULT_DATA)
+      }
+    }
+
+    fetchCapacity()
+    
+    // Opcional: Actualizar periódicamente
+    const interval = setInterval(fetchCapacity, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
   return (
     <div className="capacity-container">
       <aside className="capacity-dashboard">
@@ -19,8 +89,8 @@ export default function CapacityDashboard() {
 
         {/* ── Barras de Progreso ── */}
         <div className="capacity-list">
-          {DATA.map((item) => {
-            const percentage = Math.round((item.booked / item.total) * 100)
+          {capacityData.map((item) => {
+            const percentage = item.total > 0 ? Math.round((item.booked / item.total) * 100) : 0
             
             return (
               <div key={item.id} className="capacity-item">

@@ -45,8 +45,49 @@ const eliminarEstudiante = async (req, res) => {
     }
 };
 
+// Consultar un estudiante por documento o correo (público)
+const consultarEstudiante = async (req, res) => {
+    try {
+        const { query } = req.query;
+        if (!query) {
+            return res.status(400).json({ message: 'Debe proporcionar un número de documento o correo electrónico' });
+        }
+        const estudiante = await estudianteService.consultarEstudiantePorDocumentoOCorreo(query);
+        if (!estudiante) {
+            return res.status(404).json({ message: 'No se encontró ningún estudiante registrado con los datos proporcionados.' });
+        }
+        res.json(estudiante);
+    } catch (error) {
+        console.error('Error al consultar estudiante:', error);
+        res.status(500).json({ message: 'Error en el servidor al consultar el estado de la inscripción' });
+    }
+};
+
+// Actualizar el estado y observaciones de un estudiante (administrador)
+const actualizarEstadoEstudiante = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { estado, observaciones_admin } = req.body;
+        
+        if (!['pendiente', 'aprobado', 'rechazado'].includes(estado)) {
+            return res.status(400).json({ message: 'Estado no válido' });
+        }
+        
+        await estudianteService.actualizarEstado(id, estado, observaciones_admin);
+        res.json({ message: 'Estado del estudiante actualizado con éxito' });
+    } catch (error) {
+        console.error('Error al actualizar estado del estudiante:', error);
+        if (error.message === 'Estudiante no encontrado') {
+            return res.status(404).json({ message: 'Estudiante no encontrado' });
+        }
+        res.status(500).json({ message: 'Error en el servidor al actualizar el estado' });
+    }
+};
+
 module.exports = {
     obtenerEstudiantes,
     crearEstudiante,
-    eliminarEstudiante
+    eliminarEstudiante,
+    consultarEstudiante,
+    actualizarEstadoEstudiante
 };

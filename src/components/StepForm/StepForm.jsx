@@ -21,6 +21,7 @@ const STEPS = [
 
 function StepForm({ onSuccess }) {
   const [currentStep, setCurrentStep] = useState(1)
+  const [maxStepReached, setMaxStepReached] = useState(1)
   const [formData, setFormData] = useState({})
   const [nombrePeriodo, setNombrePeriodo] = useState('...')
   const [isSuccess, setIsSuccess] = useState(false)
@@ -35,9 +36,28 @@ function StepForm({ onSuccess }) {
       .catch(err => console.error("Error cargando periodo activo:", err))
   }, [])
 
+  const scrollToForm = () => {
+    const element = document.getElementById('inscripciones');
+    if (element) {
+      const yOffset = -80; // Offset para evitar cruce con header pegajoso
+      const y = element.getBoundingClientRect().top + window.scrollY + yOffset;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
   const handleStepChange = (stepId) => {
-    setCurrentStep(stepId)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (stepId <= maxStepReached) {
+      setCurrentStep(stepId)
+      setTimeout(scrollToForm, 50);
+    }
+  }
+
+  const handleNextStep = (nextStepId) => {
+    setMaxStepReached(prev => Math.max(prev, nextStepId))
+    setCurrentStep(nextStepId)
+    setTimeout(scrollToForm, 50);
   }
 
   // Guardamos la información que llega desde otros sub-formularios
@@ -159,6 +179,7 @@ function StepForm({ onSuccess }) {
           const isActive = step.id === currentStep
           const isCompleted = step.id < currentStep
           const isLast = index === STEPS.length - 1
+          const isClickable = step.id <= maxStepReached
 
           return (
             <div
@@ -178,6 +199,7 @@ function StepForm({ onSuccess }) {
                 aria-selected={isActive}
                 aria-label={`Paso ${step.id}: ${step.label}`}
                 onClick={() => handleStepChange(step.id)}
+                disabled={!isClickable}
               >
                 {isCompleted ? (
                   /* checkmark for completed */
@@ -208,12 +230,12 @@ function StepForm({ onSuccess }) {
       </div>
 
       {/* ── Contenido del paso activo ── */}
-      {currentStep === 1 && <PersonalInfoForm onNext={() => handleStepChange(2)} onChangeDatos={updateFormData} />}
-      {currentStep === 2 && <ContactInfoForm onPrev={() => handleStepChange(1)} onNext={() => handleStepChange(3)} onChangeDatos={updateFormData} />}
-      {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleStepChange(4)} onChangeDatos={updateFormData} />}
-      {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleStepChange(5)} onChangeDatos={updateFormData} />}
-      {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleStepChange(6)} onChangeDatos={updateFormData} />}
-      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} onSubmitFinal={handleFinalizar} />}
+      {currentStep === 1 && <PersonalInfoForm onNext={() => handleNextStep(2)} onChangeDatos={updateFormData} formData={formData} />}
+      {currentStep === 2 && <ContactInfoForm onPrev={() => handleStepChange(1)} onNext={() => handleNextStep(3)} onChangeDatos={updateFormData} formData={formData} />}
+      {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleNextStep(4)} onChangeDatos={updateFormData} formData={formData} />}
+      {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleNextStep(5)} onChangeDatos={updateFormData} formData={formData} />}
+      {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleNextStep(6)} onChangeDatos={updateFormData} formData={formData} />}
+      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} onSubmitFinal={handleFinalizar} formData={formData} />}
     </section>
   )
 }

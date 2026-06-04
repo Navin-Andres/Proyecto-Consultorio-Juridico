@@ -1,16 +1,61 @@
+import { useState } from 'react'
 import './PersonalInfoForm.css' // Reusing the same CSS for identical design
 
-function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
+function ContactInfoForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
+  const [errors, setErrors] = useState({})
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    const depto = document.getElementById('cif-departamento')?.value || '';
+    const muni = document.getElementById('cif-municipio')?.value || '';
+    const dir = document.getElementById('cif-direccion')?.value || '';
+    const tel = document.getElementById('cif-telefono')?.value || '';
+    const emailInst = document.getElementById('cif-correo')?.value || '';
+    const epsVal = document.getElementById('cif-eps')?.value || '';
+
+    const newErrors = {};
+    if (!depto.trim()) newErrors.departamento = 'El departamento es obligatorio';
+    if (!muni.trim()) newErrors.municipio = 'El municipio es obligatorio';
+    if (!dir.trim()) newErrors.direccion = 'La dirección de residencia es obligatoria';
+    
+    if (!tel.trim()) {
+      newErrors.telefono = 'El teléfono celular es obligatorio';
+    } else if (!/^\+?[0-9\s-]{7,15}$/.test(tel.trim().replace(/[\s-]/g, ''))) {
+      newErrors.telefono = 'El número de teléfono no es válido';
+    }
+
+    if (!emailInst.trim()) {
+      newErrors.correoInstitucional = 'El correo institucional es obligatorio';
+    } else if (!emailInst.trim().toLowerCase().endsWith('@areandina.edu.co')) {
+      newErrors.correoInstitucional = 'Debe ser un correo @areandina.edu.co';
+    }
+    
+    if (!epsVal.trim()) newErrors.eps = 'La EPS es obligatoria';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstErrorKey = Object.keys(newErrors)[0];
+      const htmlId = firstErrorKey === 'correoInstitucional' ? 'cif-correo' : `cif-${firstErrorKey}`;
+      const errElement = document.getElementById(htmlId);
+      if (errElement) {
+        const yOffset = -120; // Offset para evitar cruce con headers
+        const y = errElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    setErrors({});
+
     if (onChangeDatos) {
       onChangeDatos({
-        departamento: document.getElementById('cif-departamento')?.value,
-        municipio: document.getElementById('cif-municipio')?.value,
-        direccion: document.getElementById('cif-direccion')?.value,
-        telefono: document.getElementById('cif-telefono')?.value,
-        correoInstitucional: document.getElementById('cif-correo')?.value,
-        eps: document.getElementById('cif-eps')?.value,
+        departamento: depto,
+        municipio: muni,
+        direccion: dir,
+        telefono: tel,
+        correoInstitucional: emailInst,
+        eps: epsVal,
       });
     }
     if (onNext) onNext();
@@ -33,65 +78,77 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos }) {
 
           {/* Fila 1 */}
           <div className="pif-field">
-            <label htmlFor="cif-departamento" className="pif-label">Departamento</label>
+            <label htmlFor="cif-departamento" className="pif-label">Departamento *</label>
             <input
               id="cif-departamento"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.departamento ? 'is-invalid' : ''}`}
               placeholder="Ej. Cundinamarca"
+              defaultValue={formData.departamento || ''}
             />
+            {errors.departamento && <span className="pif-error-msg">{errors.departamento}</span>}
           </div>
 
           <div className="pif-field">
-            <label htmlFor="cif-municipio" className="pif-label">Municipio</label>
+            <label htmlFor="cif-municipio" className="pif-label">Municipio *</label>
             <input
               id="cif-municipio"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.municipio ? 'is-invalid' : ''}`}
               placeholder="Ej. Bogotá D.C."
+              defaultValue={formData.municipio || ''}
             />
+            {errors.municipio && <span className="pif-error-msg">{errors.municipio}</span>}
           </div>
 
           {/* Fila 2 */}
           <div className="pif-field">
-            <label htmlFor="cif-direccion" className="pif-label">Dirección de residencia</label>
+            <label htmlFor="cif-direccion" className="pif-label">Dirección de residencia *</label>
             <input
               id="cif-direccion"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.direccion ? 'is-invalid' : ''}`}
               placeholder="Ej. Calle 123 # 45-67"
+              defaultValue={formData.direccion || ''}
             />
+            {errors.direccion && <span className="pif-error-msg">{errors.direccion}</span>}
           </div>
 
           <div className="pif-field">
-            <label htmlFor="cif-telefono" className="pif-label">Teléfono Celular actualizado</label>
+            <label htmlFor="cif-telefono" className="pif-label">Teléfono Celular actualizado *</label>
             <input
               id="cif-telefono"
               type="tel"
-              className="pif-input"
+              className={`pif-input ${errors.telefono ? 'is-invalid' : ''}`}
               placeholder="Ej. 300 123 4567"
+              defaultValue={formData.telefono || ''}
             />
+            {errors.telefono && <span className="pif-error-msg">{errors.telefono}</span>}
           </div>
 
           {/* Fila 3 */}
           <div className="pif-field">
-            <label htmlFor="cif-correo" className="pif-label">Correo institucional</label>
+            <label htmlFor="cif-correo" className="pif-label">Correo institucional *</label>
             <input
               id="cif-correo"
               type="email"
-              className="pif-input"
+              className={`pif-input ${errors.correoInstitucional ? 'is-invalid' : ''}`}
               placeholder="usuario@areandina.edu.co"
+              defaultValue={formData.correoInstitucional || ''}
             />
+            {errors.correoInstitucional && <span className="pif-error-msg">{errors.correoInstitucional}</span>}
           </div>
 
           <div className="pif-field">
-            <label htmlFor="cif-eps" className="pif-label">EPS actualizada</label>
+            <label htmlFor="cif-eps" className="pif-label">EPS actualizada *</label>
             <input
               id="cif-eps"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.eps ? 'is-invalid' : ''}`}
               placeholder="Ej. Sanitas, Sura, Compensar"
+              defaultValue={formData.eps || ''}
             />
+            {errors.eps && <span className="pif-error-msg">{errors.eps}</span>}
           </div>
 
           <div style={{ gridColumn: '1 / -1', marginTop: '4px', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'stretch', overflow: 'hidden' }}>

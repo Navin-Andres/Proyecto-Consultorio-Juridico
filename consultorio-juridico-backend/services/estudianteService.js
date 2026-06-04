@@ -1,14 +1,9 @@
 const pool = require('../config/db');
-
-// Helper function to format 12h time
-function formatTime12h(timeStr) {
-    if (!timeStr) return '';
-    const [hourStr, minStr] = timeStr.split(':');
-    let hour = parseInt(hourStr, 10);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    hour = hour % 12 || 12;
-    return `${hour}:${minStr} ${ampm}`;
-}
+const {
+    mapDbEstudianteToFrontend,
+    mapFrontendDataToDb,
+    mapConsultarEstudiante
+} = require('./estudianteMapper');
 
 const getEstudiantesFormateados = async () => {
     // Query to join with asignaciones, turnos and documentos
@@ -26,57 +21,8 @@ const getEstudiantesFormateados = async () => {
         ORDER BY e.fecha_registro DESC
     `);
 
-    // Formatear los datos para que el Frontend (EstudiantesInscriptos.jsx) los entienda
-    return rows.map(est => {
-        // Arreglar el formato de fecha para que envié YYYY-MM-DD sin T ni Z
-        let fechaFormateada = '';
-        if (est.fecha_nacimiento) {
-            const dateObj = new Date(est.fecha_nacimiento);
-            fechaFormateada = dateObj.toISOString().split('T')[0];
-        }
-
-        let turnoTextoObj = { dia: 'Sin asignar', detalle: '' };
-        if (est.turno_dia) {
-            const diaCapitalizado = est.turno_dia.charAt(0).toUpperCase() + est.turno_dia.slice(1);
-            const jornadaCapitalizada = est.turno_jornada.charAt(0).toUpperCase() + est.turno_jornada.slice(1);
-            turnoTextoObj = {
-                dia: diaCapitalizado,
-                detalle: `${jornadaCapitalizada} (${formatTime12h(est.hora_inicio)} - ${formatTime12h(est.hora_fin)})`
-            };
-        }
-
-        return {
-            id: est.id,
-            iniciales: est.nombre_completo ? est.nombre_completo.charAt(0).toUpperCase() : '?',
-            nombres: est.nombre_completo,
-            apellidos: '', // Ya va explícito en el nombre completo
-            email: est.correo,
-            nivel: est.consultorio || 'I',
-            semestre: est.semestre,
-            tipoDoc: est.tipo_documento,
-            documento: est.numero_documento,
-            fechaNacimiento: fechaFormateada,
-            eps: est.eps || 'N/A',
-            residencia: est.direccion || 'N/A',
-            departamento: est.departamento || 'N/A',
-            municipio: est.municipio || 'N/A',
-            municipio_depto: (est.municipio || 'N/A') + ' / ' + (est.departamento || 'N/A'),
-            telefono: est.telefono || 'N/A',
-            correoInstitucional: est.correo_institucional || 'N/A',
-            jornadaAsignaturas: est.jornada_asignaturas || 'N/A',
-            areaInteres: est.area_interes || 'N/A',
-            consultoriosRealizados: est.consultorios_realizados || '0',
-            consultorioExterno: est.consultorio_externo || '0',
-            radicados: est.radicados || 'N/A',
-            trabaja: est.trabaja ? 'Sí' : 'No',
-            empresa: est.empresa || 'N/A',
-            cargo: est.cargo || 'N/A',
-            turnoObj: turnoTextoObj,
-            turnoId: est.turno_id || null,
-            periodo: est.periodo_nombre || '',
-            anexos: est.documentos_anexos || []
-        };
-    });
+    // Formatear los datos usando el mapper
+    return rows.map(mapDbEstudianteToFrontend);
 };
 
 const registrarEstudiante = async (data, files) => {
@@ -84,55 +30,12 @@ const registrarEstudiante = async (data, files) => {
     try {
         await client.query('BEGIN');
 
-        const {
-            nombres, apellidos, email, tipoDoc, documento,
-            fechaNacimiento, semestre,
-            departamento, municipio, direccion, telefono, correoInstitucional, eps,
-            jornada_asignaturas, turnoId,
-            consultorio_inscrito, area_interes, consultorios_realizados, consultorio_externo, radicados,
-            trabaja, empresa, cargo
-        } = data;
-
-        // Mapeamos los datos del Frontend a las columnas reales de tu BD
-        const nombreCompleto = `${nombres || ''} ${apellidos || ''}`.trim();
-        const tipoD = tipoDoc && ['CC', 'TI', 'CE'].includes(tipoDoc) ? tipoDoc : 'CC';
-        const sem = semestre ? parseInt(semestre, 10) : 7;
-        const declaracion = true;
-        const trabajaBoolean = trabaja === 'true' || trabaja === true;
-
-        // Fix for Check Constraint: 'manana' to 'mañana'
-        let jornadaDb = jornada_asignaturas || null;
-        if (jornadaDb === 'manana') jornadaDb = 'mañana';
-
-        // Mapeo seguro de consultorios_realizados (sede) para cumplir constraint CHECK (0, 1, 2, 3, 4+)
-        let consultoriosRealizadosDb = '0';
-        const valSede = String(consultorios_realizados || '').trim();
-        if (['0', '1', '2', '3', '4+'].includes(valSede)) {
-            consultoriosRealizadosDb = valSede;
-        } else {
-            const numSede = parseInt(valSede, 10);
-            if (!isNaN(numSede)) {
-                if (numSede <= 0) consultoriosRealizadosDb = '0';
-                else if (numSede === 1) consultoriosRealizadosDb = '1';
-                else if (numSede === 2) consultoriosRealizadosDb = '2';
-                else if (numSede === 3) consultoriosRealizadosDb = '3';
-                else consultoriosRealizadosDb = '4+';
-            } else {
-                // fallback based on enrolled level
-                if (consultorio_inscrito === 'I') consultoriosRealizadosDb = '0';
-                else if (consultorio_inscrito === 'II') consultoriosRealizadosDb = '1';
-                else if (consultorio_inscrito === 'III') consultoriosRealizadosDb = '2';
-                else if (consultorio_inscrito === 'IV') consultoriosRealizadosDb = '3';
-            }
-        }
-
-        // Mapeo seguro de área de interés para cumplir constraints
-        let areaInteresDb = area_interes || null;
-        if (area_interes === 'conciliacion') areaInteresDb = 'conciliacion_penal';
-        else if (area_interes === 'asistencia') areaInteresDb = 'asistencia_legal';
+        // Mapeamos los datos del Frontend a variables del Backend usando el mapper
+        const mapped = mapFrontendDataToDb(data);
 
         // 1. Obtener periodo_id del turno o el periodo activo actual
         let periodoId = null;
+        const { turnoId } = data;
         if (turnoId && turnoId !== 'null' && turnoId !== '') {
             const turnoRes = await client.query(
                 'SELECT periodo_id, cupos_totales, cupos_ocupados, activo FROM turnos WHERE id = $1 FOR UPDATE',
@@ -171,14 +74,14 @@ const registrarEstudiante = async (data, files) => {
                 consultorio, eps, trabaja, empresa, cargo
             ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id, nombre_completo`,
             [
-                nombreCompleto, tipoD, documento || '000000', fechaNacimiento || '2000-01-01',
-                email || 'sin@correo.com', sem, declaracion, declaracion,
-                departamento || null, municipio || null, direccion || null,
-                telefono || null, correoInstitucional || null,
-                jornadaDb, periodoId, consultoriosRealizadosDb, String(consultorio_externo || '0'), areaInteresDb, radicados || null,
-                consultorio_inscrito || 'I',
-                eps || null,
-                trabajaBoolean, empresa || null, cargo || null
+                mapped.nombreCompleto, mapped.tipoD, mapped.documento, mapped.fechaNacimiento,
+                mapped.email, mapped.sem, true, true, // declara y autoriza
+                mapped.departamento, mapped.municipio, mapped.direccion,
+                mapped.telefono, mapped.correoInstitucional,
+                mapped.jornadaDb, periodoId, mapped.consultoriosRealizadosDb, mapped.consultorioExterno, mapped.areaInteresDb, mapped.radicados,
+                mapped.consultorioInscrito,
+                mapped.eps,
+                mapped.trabajaBoolean, mapped.empresa, mapped.cargo
             ]
         );
 
@@ -278,8 +181,47 @@ const borrarEstudiante = async (id) => {
     }
 };
 
+const consultarEstudiantePorDocumentoOCorreo = async (identificacion) => {
+    const queryStr = identificacion.trim();
+    const { rows } = await pool.query(`
+        SELECT e.id, e.nombre_completo, e.numero_documento, e.correo, e.correo_institucional, 
+               e.estado, e.observaciones_admin, e.fecha_registro, e.semestre, e.consultorio,
+               t.dia as turno_dia, t.jornada as turno_jornada, t.hora_inicio, t.hora_fin,
+               p.nombre as periodo_nombre
+        FROM estudiantes e
+        LEFT JOIN asignaciones a ON e.id = a.estudiante_id
+        LEFT JOIN turnos t ON a.turno_id = t.id
+        LEFT JOIN periodos_academicos p ON e.periodo_id = p.id
+        WHERE e.numero_documento = $1 OR e.correo_institucional = $1 OR e.correo = $1
+        ORDER BY e.fecha_registro DESC
+        LIMIT 1
+    `, [queryStr]);
+
+    if (rows.length === 0) {
+        return null;
+    }
+
+    return mapConsultarEstudiante(rows[0]);
+};
+
+const actualizarEstado = async (id, estado, observacionesAdmin) => {
+    const { rows } = await pool.query(
+        `UPDATE estudiantes 
+         SET estado = $1, observaciones_admin = $2, fecha_actualizacion = NOW() 
+         WHERE id = $3 
+         RETURNING *`,
+        [estado, observacionesAdmin, id]
+    );
+    if (rows.length === 0) {
+        throw new Error('Estudiante no encontrado');
+    }
+    return rows[0];
+};
+
 module.exports = {
     getEstudiantesFormateados,
     registrarEstudiante,
-    borrarEstudiante
+    borrarEstudiante,
+    consultarEstudiantePorDocumentoOCorreo,
+    actualizarEstado
 };

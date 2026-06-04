@@ -1,16 +1,63 @@
+import { useState } from 'react'
 import './PersonalInfoForm.css' // Reusing the same CSS for identical design
 
-function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
+function AcademicInfoForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
+  const [errors, setErrors] = useState({})
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    const semestre = document.getElementById('aif-semestre')?.value || '';
+    const consultorio_inscrito = document.getElementById('aif-consultorio-inscrito')?.value || '';
+    const area_interes = document.getElementById('aif-area')?.value || '';
+    const consultorios_realizados = document.getElementById('aif-consultorios')?.value || '';
+    const consultorio_externo = document.getElementById('aif-consultorio-externo')?.value || '';
+    const radicados = document.getElementById('aif-consecutivos')?.value || '';
+
+    const newErrors = {};
+    if (!semestre) newErrors.semestre = 'El semestre es obligatorio';
+    if (!consultorio_inscrito) newErrors.consultorio_inscrito = 'El consultorio al cual se inscribe es obligatorio';
+    if (!area_interes) newErrors.area_interes = 'El área de interés es obligatoria';
+    
+    if (consultorios_realizados.trim() === '') {
+      newErrors.consultorios_realizados = 'Debe indicar los consultorios realizados en sede';
+    } else if (parseInt(consultorios_realizados, 10) < 0) {
+      newErrors.consultorios_realizados = 'El número debe ser mayor o igual a 0';
+    }
+
+    if (consultorio_externo.trim() === '') {
+      newErrors.consultorio_externo = 'Debe indicar los consultorios externos realizados';
+    } else if (parseInt(consultorio_externo, 10) < 0) {
+      newErrors.consultorio_externo = 'El número debe ser mayor o igual a 0';
+    }
+
+    if (!radicados.trim()) {
+      newErrors.radicados = 'Los consecutivos de consultas y procesos activos son obligatorios (ponga N/A o Ninguno si no aplica)';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstErrorKey = Object.keys(newErrors)[0];
+      const htmlId = `aif-${firstErrorKey.replace(/_/g, '-')}`;
+      const errElement = document.getElementById(htmlId);
+      if (errElement) {
+        const yOffset = -120; // Offset para evitar cruce con headers
+        const y = errElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    setErrors({});
+
     if (onChangeDatos) {
       onChangeDatos({
-        semestre: document.getElementById('aif-semestre')?.value,
-        consultorio_inscrito: document.getElementById('aif-consultorio-inscrito')?.value,
-        area_interes: document.getElementById('aif-area')?.value,
-        consultorios_realizados: document.getElementById('aif-consultorios')?.value,
-        consultorio_externo: document.getElementById('aif-consultorio-externo')?.value,
-        radicados: document.getElementById('aif-consecutivos')?.value,
+        semestre,
+        consultorio_inscrito,
+        area_interes,
+        consultorios_realizados,
+        consultorio_externo,
+        radicados,
       });
     }
     if (onNext) onNext();
@@ -34,8 +81,8 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               <label htmlFor="aif-semestre" className="pif-label">
                 Seleccione el semestre en el cual se encuentra matriculado.
               </label>
-              <div className="pif-select-wrapper">
-                <select id="aif-semestre" className="pif-input pif-select" defaultValue="">
+              <div className={`pif-select-wrapper ${errors.semestre ? 'is-invalid' : ''}`}>
+                <select id="aif-semestre" className="pif-input pif-select" defaultValue={formData.semestre || ''}>
                   <option value="" disabled>Seleccione su semestre</option>
                   <option value="1">Semestre 1</option>
                   <option value="2">Semestre 2</option>
@@ -55,6 +102,7 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
                   </svg>
                 </span>
               </div>
+              {errors.semestre && <span className="pif-error-msg">{errors.semestre}</span>}
             </div>
           </div>
         </div>
@@ -74,8 +122,8 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               <label htmlFor="aif-consultorio-inscrito" className="pif-label">
                 Seleccione el consultorio en el que desea realizar la práctica.
               </label>
-              <div className="pif-select-wrapper">
-                <select id="aif-consultorio-inscrito" className="pif-input pif-select" defaultValue="">
+              <div className={`pif-select-wrapper ${errors.consultorio_inscrito ? 'is-invalid' : ''}`}>
+                <select id="aif-consultorio-inscrito" className="pif-input pif-select" defaultValue={formData.consultorio_inscrito || ''}>
                   <option value="" disabled>Seleccione el consultorio</option>
                   <option value="I">Consultorio I</option>
                   <option value="II">Consultorio II</option>
@@ -89,6 +137,7 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
                   </svg>
                 </span>
               </div>
+              {errors.consultorio_inscrito && <span className="pif-error-msg">{errors.consultorio_inscrito}</span>}
             </div>
           </div>
         </div>
@@ -109,8 +158,8 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               <label htmlFor="aif-area" className="pif-label">
                 Seleccione su área de mayor interés para la práctica jurídica.
               </label>
-              <div className="pif-select-wrapper">
-                <select id="aif-area" className="pif-input pif-select" defaultValue="">
+              <div className={`pif-select-wrapper ${errors.area_interes ? 'is-invalid' : ''}`}>
+                <select id="aif-area" className="pif-input pif-select" defaultValue={formData.area_interes || ''}>
                   <option value="" disabled>Seleccione el área de interés</option>
                   <option value="penal">Penal</option>
                   <option value="publico">Público</option>
@@ -134,6 +183,7 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
                   </svg>
                 </span>
               </div>
+              {errors.area_interes && <span className="pif-error-msg">{errors.area_interes}</span>}
             </div>
           </div>
         </div>
@@ -154,11 +204,12 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               <input
                 type="number"
                 id="aif-consultorios"
-                className="pif-input"
+                className={`pif-input ${errors.consultorios_realizados ? 'is-invalid' : ''}`}
                 min="0"
                 placeholder="Ej: 0"
-                required
+                defaultValue={formData.consultorios_realizados !== undefined ? formData.consultorios_realizados : ''}
               />
+              {errors.consultorios_realizados && <span className="pif-error-msg">{errors.consultorios_realizados}</span>}
             </div>
 
             <div className="pif-field">
@@ -168,11 +219,12 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               <input
                 type="number"
                 id="aif-consultorio-externo"
-                className="pif-input"
+                className={`pif-input ${errors.consultorio_externo ? 'is-invalid' : ''}`}
                 min="0"
                 placeholder="Ej: 0"
-                required
+                defaultValue={formData.consultorio_externo !== undefined ? formData.consultorio_externo : ''}
               />
+              {errors.consultorio_externo && <span className="pif-error-msg">{errors.consultorio_externo}</span>}
             </div>
           </div>
         </div>
@@ -192,9 +244,11 @@ function AcademicInfoForm({ onPrev, onNext, onChangeDatos }) {
               </label>
               <textarea
                 id="aif-consecutivos"
-                className="pif-input"
+                className={`pif-input ${errors.radicados ? 'is-invalid' : ''}`}
                 placeholder="Ej: 2023-00124, 2023-00567..."
+                defaultValue={formData.radicados || ''}
               />
+              {errors.radicados && <span className="pif-error-msg">{errors.radicados}</span>}
             </div>
 
             {/* ── Botones de acción ── */}

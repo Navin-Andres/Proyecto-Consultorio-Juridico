@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './Navbar.css'
 
-function Navbar() {
+function Navbar({ showInscripciones = false }) {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
@@ -32,7 +32,8 @@ function Navbar() {
 
         {/* ── Desktop links ── */}
         <div className="navbar-links">
-          <a href="#inscripciones" id="nav-inscripciones" className="nav-link nav-link--bold">
+          {showInscripciones && <a href="/" className="nav-link">Inscripciones</a>}
+          <a href="/consultar-inscripciones" id="nav-inscripciones" className="nav-link nav-link--bold">
             Consultar inscripciones
           </a>
           <a href="#reglamento" id="nav-reglamento" className="nav-link">Reglamento</a>
@@ -57,7 +58,8 @@ function Navbar() {
 
       {/* ── Mobile drawer ── */}
       <div className={`mobile-menu${menuOpen ? ' is-open' : ''}`} id="mobile-menu">
-        <a href="#inscripciones" className="mobile-link mobile-link--bold" onClick={() => setMenuOpen(false)}>
+        {showInscripciones && <a href="/" className="mobile-link" onClick={() => setMenuOpen(false)}>Inscripciones</a>}
+        <a href="/consultar-inscripciones" className="mobile-link mobile-link--bold" onClick={() => setMenuOpen(false)}>
           Consultar inscripciones
         </a>
         <a href="#reglamento" className="mobile-link" onClick={() => setMenuOpen(false)}>Reglamento</a>

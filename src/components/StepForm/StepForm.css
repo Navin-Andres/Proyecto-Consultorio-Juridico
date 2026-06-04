@@ -283,3 +283,14 @@
     font-family: 'Inter', system-ui, sans-serif;
   }
 }
+
+.stepper-circle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.stepper-circle:disabled:hover {
+  transform: none !important;
+  border-color: var(--step-gray) !important;
+  color: var(--step-gray-text) !important;
+}

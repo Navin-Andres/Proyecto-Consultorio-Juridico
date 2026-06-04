@@ -1,0 +1,438 @@
+/* ───────────────────────────────────────────────────────────
+   CONSULTA ESTUDIANTES — Estilos de Estado de Inscripción
+───────────────────────────────────────────────────────────── */
+
+.consulta-wrapper {
+  max-width: 650px;
+  width: 100%;
+  margin: 0 auto 50px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  text-align: left;
+}
+
+/* ── Tarjeta de Búsqueda ── */
+.consulta-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #416900;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.consulta-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+}
+
+.consulta-header h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.consulta-header p {
+  font-size: 14.5px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.consulta-form {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-group-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.consulta-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 16px;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.input-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.consulta-input {
+  width: 100%;
+  padding: 16px 16px 16px 52px;
+  background-color: #f1f5f9;
+  border: 1.5px solid transparent;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.consulta-input:focus {
+  background-color: #ffffff;
+  border-color: #7fb536;
+  box-shadow: 0 0 0 4px rgba(127, 181, 54, 0.15);
+}
+
+.consulta-input::placeholder {
+  color: #94a3b8;
+}
+
+/* Botón Buscar */
+.btn-buscar-inscripcion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #e6007e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 28px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-family: inherit;
+  box-shadow: 0 4px 12px rgba(230, 0, 126, 0.25);
+}
+
+.btn-buscar-inscripcion:hover:not(:disabled) {
+  background-color: #cc0070;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(230, 0, 126, 0.35);
+}
+
+.btn-buscar-inscripcion:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 6px rgba(230, 0, 126, 0.2);
+}
+
+.btn-buscar-inscripcion:disabled {
+  background-color: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.search-btn-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Spinner de carga */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #ffffff;
+  animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mensaje de Error */
+.consulta-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.error-icon-svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Tarjeta de Resultados (Nuevo Diseño) ── */
+.resultado-consulta-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.resultado-card-main {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-left: 5px solid #416900;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.resultado-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.resultado-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.resultado-titles h3 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #416900;
+  margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.updated-info {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.resultado-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.badge-confirmado {
+  background-color: #bbf7d0;
+  color: #166534;
+}
+
+.badge-rechazado {
+  background-color: #fecaca;
+  color: #991b1b;
+}
+
+/* Removido badge-pendiente */
+
+.resultado-grid-info {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.info-box {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.info-box-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.info-box-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+}
+
+.horario-value, .consultorio-value {
+  font-size: 16px;
+}
+
+.resultado-card-secondary {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+}
+
+.card-secondary-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+
+.card-secondary-title svg {
+  color: #416900;
+}
+
+.card-secondary-text {
+  font-size: 14.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0 0 20px 0;
+}
+
+.contact-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.contact-info-box {
+  background: #f1f3f0;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.contact-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contact-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.contact-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.observaciones-box {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: #f8fafc;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px 8px 8px 4px;
+}
+
+.observaciones-box strong {
+  display: block;
+  font-size: 13px;
+  color: #b45309;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.observaciones-box p {
+  margin: 0;
+  font-size: 14.5px;
+  color: #334155;
+}
+
+/* ── Animaciones ── */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Adaptabilidad ── */
+@media (max-width: 640px) {
+
+  .consulta-card,
+  .resultado-card-main,
+  .resultado-card-secondary {
+    padding: 20px;
+  }
+
+  .resultado-grid-info {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .contact-info-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .consulta-header h2 {
+    font-size: 22px;
+  }
+}

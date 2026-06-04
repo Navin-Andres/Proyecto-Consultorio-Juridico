@@ -3,9 +3,10 @@ import Navbar from './components/Navbar/Navbar'
 import StepForm from './components/StepForm/StepForm'
 import Footer from './components/Footer/Footer'
 import CapacityDashboard from './components/CapacityDashboard/CapacityDashboard'
-import AdminLogin from './components/Admin/AdminLogin'
-import AdminDashboard from './components/Admin/AdminDashboard'
+import AdminLogin from './components/Admin/AdminLogin/AdminLogin'
+import AdminDashboard from './components/Admin/AdminDashboard/AdminDashboard'
 import SuccessScreen from './components/SuccessScreen/SuccessScreen'
+import ConsultaEstudiantes from './components/Cosultas_estudiantes/ConsultaEstudiantes'
 import './App.css'
 
 function App() {
@@ -19,6 +20,18 @@ function App() {
 
   if (path === '/admin-dashboard') {
     return <AdminDashboard />;
+  }
+
+  if (path === '/consultar-inscripciones') {
+    return (
+      <div className="app-container">
+        <Navbar showInscripciones={true} />
+        <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
+          <ConsultaEstudiantes />
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   if (successData) {

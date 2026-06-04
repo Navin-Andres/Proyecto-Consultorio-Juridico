@@ -4,7 +4,7 @@ import './PersonalInfoForm.css'
 const ANNEXES = [
   {
     id: 'identidad',
-    title: 'Documento de Identidad',
+    title: 'Documento de Identidad *',
     subtitle: 'Escaneo ampliado al 150% de ambas caras.',
     dropTitle: 'Arrastra tu documento aquí',
     dropSubtitle: 'Click para cargar PDF',
@@ -20,7 +20,7 @@ const ANNEXES = [
   },
   {
     id: 'consentimiento',
-    title: 'Consentimiento Informado',
+    title: 'Consentimiento Informado *',
     subtitle: 'Debe estar firmado.',
     helperLinkText: 'Descargar Plantilla',
     dropTitle: 'Arrastra el consentimiento aquí',
@@ -29,7 +29,7 @@ const ANNEXES = [
   },
   {
     id: 'acta',
-    title: 'Acta de Compromiso',
+    title: 'Acta de Compromiso *',
     subtitle: 'Cargue el acta diligenciada.',
     helperLinkText: 'Descargar Formato',
     dropTitle: 'Arrastra el acta aquí',
@@ -38,7 +38,7 @@ const ANNEXES = [
   },
   {
     id: 'hoja',
-    title: 'Hoja de Vida',
+    title: 'Hoja de Vida *',
     subtitle: 'Formato institucional actualizado.',
     dropTitle: 'Arrastra tu hoja de vida aquí',
     dropSubtitle: 'Seleccione PDF',
@@ -46,25 +46,57 @@ const ANNEXES = [
   },
 ]
 
-function AnnexesForm({ onPrev, onNext, onChangeDatos }) {
-  // Estado para guardar cómo se llama el archivo seleccionado de cada input
-  const [fileNames, setFileNames] = useState({});
-  // Estado para guardar los archivos reales
-  const [archivosReales, setArchivosReales] = useState({});
+function AnnexesForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
+  const initialFiles = formData.archivosSubidos || {};
+  const [fileNames, setFileNames] = useState(() => {
+    const names = {};
+    if (initialFiles['anx-identidad']) names['identidad'] = initialFiles['anx-identidad'].name;
+    if (initialFiles['anx-eps']) names['eps'] = initialFiles['anx-eps'].name;
+    if (initialFiles['anx-consentimiento']) names['consentimiento'] = initialFiles['anx-consentimiento'].name;
+    if (initialFiles['anx-acta-compromiso']) names['acta'] = initialFiles['anx-acta-compromiso'].name;
+    if (initialFiles['anx-hoja-vida']) names['hoja'] = initialFiles['anx-hoja-vida'].name;
+    return names;
+  });
+  const [archivosReales, setArchivosReales] = useState(initialFiles);
+  const [errors, setErrors] = useState({});
 
   const handleFileChange = (e, annexId, inputId) => {
     const file = e.target.files[0];
     if (file) {
       setFileNames(prev => ({ ...prev, [annexId]: file.name }));
       setArchivosReales(prev => ({ ...prev, [inputId]: file }));
+      if (errors[inputId]) {
+        setErrors(prev => ({ ...prev, [inputId]: null }));
+      }
     }
   };
 
   const handleSiguiente = (e) => {
     e.preventDefault();
-    // Guardamos los archivos reales en el estado global (StepForm) antes de ir al siguiente paso
+
+    const newErrors = {};
+    if (!archivosReales['anx-identidad']) newErrors['anx-identidad'] = 'El documento de identidad es obligatorio';
+    if (!archivosReales['anx-eps']) newErrors['anx-eps'] = 'El certificado de EPS es obligatorio';
+    if (!archivosReales['anx-consentimiento']) newErrors['anx-consentimiento'] = 'El consentimiento informado es obligatorio';
+    if (!archivosReales['anx-acta-compromiso']) newErrors['anx-acta-compromiso'] = 'El acta de compromiso es obligatoria';
+    if (!archivosReales['anx-hoja-vida']) newErrors['anx-hoja-vida'] = 'La hoja de vida es obligatoria';
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstErrorKey = Object.keys(newErrors)[0];
+      const errElement = document.getElementById(firstErrorKey);
+      if (errElement) {
+        const yOffset = -120; // Offset para evitar cruce con headers
+        const y = errElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    setErrors({});
+
     if (onChangeDatos) {
-        onChangeDatos({ archivosSubidos: archivosReales });
+      onChangeDatos({ archivosSubidos: archivosReales });
     }
     if (onNext) onNext();
   };
@@ -100,13 +132,12 @@ function AnnexesForm({ onPrev, onNext, onChangeDatos }) {
             </div>
 
             <div className="anx-uploader-wrap">
-              <label htmlFor={annex.inputId} className="anx-upload-dropzone">
+              <label htmlFor={annex.inputId} className={`anx-upload-dropzone ${errors[annex.inputId] ? 'is-invalid' : ''}`}>
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                   <path d="M12 16V8M12 8l-3 3M12 8l3 3M5 16.5A3.5 3.5 0 0 1 5.5 9.6a5 5 0 0 1 9.7-1.2A4 4 0 1 1 18.5 16.5H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <div className="anx-upload-text">
                   <span className="anx-upload-title">
-                    {/* MOSTRAMOS EL NOMBRE DEL ARCHIVO SI EXISTE, SI NO EL TEXTO POR DEFECTO */}
                     {fileNames[annex.id] 
                       ? <span style={{color: '#7FB536', fontWeight: 600}}>✓ {fileNames[annex.id]}</span> 
                       : annex.dropTitle}
@@ -119,6 +150,7 @@ function AnnexesForm({ onPrev, onNext, onChangeDatos }) {
                   {fileNames[annex.id] ? 'Cambiar' : 'Seleccionar'}
                 </span>
               </label>
+              {errors[annex.inputId] && <span className="pif-error-msg">{errors[annex.inputId]}</span>}
             </div>
 
             <input

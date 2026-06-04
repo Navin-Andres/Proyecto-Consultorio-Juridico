@@ -230,12 +230,33 @@
     width: 25%;
 }
 
-.col-anexos {
-    width: 10%;
+.col-telefono {
+    width: 12%;
+}
+
+.telefono-texto {
+    font-weight: 500;
+    color: #475569;
 }
 
 .col-acciones {
     width: 10%;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding: 0 0.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.table-status-text {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 .pagination {
@@ -243,8 +264,7 @@
     justify-content: center;
     align-items: center;
     gap: 8px;
-    margin-top: 1.5rem;
-    padding: 10px;
+    padding: 5px 0;
 }
 
 .btn-pagina {
@@ -810,11 +830,12 @@
    ========================================= */
 .ficha-wrapper {
     animation: fadeIn 0.3s ease-out;
-    max-width: 1400px; /* Un poco más ancho */
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2.5rem; /* Margen generoso para que no pegue a los bordes */
-    background-color: #fafcf9; /* Mismo fondo de la tabla */
+    padding: 1.75rem 2rem;
+    background-color: #fafcf9;
     min-height: 100vh;
+    text-align: left;
 }
 
 @keyframes fadeIn {
@@ -826,8 +847,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2.5rem; /* Más separación inferior */
-    padding-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid #e2e8f0;
 }
 
@@ -835,12 +856,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 10px 16px;
+    padding: 8px 14px;
     background-color: #ffffff;
     border: 1px solid #cbd5e1;
     border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #475569;
     cursor: pointer;
     transition: all 0.2s;
@@ -853,8 +874,29 @@
     border-color: #94a3b8;
 }
 
+.btn-export-pdf {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background-color: #1d4ed8;
+    color: #ffffff;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 8px rgba(30, 64, 175, 0.12);
+}
+
+.btn-export-pdf:hover {
+    background-color: #2563eb;
+    box-shadow: 0 6px 12px rgba(37, 99, 235, 0.18);
+}
+
 .ficha-title {
-    font-size: 1.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #1e293b;
     margin: 0;
@@ -863,13 +905,13 @@
 /* Banner de Perfil */
 .ficha-profile-banner {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-    border-radius: 16px;
-    padding: 2.5rem 3rem;
+    border-radius: 12px;
+    padding: 1.75rem 2.25rem;
     display: flex;
     align-items: center;
-    gap: 2.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    gap: 2rem;
+    margin-bottom: 1.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     color: white;
     position: relative;
     overflow: hidden;
@@ -880,24 +922,24 @@
     position: absolute;
     right: -5%;
     top: -30%;
-    width: 350px;
-    height: 350px;
+    width: 250px;
+    height: 250px;
     background: rgba(255,255,255,0.04);
     border-radius: 50%;
 }
 
 .ficha-avatar {
-    width: 110px;
-    height: 110px;
+    width: 80px;
+    height: 80px;
     background-color: #f8fafc;
     color: #0f172a;
-    font-size: 3rem;
+    font-size: 2.25rem;
     font-weight: 700;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    box-shadow: 0 0 0 6px rgba(255,255,255,0.15);
+    box-shadow: 0 0 0 4px rgba(255,255,255,0.15);
     z-index: 1;
 }
 
@@ -906,16 +948,16 @@
 }
 
 .ficha-profile-name {
-    font-size: 2.2rem;
+    font-size: 1.75rem;
     font-weight: 700;
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.25rem 0;
     letter-spacing: -0.5px;
 }
 
 .ficha-profile-meta {
     display: flex;
-    gap: 1.5rem;
-    font-size: 1rem;
+    gap: 1.25rem;
+    font-size: 0.9rem;
     color: #cbd5e1;
     align-items: center;
 }
@@ -929,42 +971,42 @@
 /* Grid de Tarjetas */
 .ficha-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-    gap: 2.5rem; /* Más separación entre tarjetas */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
 }
 
 .ficha-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 12px;
-    padding: 2.25rem; /* Tarjetas más amplias internamente */
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.04);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ficha-card:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.05), 0 3px 6px -2px rgba(0, 0, 0, 0.02);
 }
 
 .ficha-card-header {
     display: flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 2rem; /* Separación ampliada respecto a los datos */
-    padding-bottom: 1.2rem;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid #f1f5f9;
 }
 
 .ficha-card-icon {
     color: #3b82f6;
     background: #eff6ff;
-    padding: 8px;
-    border-radius: 8px;
+    padding: 6px;
+    border-radius: 6px;
     display: flex;
 }
 
 .ficha-card-title {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 600;
     color: #1e293b;
     margin: 0;
@@ -974,13 +1016,15 @@
 .ficha-data-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.75rem 1.5rem; /* Más separación entre los datos internamente */
+    gap: 1.1rem 1.25rem;
 }
 
 .ficha-data-item {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Un poco más de aire entre el título y el valor */
+    gap: 4px;
+    align-items: flex-start;
+    text-align: left;
 }
 
 .ficha-data-item.full {
@@ -988,7 +1032,7 @@
 }
 
 .ficha-label {
-    font-size: 0.8rem; /* Ligeramente más grande */
+    font-size: 0.75rem;
     font-weight: 600;
     color: #64748b;
     text-transform: uppercase;
@@ -996,9 +1040,9 @@
 }
 
 .ficha-value {
-    font-size: 1.1rem; /* Subimos el tamaño de la respuesta */
-    color: #0f172a;
-    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1e293b;
+    font-weight: 600;
 }
 
 /* Tarjeta Turno Especial */

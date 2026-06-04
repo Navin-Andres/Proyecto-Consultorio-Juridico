@@ -1,16 +1,40 @@
+import { useState } from 'react'
 import './PersonalInfoForm.css'
 
-function FinalDeclarationsForm({ onPrev, onSubmitFinal }) {
+function FinalDeclarationsForm({ onPrev, onSubmitFinal, formData = {} }) {
+  const [errors, setErrors] = useState({})
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    const veracidad = document.getElementById('fdf-veracidad')?.checked || false;
+    const datosPersonales = document.getElementById('fdf-datos-personales')?.checked || false;
+
+    const newErrors = {};
+    if (!veracidad) {
+      newErrors.veracidad = 'Debe declarar bajo juramento que la información es verídica';
+    }
+    if (!datosPersonales) {
+      newErrors.datosPersonales = 'Debe autorizar el tratamiento de sus datos personales';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+    if (onSubmitFinal) {
+      onSubmitFinal();
+    }
+  };
+
   return (
     <form
       className="pif-form"
       id="form-final-declarations"
       style={{ gridTemplateColumns: '1fr' }}
       noValidate
-      onSubmit={(e) => { 
-        e.preventDefault();
-        if (onSubmitFinal) onSubmitFinal();
-      }}
+      onSubmit={handleFormSubmit}
     >
       <div className="pif-card" style={{ margin: '12px 0 0' }}>
         <div className="pif-stripe" aria-hidden="true" />
@@ -20,30 +44,31 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal }) {
           <div className="pif-field">
             <label className="pif-label" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input id="fdf-veracidad" type="checkbox" required />
+                <input id="fdf-veracidad" type="checkbox" defaultChecked={formData.declara_veracidad} />
                 <span style={{ color: '#111827', textDecoration: 'underline', textDecorationColor: '#000000', fontWeight: 700 }}>
-                  Veracidad de la información
+                  Veracidad de la información *
                 </span>
               </span>
               <span style={{ fontSize: '12px', color: '#4b5563', lineHeight: 1.4, marginLeft: '26px' }}>
                 Declaro bajo la gravedad de juramento que toda la información suministrada en este formulario es verídica y corresponde a la realidad de mi situación actual.
               </span>
             </label>
+            {errors.veracidad && <span className="pif-error-msg" style={{ marginLeft: '26px' }}>{errors.veracidad}</span>}
           </div>
 
           <div className="pif-field" style={{ marginTop: '10px' }}>
             <label className="pif-label" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <input id="fdf-datos-personales" type="checkbox" required />
+                <input id="fdf-datos-personales" type="checkbox" defaultChecked={formData.autoriza_datos} />
                 <span style={{ color: '#111827', textDecoration: 'underline', textDecorationColor: '#000000', fontWeight: 700 }}>
-                  Tratamiento de datos personales
+                  Tratamiento de datos personales *
                 </span>
               </span>
               <span style={{ fontSize: '12px', color: '#4b5563', lineHeight: 1.4, marginLeft: '26px' }}>
-              Autorizo expresamente al Consultorio Jurídico Areandina para el tratamiento de mis datos personales sensibles y no sensibles
-              según la Ley 1581 de 2012.
+                Autorizo expresamente al Consultorio Jurídico Areandina para el tratamiento de mis datos personales sensibles y no sensibles según la Ley 1581 de 2012.
               </span>
             </label>
+            {errors.datosPersonales && <span className="pif-error-msg" style={{ marginLeft: '26px' }}>{errors.datosPersonales}</span>}
           </div>
 
           <div className="pif-field" style={{ marginTop: '18px' }}>
@@ -52,6 +77,7 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal }) {
               id="fdf-observaciones"
               className="pif-input"
               placeholder="Escriba aquí cualquier detalle adicional relevante para su caso..."
+              defaultValue={formData.observaciones_personales || ''}
             />
           </div>
         </div>

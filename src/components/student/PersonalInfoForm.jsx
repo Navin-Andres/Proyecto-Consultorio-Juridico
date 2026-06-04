@@ -16,10 +16,11 @@ function formatTime12h(timeStr) {
   return `${hour}:${minStr} ${ampm}`;
 }
 
-function PersonalInfoForm({ onNext, onChangeDatos }) {
-  const [selectedSlot, setSelectedSlot] = useState(null)
+function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
+  const [selectedSlot, setSelectedSlot] = useState(formData.turnoId || null)
   const [turnos, setTurnos] = useState([])
   const [loading, setLoading] = useState(true)
+  const [errors, setErrors] = useState({})
 
   useEffect(() => {
     const fetchTurnos = async () => {
@@ -39,6 +40,9 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
   const handleSelectSlot = (turnoId, isFull) => {
     if (isFull) return
     setSelectedSlot(turnoId)
+    if (errors.selectedSlot) {
+      setErrors(prev => ({ ...prev, selectedSlot: null }));
+    }
   }
 
   // Agrupar turnos por día
@@ -50,6 +54,54 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
+
+    const email = document.getElementById('pif-email')?.value || '';
+    const nombre = document.getElementById('pif-nombre')?.value || '';
+    const documento = document.getElementById('pif-documento')?.value || '';
+    const fecha = document.getElementById('pif-fecha')?.value || '';
+    const jornada = document.getElementById('pif-jornada')?.value || '';
+
+    const newErrors = {};
+    if (!email.trim()) {
+      newErrors.email = 'El correo electrónico es obligatorio';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'El correo electrónico no es válido';
+    }
+    if (!nombre.trim()) {
+      newErrors.nombre = 'El nombre completo es obligatorio';
+    }
+    if (!documento.trim()) {
+      newErrors.documento = 'El documento de identidad es obligatorio';
+    }
+    if (!fecha) {
+      newErrors.fecha = 'La fecha de nacimiento es obligatoria';
+    }
+    if (!jornada) {
+      newErrors.jornada = 'La jornada de asignaturas es obligatoria';
+    }
+    if (!selectedSlot) {
+      newErrors.selectedSlot = 'Debe seleccionar un día y hora de realización de su turno';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstErrorKey = Object.keys(newErrors)[0];
+      let errElement;
+      if (firstErrorKey === 'selectedSlot') {
+        errElement = document.querySelector('.schedule-section');
+      } else {
+        errElement = document.getElementById(`pif-${firstErrorKey}`);
+      }
+      if (errElement) {
+        const yOffset = -120; // Offset para evitar cruce con headers
+        const y = errElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    setErrors({});
+
     if (onChangeDatos) {
       let diaAsignado = '';
       let horarioAsignado = '';
@@ -62,11 +114,11 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
       }
 
       onChangeDatos({
-        nombres: document.getElementById('pif-nombre')?.value,
-        email: document.getElementById('pif-email')?.value,
-        documento: document.getElementById('pif-documento')?.value,
-        fechaNacimiento: document.getElementById('pif-fecha')?.value,
-        jornada_asignaturas: document.getElementById('pif-jornada')?.value,
+        nombres: nombre,
+        email: email,
+        documento: documento,
+        fechaNacimiento: fecha,
+        jornada_asignaturas: jornada,
         turnoId: selectedSlot,
         diaAsignado,
         horarioAsignado
@@ -88,35 +140,61 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
 
           <div className="pif-form">
             <div className="pif-field">
-              <label htmlFor="pif-email" className="pif-label">Correo Electrónico</label>
-              <input id="pif-email" type="email" className="pif-input" placeholder="ejemplo@correo.com" autoComplete="email" />
+              <label htmlFor="pif-email" className="pif-label">Correo Electrónico *</label>
+              <input 
+                id="pif-email" 
+                type="email" 
+                className={`pif-input ${errors.email ? 'is-invalid' : ''}`} 
+                placeholder="ejemplo@correo.com" 
+                autoComplete="email" 
+                defaultValue={formData.email || ''}
+              />
+              {errors.email && <span className="pif-error-msg">{errors.email}</span>}
             </div>
 
             <div className="pif-field">
-              <label htmlFor="pif-nombre" className="pif-label">Nombre Completo</label>
-              <input id="pif-nombre" type="text" className="pif-input" placeholder="Como aparece en su documento" autoComplete="name" />
+              <label htmlFor="pif-nombre" className="pif-label">Nombre Completo *</label>
+              <input 
+                id="pif-nombre" 
+                type="text" 
+                className={`pif-input ${errors.nombre ? 'is-invalid' : ''}`} 
+                placeholder="Como aparece en su documento" 
+                autoComplete="name" 
+                defaultValue={formData.nombres || ''}
+              />
+              {errors.nombre && <span className="pif-error-msg">{errors.nombre}</span>}
             </div>
 
             <div className="pif-field">
-              <label htmlFor="pif-documento" className="pif-label">Documento de Identidad</label>
-              <input id="pif-documento" type="text" className="pif-input" placeholder="CC / TI / CE" />
+              <label htmlFor="pif-documento" className="pif-label">Documento de Identidad *</label>
+              <input 
+                id="pif-documento" 
+                type="text" 
+                className={`pif-input ${errors.documento ? 'is-invalid' : ''}`} 
+                placeholder="CC / TI / CE" 
+                defaultValue={formData.documento || ''}
+              />
+              {errors.documento && <span className="pif-error-msg">{errors.documento}</span>}
             </div>
 
             <div className="pif-field">
-              <label htmlFor="pif-fecha" className="pif-label">Fecha de Nacimiento</label>
-              <input id="pif-fecha" type="date" className="pif-input pif-input--date" />
+              <label htmlFor="pif-fecha" className="pif-label">Fecha de Nacimiento *</label>
+              <input 
+                id="pif-fecha" 
+                type="date" 
+                className={`pif-input pif-input--date ${errors.fecha ? 'is-invalid' : ''}`} 
+                defaultValue={formData.fechaNacimiento || ''}
+              />
+              {errors.fecha && <span className="pif-error-msg">{errors.fecha}</span>}
             </div>
 
             <div className="pif-field">
-              <label htmlFor="pif-jornada" className="pif-label">Jornada Actual de Asignaturas Teóricas</label>
-              <div className="pif-select-wrapper">
-                <select id="pif-jornada" className="pif-input pif-select" defaultValue="">
+              <label htmlFor="pif-jornada" className="pif-label">Jornada Actual de Asignaturas Teóricas *</label>
+              <div className={`pif-select-wrapper ${errors.jornada ? 'is-invalid' : ''}`}>
+                <select id="pif-jornada" className="pif-input pif-select" defaultValue={formData.jornada_asignaturas || ''}>
                   <option value="" disabled>Seleccione su jornada</option>
-                  <option value="manana">Mañana</option>
-                  <option value="tarde">Tarde</option>
-                  <option value="noche">Noche</option>
-                  <option value="sabatina">Sabatina</option>
-                  <option value="virtual">Virtual</option>
+                  <option value="diurna">Diurna</option>
+                  <option value="nocturna">Nocturna</option>
                 </select>
                 <span className="pif-select-arrow" aria-hidden="true">
                   <svg viewBox="0 0 12 8" fill="none">
@@ -124,6 +202,7 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
                   </svg>
                 </span>
               </div>
+              {errors.jornada && <span className="pif-error-msg">{errors.jornada}</span>}
             </div>
 
             <div className="pif-field pif-field--empty" aria-hidden="true" />
@@ -137,60 +216,63 @@ function PersonalInfoForm({ onNext, onChangeDatos }) {
         <div className="pif-content">
 
           <div className="schedule-section">
-            <h2 className="schedule-header">Seleccione día y hora de realización de su turno</h2>
+            <h2 className="schedule-header">Seleccione día y hora de realización de su turno *</h2>
             <p className="schedule-subtitle">Seleccione un día y horario que no presente cruce con las asignaturas matriculadas.</p>
+            {errors.selectedSlot && <span className="pif-error-msg" style={{ marginBottom: '16px' }}>{errors.selectedSlot}</span>}
 
-            {loading ? (
-              <p>Cargando turnos disponibles...</p>
-            ) : (
-              <div className="schedule-grid">
-                {diasSemana.map((dia) => {
-                  const turnoManana = getTurnoPorJornada(dia, 'mañana')
-                  const turnoTarde = getTurnoPorJornada(dia, 'tarde')
-                  
-                  if (!turnoManana && !turnoTarde) return null;
+            <div className={`schedule-section-container ${errors.selectedSlot ? 'is-invalid' : ''}`} style={errors.selectedSlot ? { padding: '12px', borderRadius: '8px', border: '1.5px solid #dc2626', backgroundColor: '#fef2f2' } : {}}>
+              {loading ? (
+                <p>Cargando turnos disponibles...</p>
+              ) : (
+                <div className="schedule-grid">
+                  {diasSemana.map((dia) => {
+                    const turnoManana = getTurnoPorJornada(dia, 'mañana')
+                    const turnoTarde = getTurnoPorJornada(dia, 'tarde')
+                    
+                    if (!turnoManana && !turnoTarde) return null;
 
-                  return (
-                    <div key={dia} className="schedule-day-col">
-                      <div className="schedule-day-header">{dia.toUpperCase()}</div>
+                    return (
+                      <div key={dia} className="schedule-day-col">
+                        <div className="schedule-day-header">{dia.toUpperCase()}</div>
 
-                      {/* Turno Mañana */}
-                      {turnoManana && (
-                        <div
-                          className={`schedule-card ${turnoManana.cupos_ocupados >= turnoManana.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoManana.id ? 'is-selected' : ''}`}
-                          onClick={() => handleSelectSlot(turnoManana.id, turnoManana.cupos_ocupados >= turnoManana.cupos_totales)}
-                        >
-                          <span className="schedule-shift-name">MAÑANA</span>
-                          <span className="schedule-shift-time">{formatTime12h(turnoManana.hora_inicio)} - {formatTime12h(turnoManana.hora_fin)}</span>
-                          <span className={`schedule-pill ${getPillClass(turnoManana.cupos_ocupados, turnoManana.cupos_totales)}`}>
-                            {turnoManana.cupos_ocupados} / {turnoManana.cupos_totales} Cupos
-                          </span>
-                        </div>
-                      )}
+                        {/* Turno Mañana */}
+                        {turnoManana && (
+                          <div
+                            className={`schedule-card ${turnoManana.cupos_ocupados >= turnoManana.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoManana.id ? 'is-selected' : ''}`}
+                            onClick={() => handleSelectSlot(turnoManana.id, turnoManana.cupos_ocupados >= turnoManana.cupos_totales)}
+                          >
+                            <span className="schedule-shift-name">MAÑANA</span>
+                            <span className="schedule-shift-time">{formatTime12h(turnoManana.hora_inicio)} - {formatTime12h(turnoManana.hora_fin)}</span>
+                            <span className={`schedule-pill ${getPillClass(turnoManana.cupos_ocupados, turnoManana.cupos_totales)}`}>
+                              {turnoManana.cupos_ocupados} / {turnoManana.cupos_totales} Cupos
+                            </span>
+                          </div>
+                        )}
 
-                      {/* Turno Tarde */}
-                      {turnoTarde && (
-                        <div
-                          className={`schedule-card ${turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoTarde.id ? 'is-selected' : ''}`}
-                          onClick={() => handleSelectSlot(turnoTarde.id, turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales)}
-                        >
-                          <span className="schedule-shift-name">TARDE</span>
-                          <span className="schedule-shift-time">{formatTime12h(turnoTarde.hora_inicio)} - {formatTime12h(turnoTarde.hora_fin)}</span>
-                          <span className={`schedule-pill ${getPillClass(turnoTarde.cupos_ocupados, turnoTarde.cupos_totales)}`}>
-                            {turnoTarde.cupos_ocupados} / {turnoTarde.cupos_totales} Cupos
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
+                        {/* Turno Tarde */}
+                        {turnoTarde && (
+                          <div
+                            className={`schedule-card ${turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales ? 'is-full' : ''} ${selectedSlot === turnoTarde.id ? 'is-selected' : ''}`}
+                            onClick={() => handleSelectSlot(turnoTarde.id, turnoTarde.cupos_ocupados >= turnoTarde.cupos_totales)}
+                          >
+                            <span className="schedule-shift-name">TARDE</span>
+                            <span className="schedule-shift-time">{formatTime12h(turnoTarde.hora_inicio)} - {formatTime12h(turnoTarde.hora_fin)}</span>
+                            <span className={`schedule-pill ${getPillClass(turnoTarde.cupos_ocupados, turnoTarde.cupos_totales)}`}>
+                              {turnoTarde.cupos_ocupados} / {turnoTarde.cupos_totales} Cupos
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* ── Botones de acción ── */}
           <div className="pif-actions" style={{ marginTop: '32px' }}>
-            <button type="submit" id="btn-siguiente-step1" className="pif-btn-next" disabled={!selectedSlot}>
+            <button type="submit" id="btn-siguiente-step1" className="pif-btn-next">
               Siguiente
               <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

@@ -1,8 +1,56 @@
-import React from 'react';
+const mapAreaInteres = (area) => {
+    if (!area || area === 'N/A') return 'N/A';
+    const mappings = {
+        'penal': 'Penal',
+        'publico': 'Público',
+        'privado': 'Privado',
+        'familia': 'Familia',
+        'animal': 'Animal',
+        'laboral': 'Laboral',
+        'ddhh': 'Derechos Humanos (DDHH)',
+        'agrario': 'Agrario',
+        'investigacion': 'Investigación',
+        'consumo': 'Consumo',
+        'conciliacion_penal': 'Conciliación Penal',
+        'asistencia_legal': 'Asistencia Legal',
+        'purpura': 'Púrpura',
+        'tierra': 'Tierra'
+    };
+    return mappings[area.toLowerCase()] || area.charAt(0).toUpperCase() + area.slice(1);
+};
 
-const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
+const FichaEstudiante = ({ selectedEstudiante, onBack, onUpdate }) => {
+    const estado = selectedEstudiante.estado || 'aprobado';
+
+    const handleDownloadPDF = () => {
+        const generatePDF = () => {
+            const element = document.getElementById('estudiante-ficha-pdf');
+            if (!element) return;
+
+            const filename = `Ficha_Estudiante_${selectedEstudiante.documento || selectedEstudiante.id || 'sin-id'}.pdf`;
+            const opt = {
+                margin: 0.8,
+                filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', scrollY: 0 },
+                jsPDF: { unit: 'cm', format: 'letter', orientation: 'portrait' }
+            };
+
+            window.html2pdf().set(opt).from(element).save();
+        };
+
+        if (window.html2pdf) {
+            generatePDF();
+        } else {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = generatePDF;
+            document.body.appendChild(script);
+        }
+    };
+
     return (
-        <div className="ficha-wrapper">
+        <div className="ficha-wrapper" id="estudiante-ficha-pdf">
             <div className="ficha-header-bar">
                 <button className="btn-back" onClick={onBack}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -12,6 +60,14 @@ const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
                     Volver al directorio
                 </button>
                 <h2 className="ficha-title">Ficha Completa del Estudiante</h2>
+                <button className="btn-export-pdf" onClick={handleDownloadPDF}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Exportar PDF
+                </button>
             </div>
 
             <div className="ficha-profile-banner">
@@ -27,6 +83,27 @@ const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                             {selectedEstudiante.telefono || 'Sin teléfono'}
                         </span>
+                        <span>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            Inscrito el: {selectedEstudiante.fechaRegistro || 'N/A'}
+                        </span>
+                        {estado === 'rechazado' && (
+                            <span style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                background: '#fee2e2',
+                                color: '#b91c1c',
+                                padding: '4px 10px',
+                                borderRadius: '12px',
+                                fontWeight: '700',
+                                fontSize: '11px',
+                                textTransform: 'uppercase',
+                                marginLeft: '8px'
+                            }}>
+                                ❌ Rechazado
+                            </span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -56,6 +133,18 @@ const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
                         <div className="ficha-data-item">
                             <span className="ficha-label">Consultorios Externos</span>
                             <span className="ficha-value">{selectedEstudiante.consultorioExterno}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Jornada Asignaturas</span>
+                            <span className="ficha-value" style={{ textTransform: 'capitalize' }}>{selectedEstudiante.jornadaAsignaturas}</span>
+                        </div>
+                        <div className="ficha-data-item">
+                            <span className="ficha-label">Período Académico</span>
+                            <span className="ficha-value">{selectedEstudiante.periodo || 'N/A'}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Área de Interés</span>
+                            <span className="ficha-value">{mapAreaInteres(selectedEstudiante.areaInteres)}</span>
                         </div>
                         <div className="ficha-data-item full">
                             <span className="ficha-label">Consecutivos (Radicados)</span>
@@ -92,18 +181,30 @@ const FichaEstudiante = ({ selectedEstudiante, onBack }) => {
                     </div>
                 </div>
 
-                {/* Tarjeta Contacto */}
+                {/* Tarjeta Contacto y Ubicación */}
                 <div className="ficha-card">
                     <div className="ficha-card-header">
                         <div className="ficha-card-icon">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                         </div>
-                        <h4 className="ficha-card-title">Ubicación</h4>
+                        <h4 className="ficha-card-title">Contacto y Ubicación</h4>
                     </div>
                     <div className="ficha-data-grid">
                         <div className="ficha-data-item">
+                            <span className="ficha-label">Teléfono Celular</span>
+                            <span className="ficha-value">{selectedEstudiante.telefono || 'N/A'}</span>
+                        </div>
+                        <div className="ficha-data-item">
                             <span className="ficha-label">Municipio / Depto.</span>
                             <span className="ficha-value">{selectedEstudiante.municipio_depto}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Correo Institucional</span>
+                            <span className="ficha-value">{selectedEstudiante.correoInstitucional || 'N/A'}</span>
+                        </div>
+                        <div className="ficha-data-item full">
+                            <span className="ficha-label">Correo Personal</span>
+                            <span className="ficha-value">{selectedEstudiante.email || 'N/A'}</span>
                         </div>
                         <div className="ficha-data-item full">
                             <span className="ficha-label">Dirección de Residencia</span>

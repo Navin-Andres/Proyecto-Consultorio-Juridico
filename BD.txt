@@ -63,7 +63,7 @@ CREATE TABLE estudiantes (
   direccion TEXT,
 
   -- Información académica
-  jornada_asignaturas VARCHAR(20) CHECK (jornada_asignaturas IN ('mañana','tarde','noche','sabatina','virtual')),
+  jornada_asignaturas VARCHAR(20) CHECK (jornada_asignaturas IN ('mañana','tarde','noche','sabatina','virtual','diurna','nocturna')),
   semestre INTEGER CHECK (semestre BETWEEN 1 AND 10),
   consultorios_realizados VARCHAR(10) CHECK (consultorios_realizados IN ('0','1','2','3','4+')),
   radicados TEXT,

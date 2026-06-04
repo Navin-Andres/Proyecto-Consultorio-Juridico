@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import './PersonalInfoForm.css'
 
-function LaborInfoForm({ onPrev, onNext, onChangeDatos }) {
-  const [fileName, setFileName] = useState('');
-  const [fileObject, setFileObject] = useState(null);
+function LaborInfoForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
+  const initialFile = formData.archivosSubidos?.['lif-certificacion-funciones'] || null;
+  const [fileName, setFileName] = useState(initialFile ? initialFile.name : '');
+  const [fileObject, setFileObject] = useState(initialFile);
   const [isDragging, setIsDragging] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -37,14 +39,45 @@ function LaborInfoForm({ onPrev, onNext, onChangeDatos }) {
     e.preventDefault();
     const empresaValue = document.getElementById('lif-empresa')?.value || '';
     const cargoValue = document.getElementById('lif-cargo')?.value || '';
+    
+    const newErrors = {};
+    if (!empresaValue.trim()) {
+      newErrors.empresa = 'La empresa es obligatoria (ingrese N/A si no labora)';
+    }
+
     const works = (empresaValue.trim().toLowerCase() !== 'n/a' && empresaValue.trim() !== '');
+
+    if (works && !cargoValue.trim()) {
+      newErrors.cargo = 'El cargo es obligatorio si está laborando';
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      const firstErrorKey = Object.keys(newErrors)[0];
+      const errElement = document.getElementById(`lif-${firstErrorKey}`);
+      if (errElement) {
+        const yOffset = -120; // Offset para evitar cruce con headers
+        const y = errElement.getBoundingClientRect().top + window.scrollY + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+      return;
+    }
+
+    setErrors({});
+
+    const updatedArchivosSubidos = { ...(formData.archivosSubidos || {}) };
+    if (fileObject) {
+      updatedArchivosSubidos['lif-certificacion-funciones'] = fileObject;
+    } else {
+      delete updatedArchivosSubidos['lif-certificacion-funciones'];
+    }
 
     if (onChangeDatos) {
       onChangeDatos({
         trabaja: works,
         empresa: empresaValue,
         cargo: cargoValue,
-        archivosSubidos: fileObject ? { 'lif-certificacion-funciones': fileObject } : {}
+        archivosSubidos: updatedArchivosSubidos
       });
     }
     if (onNext) onNext();
@@ -71,22 +104,25 @@ function LaborInfoForm({ onPrev, onNext, onChangeDatos }) {
             <input
               id="lif-empresa"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.empresa ? 'is-invalid' : ''}`}
               placeholder="Ingrese la empresa donde labora o N/A"
-              required
+              defaultValue={formData.empresa || ''}
             />
+            {errors.empresa && <span className="pif-error-msg">{errors.empresa}</span>}
           </div>
 
           <div className="pif-field" style={{ marginTop: '20px' }}>
             <label htmlFor="lif-cargo" className="pif-label">
-              Cargo
+              Cargo (Obligatorio si labora)
             </label>
             <input
               id="lif-cargo"
               type="text"
-              className="pif-input"
+              className={`pif-input ${errors.cargo ? 'is-invalid' : ''}`}
               placeholder="Cargo que desempeña en la empresa "
+              defaultValue={formData.cargo || ''}
             />
+            {errors.cargo && <span className="pif-error-msg">{errors.cargo}</span>}
           </div>
         </div>
       </div>
