@@ -27,8 +27,13 @@ function ContactInfoForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
 
     if (!emailInst.trim()) {
       newErrors.correoInstitucional = 'El correo institucional es obligatorio';
-    } else if (!emailInst.trim().toLowerCase().endsWith('@areandina.edu.co')) {
-      newErrors.correoInstitucional = 'Debe ser un correo @areandina.edu.co';
+    } else {
+      const emailLower = emailInst.trim().toLowerCase();
+      const validAreandina = emailLower.endsWith('@areandina.edu.co');
+      const validSubdomain = emailLower.endsWith('@estudiantes.areandina.edu.co');
+      if (!validAreandina && !validSubdomain) {
+        newErrors.correoInstitucional = 'Debe ser un correo institucional de Areandina';
+      }
     }
     
     if (!epsVal.trim()) newErrors.eps = 'La EPS es obligatoria';

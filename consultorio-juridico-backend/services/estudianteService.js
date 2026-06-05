@@ -4,6 +4,7 @@ const {
     mapFrontendDataToDb,
     mapConsultarEstudiante
 } = require('./estudianteMapper');
+const mailService = require('./mailService');
 
 const getEstudiantesFormateados = async () => {
     // Query to join with asignaciones, turnos and documentos
@@ -35,10 +36,11 @@ const registrarEstudiante = async (data, files) => {
 
         // 1. Obtener periodo_id del turno o el periodo activo actual
         let periodoId = null;
+        let turno = null;
         const { turnoId } = data;
         if (turnoId && turnoId !== 'null' && turnoId !== '') {
             const turnoRes = await client.query(
-                'SELECT periodo_id, cupos_totales, cupos_ocupados, activo FROM turnos WHERE id = $1 FOR UPDATE',
+                'SELECT periodo_id, cupos_totales, cupos_ocupados, activo, dia, jornada, hora_inicio, hora_fin FROM turnos WHERE id = $1 FOR UPDATE',
                 [turnoId]
             );
 
@@ -46,7 +48,7 @@ const registrarEstudiante = async (data, files) => {
                 throw new Error('El turno seleccionado no existe.');
             }
 
-            const turno = turnoRes.rows[0];
+            turno = turnoRes.rows[0];
             if (!turno.activo) {
                 throw new Error('El turno seleccionado no está activo.');
             }
@@ -130,6 +132,24 @@ const registrarEstudiante = async (data, files) => {
         }
 
         await client.query('COMMIT');
+
+        if (mapped.correoInstitucional) {
+            try {
+                const turnoTexto = turno
+                    ? `${turno.dia || ''} ${turno.jornada || ''} ${turno.hora_inicio?.slice(0,5) || ''} - ${turno.hora_fin?.slice(0,5) || ''}`.trim()
+                    : '';
+
+                await mailService.sendStudentRegisteredEmail({
+                    correoInstitucional: mapped.correoInstitucional,
+                    nombreCompleto: nuevoEstudiante.rows[0].nombre_completo,
+                    documento: mapped.documento,
+                    turnoTexto
+                });
+            } catch (mailError) {
+                console.error('Error al enviar correo de notificación:', mailError);
+            }
+        }
+
         return estudianteId;
     } catch (error) {
         await client.query('ROLLBACK');
