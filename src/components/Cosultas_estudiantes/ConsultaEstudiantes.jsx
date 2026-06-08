@@ -34,17 +34,13 @@ export default function ConsultaEstudiantes() {
   };
 
   const getStatusBadgeClass = (status) => {
-    if (status === 'rechazado') {
-      return 'status-badge status-rechazado';
-    }
-    return 'status-badge status-aprobado';
+    if (status === 'rechazado') return 'badge-rechazado';
+    return 'badge-registrado';
   };
 
   const getStatusText = (status) => {
-    if (status === 'rechazado') {
-      return 'Rechazado';
-    }
-    return 'Confirmado';
+    if (status === 'rechazado') return 'Inscripción rechazada';
+    return 'Inscripción registrada';
   };
 
   const formatDate = (dateStr) => {
@@ -62,10 +58,10 @@ export default function ConsultaEstudiantes() {
   if (student && student.turno && student.turno !== "Sin asignar") {
     const match = student.turno.match(/^([^-]+)\s*-\s*.*?\(([^)]+)\)$/);
     if (match) {
-        diaAsignado = match[1].trim();
-        horario = match[2].trim();
+      diaAsignado = match[1].trim();
+      horario = match[2].trim();
     } else {
-        diaAsignado = student.turno;
+      diaAsignado = student.turno;
     }
   }
 
@@ -74,8 +70,8 @@ export default function ConsultaEstudiantes() {
       {/* Tarjeta de Consulta */}
       <div className="consulta-card">
         <div className="consulta-header">
-          <h2>Consulta tu Estado de Inscripción</h2>
-          <p>Ingresa tus datos para verificar el estado de tu proceso en el Consultorio Jurídico.</p>
+          <h2>Consulta tu Inscripción</h2>
+          <p>Ingresa tu documento o correo institucional para verificar los datos de tu inscripción.</p>
         </div>
 
         <form onSubmit={handleSearch} className="consulta-form">
@@ -135,11 +131,9 @@ export default function ConsultaEstudiantes() {
                   Información actualizada al {formatDate(student.fechaRegistro)}
                 </span>
               </div>
-              {student.estado === 'rechazado' && (
-                <div className="resultado-badge badge-rechazado">
-                  Rechazado
-                </div>
-              )}
+              <div className={`resultado-badge ${getStatusBadgeClass(student.estado)}`}>
+                {getStatusText(student.estado)}
+              </div>
             </div>
 
             <div className="resultado-grid-info">
@@ -159,7 +153,7 @@ export default function ConsultaEstudiantes() {
                 <span className="info-box-label">HORARIO</span>
                 <span className="info-box-value horario-value">
                   {horario !== 'Sin asignar' && (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
                       <circle cx="12" cy="12" r="5"></circle>
                       <line x1="12" y1="1" x2="12" y2="3"></line>
                       <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -177,7 +171,7 @@ export default function ConsultaEstudiantes() {
               <div className="info-box full-width">
                 <span className="info-box-label">CONSULTORIO</span>
                 <span className="info-box-value consultorio-value">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#416900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight: '6px'}}>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#416900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '6px' }}>
                     <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
                     <path d="M9 22v-4h6v4"></path>
                     <path d="M8 6h.01"></path>
@@ -208,7 +202,7 @@ export default function ConsultaEstudiantes() {
             <p className="card-secondary-text">
               Para cualquier duda o seguimiento adicional a su proceso, por favor comuníquese con nuestra oficina de atención:
             </p>
-            
+
             <div className="contact-info-grid">
               <div className="contact-info-box">
                 <div className="contact-icon-wrapper">
@@ -235,9 +229,9 @@ export default function ConsultaEstudiantes() {
               </div>
             </div>
 
-            {student.observaciones && (
+            {student.observaciones && student.estado === 'rechazado' && (
               <div className="observaciones-box">
-                <strong>Observaciones de Coordinación:</strong>
+                <strong>Motivo del rechazo:</strong>
                 <p>{student.observaciones}</p>
               </div>
             )}

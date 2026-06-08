@@ -73,8 +73,8 @@ const registrarEstudiante = async (data, files) => {
                 fecha_nacimiento, correo, semestre, declara_veracidad, autoriza_datos,
                 departamento, municipio, direccion, telefono, correo_institucional,
                 jornada_asignaturas, periodo_id, consultorios_realizados, consultorio_externo, area_interes, radicados,
-                consultorio, eps, trabaja, empresa, cargo
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24) RETURNING id, nombre_completo`,
+                consultorio, eps, trabaja, empresa, cargo, observaciones_personales
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25) RETURNING id, nombre_completo`,
             [
                 mapped.nombreCompleto, mapped.tipoD, mapped.documento, mapped.fechaNacimiento,
                 mapped.email, mapped.sem, true, true, // declara y autoriza
@@ -83,7 +83,8 @@ const registrarEstudiante = async (data, files) => {
                 mapped.jornadaDb, periodoId, mapped.consultoriosRealizadosDb, mapped.consultorioExterno, mapped.areaInteresDb, mapped.radicados,
                 mapped.consultorioInscrito,
                 mapped.eps,
-                mapped.trabajaBoolean, mapped.empresa, mapped.cargo
+                mapped.trabajaBoolean, mapped.empresa, mapped.cargo,
+                mapped.observacionesPersonales
             ]
         );
 
@@ -225,17 +226,51 @@ const consultarEstudiantePorDocumentoOCorreo = async (identificacion) => {
 };
 
 const actualizarEstado = async (id, estado, observacionesAdmin) => {
-    const { rows } = await pool.query(
-        `UPDATE estudiantes 
-         SET estado = $1, observaciones_admin = $2, fecha_actualizacion = NOW() 
-         WHERE id = $3 
-         RETURNING *`,
-        [estado, observacionesAdmin, id]
-    );
-    if (rows.length === 0) {
-        throw new Error('Estudiante no encontrado');
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // Si se rechaza, liberar el turno asignado y decrementar los cupos ocupados.
+        if (estado === 'rechazado') {
+            const asignacionRes = await client.query(
+                'SELECT turno_id FROM asignaciones WHERE estudiante_id = $1',
+                [id]
+            );
+
+            if (asignacionRes.rows.length > 0) {
+                const turnoId = asignacionRes.rows[0].turno_id;
+                await client.query(
+                    'DELETE FROM asignaciones WHERE estudiante_id = $1',
+                    [id]
+                );
+                await client.query(
+                    'UPDATE turnos SET cupos_ocupados = GREATEST(0, cupos_ocupados - 1) WHERE id = $1',
+                    [turnoId]
+                );
+            }
+        }
+
+        const { rows } = await client.query(
+            `UPDATE estudiantes 
+             SET estado = $1, observaciones_admin = $2, fecha_actualizacion = NOW() 
+             WHERE id = $3 
+             RETURNING *`,
+            [estado, observacionesAdmin, id]
+        );
+
+        if (rows.length === 0) {
+            await client.query('ROLLBACK');
+            throw new Error('Estudiante no encontrado');
+        }
+
+        await client.query('COMMIT');
+        return rows[0];
+    } catch (error) {
+        await client.query('ROLLBACK');
+        throw error;
+    } finally {
+        client.release();
     }
-    return rows[0];
 };
 
 module.exports = {

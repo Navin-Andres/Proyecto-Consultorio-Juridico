@@ -47,13 +47,13 @@ const InicioDashboard = ({ setActiveTab }) => {
 
     // Calcular estadísticas de estudiantes
     const totalEstudiantes = estudiantes.length;
-    const pendientes = estudiantes.filter(e => e.estado === 'pendiente').length;
-    const aprobados = estudiantes.filter(e => e.estado === 'aprobado').length;
-    const rechazados = estudiantes.filter(e => e.estado === 'rechazado').length;
+    const activos = estudiantes.filter(e => e.estado !== 'rechazado').length;
+    const turnosActivos = turnos.length;
 
     // Calcular estadísticas de turnos
     const totalCuposTotales = turnos.reduce((acc, t) => acc + t.cupos_totales, 0);
     const totalCuposOcupados = turnos.reduce((acc, t) => acc + t.cupos_ocupados, 0);
+    const cuposDisponibles = totalCuposTotales - totalCuposOcupados;
     const porcentajeOcupacion = totalCuposTotales > 0 ? Math.round((totalCuposOcupados / totalCuposTotales) * 100) : 0;
 
     // Obtener los 5 estudiantes más recientes
@@ -83,25 +83,25 @@ const InicioDashboard = ({ setActiveTab }) => {
                         <h3 className="stat-value">{totalEstudiantes}</h3>
                     </div>
                 </div>
-                <div className="stat-card pending" onClick={() => setActiveTab('estudiantes')}>
-                    <div className="stat-icon">⏳</div>
+                <div className="stat-card active" onClick={() => setActiveTab('estudiantes')}>
+                    <div className="stat-icon">📋</div>
                     <div className="stat-info">
-                        <span className="stat-label">Pendientes</span>
-                        <h3 className="stat-value">{pendientes}</h3>
+                        <span className="stat-label">Inscripciones Activas</span>
+                        <h3 className="stat-value">{activos}</h3>
                     </div>
                 </div>
-                <div className="stat-card approved" onClick={() => setActiveTab('estudiantes')}>
-                    <div className="stat-icon">✅</div>
+                <div className="stat-card turnos" onClick={() => setActiveTab('turnos')}>
+                    <div className="stat-icon">📅</div>
                     <div className="stat-info">
-                        <span className="stat-label">Aprobados</span>
-                        <h3 className="stat-value">{aprobados}</h3>
+                        <span className="stat-label">Turnos Activos</span>
+                        <h3 className="stat-value">{turnosActivos}</h3>
                     </div>
                 </div>
-                <div className="stat-card rejected" onClick={() => setActiveTab('estudiantes')}>
-                    <div className="stat-icon">❌</div>
+                <div className="stat-card cupos" onClick={() => setActiveTab('turnos')}>
+                    <div className="stat-icon">🪑</div>
                     <div className="stat-info">
-                        <span className="stat-label">Rechazados</span>
-                        <h3 className="stat-value">{rechazados}</h3>
+                        <span className="stat-label">Cupos Disponibles</span>
+                        <h3 className="stat-value">{cuposDisponibles}</h3>
                     </div>
                 </div>
             </div>
@@ -165,8 +165,8 @@ const InicioDashboard = ({ setActiveTab }) => {
                                                 <span className="student-name">{est.nombres}</span>
                                                 <span className="student-sub">{est.email} • {est.turnoObj?.dia || 'Sin turno'}</span>
                                             </div>
-                                            <span className={`status-badge ${est.estado}`}>
-                                                {est.estado.charAt(0).toUpperCase() + est.estado.slice(1)}
+                                            <span className={`status-badge ${est.estado === 'rechazado' ? 'rechazado' : 'activo'}`}>
+                                                {est.estado === 'rechazado' ? 'Rechazado' : 'Activo'}
                                             </span>
                                         </div>
                                     );
@@ -185,7 +185,7 @@ const InicioDashboard = ({ setActiveTab }) => {
                         <span className="action-icon">👥</span>
                         <div className="action-text">
                             <strong>Estudiantes</strong>
-                            <span>Validar inscripciones y ver fichas</span>
+                            <span>Ver directorio y fichas de inscripción</span>
                         </div>
                     </button>
                     <button className="action-btn" onClick={() => setActiveTab('turnos')}>

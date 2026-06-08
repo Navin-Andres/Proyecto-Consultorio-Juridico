@@ -294,3 +294,49 @@
   border-color: var(--step-gray) !important;
   color: var(--step-gray-text) !important;
 }
+
+/* ── SweetAlert2 — inscripción ── */
+.swal-inscripcion-popup {
+  border-radius: 16px !important;
+  padding: 28px 24px 24px !important;
+  font-family: 'Inter', system-ui, sans-serif !important;
+  box-shadow: 0 20px 60px rgba(26, 30, 42, 0.15) !important;
+}
+
+.swal-inscripcion-title {
+  font-size: 1.35rem !important;
+  font-weight: 800 !important;
+  color: #1a1e2a !important;
+}
+
+.swal-inscripcion-text {
+  text-align: left !important;
+}
+
+.swal-inscripcion-text .swal-msg-primary {
+  margin: 0 0 12px;
+  color: #3d4654;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.swal-inscripcion-text .swal-msg-secondary {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.swal-inscripcion-btn {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  padding: 10px 22px !important;
+}
+
+.swal-inscripcion-btn-cancel {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+  padding: 10px 22px !important;
+}

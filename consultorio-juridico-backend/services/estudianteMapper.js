@@ -57,6 +57,7 @@ const mapDbEstudianteToFrontend = (est) => {
         periodo: est.periodo_nombre || '',
         estado: est.estado || 'pendiente',
         observacionesAdmin: est.observaciones_admin || '',
+        observacionesPersonales: est.observaciones_personales || '',
         anexos: est.documentos_anexos || [],
         fechaRegistro: est.fecha_registro ? new Date(est.fecha_registro).toLocaleDateString('es-CO', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'N/A'
     };
@@ -69,7 +70,7 @@ const mapFrontendDataToDb = (data) => {
         departamento, municipio, direccion, telefono, correoInstitucional, eps,
         jornada_asignaturas, turnoId,
         consultorio_inscrito, area_interes, consultorios_realizados, consultorio_externo, radicados,
-        trabaja, empresa, cargo
+        trabaja, empresa, cargo, observaciones_personales
     } = data;
 
     const nombreCompleto = `${nombres || ''} ${apellidos || ''}`.trim();
@@ -129,7 +130,8 @@ const mapFrontendDataToDb = (data) => {
         correoInstitucional: correoInstitucional || null,
         eps: eps || null,
         empresa: empresa || null,
-        cargo: cargo || null
+        cargo: cargo || null,
+        observacionesPersonales: (observaciones_personales || '').trim() || null
     };
 };
 

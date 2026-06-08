@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './EstudiantesInscriptos.css';
 import FichaEstudiante from './FichaEstudiante';
+import { alertQuitarError, alertQuitarExito, confirmQuitarEstudiante } from '../../../utils/swalAlerts';
 
 const EstudiantesInscriptos = () => {
     // Inicializado vacío para que la tabla esté limpia
@@ -79,30 +80,31 @@ const EstudiantesInscriptos = () => {
         setCurrentPage(1); // Volver a la página 1 cuando se filtra
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('¿Está seguro de que desea eliminar este estudiante? Esta acción no se puede deshacer.')) {
-            return;
+    const handleQuitar = async (id) => {
+        const response = await fetch(`http://localhost:5000/api/estudiantes/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.message || 'Error al quitar el estudiante.');
         }
 
-        try {
-            const response = await fetch(`http://localhost:5000/api/estudiantes/${id}`, {
-                method: 'DELETE',
-            });
+        if (selectedEstudiante && selectedEstudiante.id === id) {
+            setSelectedEstudiante(null);
+        }
+        setEstudiantes(prev => prev.filter(est => est.id !== id));
+    };
 
-            if (response.ok) {
-                // Si el estudiante eliminado estaba seleccionado en el drawer, cerrarlo
-                if (selectedEstudiante && selectedEstudiante.id === id) {
-                    setSelectedEstudiante(null);
-                }
-                // Actualizar el estado local para quitar el estudiante de la tabla
-                setEstudiantes(estudiantes.filter(est => est.id !== id));
-                alert('Estudiante eliminado con éxito.');
-            } else {
-                alert('Error al intentar eliminar el estudiante.');
-            }
+    const confirmarYQuitar = async (id, nombre) => {
+        const confirmed = await confirmQuitarEstudiante(nombre || 'este estudiante');
+        if (!confirmed) return;
+
+        try {
+            await handleQuitar(id);
+            await alertQuitarExito();
         } catch (error) {
-            console.error('Error deleting estudiante:', error);
-            alert('Error de conexión al eliminar.');
+            await alertQuitarError(error.message);
         }
     };
 
@@ -136,7 +138,8 @@ const EstudiantesInscriptos = () => {
             'Empresa',
             'Cargo',
             'Día de Práctica',
-            'Detalles de Horario'
+            'Detalles de Horario',
+            'Observaciones Personales'
         ];
 
         // Mapeo de filas
@@ -163,7 +166,8 @@ const EstudiantesInscriptos = () => {
             est.empresa || 'N/A',
             est.cargo || 'N/A',
             est.turnoObj?.dia || 'Sin asignar',
-            est.turnoObj?.detail || est.turnoObj?.detalle || ''
+            est.turnoObj?.detail || est.turnoObj?.detalle || '',
+            est.observacionesPersonales || ''
         ]);
 
         // Construir contenido CSV delimitado por punto y coma (;) para compatibilidad con Excel en español
@@ -180,7 +184,7 @@ const EstudiantesInscriptos = () => {
         // Codificación UTF-8 con BOM (\uFEFF) para que Excel lo abra con los caracteres de tildes y ñ legibles
         const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
-        
+
         const link = document.createElement('a');
         const fechaHoy = new Date().toISOString().split('T')[0];
         link.href = url;
@@ -197,7 +201,7 @@ const EstudiantesInscriptos = () => {
             const query = filtros.busqueda.toLowerCase().trim();
             const nombreCoincide = est.nombres && est.nombres.toLowerCase().includes(query);
             const documentoCoincide = est.documento && est.documento.toString().includes(query);
-            
+
             if (!nombreCoincide && !documentoCoincide) {
                 return false;
             }
@@ -226,20 +230,13 @@ const EstudiantesInscriptos = () => {
 
     if (selectedEstudiante) {
         return (
-            <FichaEstudiante 
-                selectedEstudiante={selectedEstudiante} 
+            <FichaEstudiante
+                selectedEstudiante={selectedEstudiante}
                 onBack={() => {
                     setSelectedEstudiante(null);
                     fetchEstudiantes();
-                }} 
-                onUpdate={(id, nuevoEstado, nuevasObs) => {
-                    setEstudiantes(prev => prev.map(est => {
-                        if (est.id === id) {
-                            return { ...est, estado: nuevoEstado, observacionesAdmin: nuevasObs };
-                        }
-                        return est;
-                    }));
                 }}
+                onQuitar={confirmarYQuitar}
             />
         );
     }
@@ -326,10 +323,9 @@ const EstudiantesInscriptos = () => {
                     <thead>
                         <tr>
                             <th className="col-nombre">NOMBRE COMPLETO</th>
-                            <th className="col-nivel-semestre">NIVEL / SEMESTRE</th>
                             <th className="col-identificacion">IDENTIFICACIÓN</th>
-                            <th className="col-turno">DÍA/JORNADA</th>
-                            <th className="col-telefono">TELÉFONO</th>
+                            <th className="col-nivel-semestre">NIVEL</th>
+                            <th className="col-turno">DÍA / JORNADA</th>
                             <th className="col-acciones text-center">ACCIONES</th>
                         </tr>
                     </thead>
@@ -348,16 +344,16 @@ const EstudiantesInscriptos = () => {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="col-nivel-semestre">
-                                            <div className="nivel-semestre-badge-group">
-                                                <span className="badge badge-nivel">{est.nivel}</span>
-                                                <span className="semestre-text">{est.semestre}° Semestre</span>
-                                            </div>
-                                        </td>
                                         <td className="col-identificacion">
                                             <div className="identificacion">
                                                 <span className="tipo-doc">{est.tipoDoc}</span>
                                                 <span className="num-doc">{est.documento}</span>
+                                            </div>
+                                        </td>
+                                        <td className="col-nivel-semestre">
+                                            <div className="nivel-semestre-badge-group">
+                                                <span className="badge badge-nivel">{est.nivel}</span>
+                                                <span className="semestre-text">{est.semestre}°</span>
                                             </div>
                                         </td>
                                         <td className="col-turno">
@@ -368,9 +364,6 @@ const EstudiantesInscriptos = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="col-telefono">
-                                            <span className="telefono-texto">{est.telefono || 'Sin teléfono'}</span>
-                                        </td>
                                         <td className="col-acciones text-center">
                                             <div className="acciones-buttons-wrapper">
                                                 <button
@@ -378,17 +371,20 @@ const EstudiantesInscriptos = () => {
                                                     onClick={() => setSelectedEstudiante(est)}
                                                     title="Ver Ficha Completa"
                                                 >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                                         <circle cx="12" cy="12" r="3"></circle>
                                                     </svg>
                                                 </button>
                                                 <button
                                                     className="btn-delete-estudiante"
-                                                    onClick={() => handleDelete(est.id)}
-                                                    title="Eliminar estudiante"
+                                                    onClick={() => confirmarYQuitar(
+                                                        est.id,
+                                                        `${est.nombres || ''} ${est.apellidos || ''}`.trim()
+                                                    )}
+                                                    title="Quitar estudiante"
                                                 >
-                                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                         <polyline points="3 6 5 6 21 6"></polyline>
                                                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                                                         <line x1="10" y1="11" x2="10" y2="17"></line>
@@ -402,7 +398,7 @@ const EstudiantesInscriptos = () => {
                             })
                         ) : (
                             <tr>
-                                <td colSpan="6" className="text-center empty-state">
+                                <td colSpan="5" className="text-center empty-state">
                                     No hay estudiantes registrados.
                                 </td>
                             </tr>
@@ -423,26 +419,26 @@ const EstudiantesInscriptos = () => {
                 {/* Renderizado de controles de paginación */}
                 {totalPages > 1 && (
                     <div className="pagination">
-                        <button 
-                            onClick={() => paginate(currentPage - 1)} 
+                        <button
+                            onClick={() => paginate(currentPage - 1)}
                             disabled={currentPage === 1}
                             className="btn-pagina prev-next"
                         >
                             Anterior
                         </button>
-                        
+
                         {[...Array(totalPages)].map((_, index) => (
-                            <button 
-                                key={index + 1} 
-                                onClick={() => paginate(index + 1)} 
+                            <button
+                                key={index + 1}
+                                onClick={() => paginate(index + 1)}
                                 className={`btn-pagina ${currentPage === index + 1 ? 'active' : ''}`}
                             >
                                 {index + 1}
                             </button>
                         ))}
-                        
-                        <button 
-                            onClick={() => paginate(currentPage + 1)} 
+
+                        <button
+                            onClick={() => paginate(currentPage + 1)}
                             disabled={currentPage === totalPages}
                             className="btn-pagina prev-next"
                         >

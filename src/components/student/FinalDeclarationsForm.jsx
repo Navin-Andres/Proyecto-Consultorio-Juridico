@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import './PersonalInfoForm.css'
 
-function FinalDeclarationsForm({ onPrev, onSubmitFinal, formData = {} }) {
+function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData = {} }) {
   const [errors, setErrors] = useState({})
+  const [observaciones, setObservaciones] = useState(formData.observaciones_personales || '')
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -22,9 +23,18 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal, formData = {} }) {
       return;
     }
 
+    const finalData = {
+      observaciones_personales: observaciones.trim(),
+      declara_veracidad: veracidad,
+      autoriza_datos: datosPersonales,
+    };
+
     setErrors({});
+    if (onChangeDatos) {
+      onChangeDatos(finalData);
+    }
     if (onSubmitFinal) {
-      onSubmitFinal();
+      onSubmitFinal(finalData);
     }
   };
 
@@ -77,7 +87,9 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal, formData = {} }) {
               id="fdf-observaciones"
               className="pif-input"
               placeholder="Escriba aquí cualquier detalle adicional relevante para su caso..."
-              defaultValue={formData.observaciones_personales || ''}
+              value={observaciones}
+              onChange={(e) => setObservaciones(e.target.value)}
+              rows={4}
             />
           </div>
         </div>

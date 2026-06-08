@@ -7,6 +7,7 @@ import AdminLogin from './components/Admin/AdminLogin/AdminLogin'
 import AdminDashboard from './components/Admin/AdminDashboard/AdminDashboard'
 import SuccessScreen from './components/SuccessScreen/SuccessScreen'
 import ConsultaEstudiantes from './components/Cosultas_estudiantes/ConsultaEstudiantes'
+import ManualUsuario from './components/ManualUsuario/ManualUsuario'
 import './App.css'
 
 function App() {
@@ -28,6 +29,18 @@ function App() {
         <Navbar showInscripciones={true} />
         <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
           <ConsultaEstudiantes />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === '/manual-usuario') {
+    return (
+      <div className="app-container">
+        <Navbar />
+        <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
+          <ManualUsuario />
         </div>
         <Footer />
       </div>

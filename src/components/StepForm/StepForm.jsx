@@ -9,6 +9,11 @@ import LaborInfoForm from '../student/LaborInfoForm'
 import AnnexesForm from '../student/AnnexesForm'
 import FinalDeclarationsForm from '../student/FinalDeclarationsForm'
 import SuccessScreen from '../SuccessScreen/SuccessScreen'
+import {
+  alertDocumentoDuplicado,
+  alertErrorConexion,
+  alertErrorInscripcion,
+} from '../../utils/swalAlerts'
 
 const STEPS = [
   { id: 1, label: 'INFORMACIÓN PERSONAL' },
@@ -76,12 +81,17 @@ function StepForm({ onSuccess }) {
     });
   }
 
-  const handleFinalizar = async () => {
+  const handleFinalizar = async (finalStepData = {}) => {
     try {
+      const mergedData = { ...formData, ...finalStepData };
       // Intenta capturar valores actualmente en pantalla si no se han guardado aún
-      const nombres = document.getElementById('pif-nombre')?.value || formData.nombres || 'Ejemplo Nombres';
-      const documento = document.getElementById('pif-documento')?.value || formData.documento || '123456789';
-      const email = document.getElementById('pif-email')?.value || formData.email || 'ejemplo@correo.com';
+      const nombres = document.getElementById('pif-nombre')?.value || mergedData.nombres || 'Ejemplo Nombres';
+      const documento = document.getElementById('pif-documento')?.value || mergedData.documento || '123456789';
+      const email = document.getElementById('pif-email')?.value || mergedData.email || 'ejemplo@correo.com';
+      const observacionesPersonales = finalStepData.observaciones_personales
+        ?? document.getElementById('fdf-observaciones')?.value?.trim()
+        ?? mergedData.observaciones_personales
+        ?? '';
 
       // 1. Usamos FormData en lugar de JSON para enviar texto y Archivos juntos
       const dataAEnviar = new FormData();
@@ -90,34 +100,37 @@ function StepForm({ onSuccess }) {
       dataAEnviar.append('nombres', nombres);
       dataAEnviar.append('email', email);
       dataAEnviar.append('documento', documento);
-      dataAEnviar.append('tipoDoc', formData.tipoDoc || 'CC');
-      dataAEnviar.append('fechaNacimiento', formData.fechaNacimiento || '2000-01-01');
-      dataAEnviar.append('semestre', formData.semestre || '7');
-      dataAEnviar.append('jornada_asignaturas', formData.jornada_asignaturas || '');
-      dataAEnviar.append('turnoId', formData.turnoId || '');
+      dataAEnviar.append('tipoDoc', mergedData.tipoDoc || 'CC');
+      dataAEnviar.append('fechaNacimiento', mergedData.fechaNacimiento || '2000-01-01');
+      dataAEnviar.append('semestre', mergedData.semestre || '7');
+      dataAEnviar.append('jornada_asignaturas', mergedData.jornada_asignaturas || '');
+      dataAEnviar.append('turnoId', mergedData.turnoId || '');
 
       // Textos del paso de Contacto
-      dataAEnviar.append('departamento', formData.departamento || '');
-      dataAEnviar.append('municipio', formData.municipio || '');
-      dataAEnviar.append('direccion', formData.direccion || '');
-      dataAEnviar.append('telefono', formData.telefono || '');
-      dataAEnviar.append('correoInstitucional', formData.correoInstitucional || '');
-      dataAEnviar.append('eps', formData.eps || '');
+      dataAEnviar.append('departamento', mergedData.departamento || '');
+      dataAEnviar.append('municipio', mergedData.municipio || '');
+      dataAEnviar.append('direccion', mergedData.direccion || '');
+      dataAEnviar.append('telefono', mergedData.telefono || '');
+      dataAEnviar.append('correoInstitucional', mergedData.correoInstitucional || '');
+      dataAEnviar.append('eps', mergedData.eps || '');
 
       // Textos académicos
-      dataAEnviar.append('consultorio_inscrito', formData.consultorio_inscrito || 'I');
-      dataAEnviar.append('area_interes', formData.area_interes || '');
-      dataAEnviar.append('consultorios_realizados', formData.consultorios_realizados || '0');
-      dataAEnviar.append('consultorio_externo', formData.consultorio_externo || '0');
-      dataAEnviar.append('radicados', formData.radicados || '');
+      dataAEnviar.append('consultorio_inscrito', mergedData.consultorio_inscrito || 'I');
+      dataAEnviar.append('area_interes', mergedData.area_interes || '');
+      dataAEnviar.append('consultorios_realizados', mergedData.consultorios_realizados || '0');
+      dataAEnviar.append('consultorio_externo', mergedData.consultorio_externo || '0');
+      dataAEnviar.append('radicados', mergedData.radicados || '');
 
       // Textos laborales
-      dataAEnviar.append('trabaja', formData.trabaja || false);
-      dataAEnviar.append('empresa', formData.empresa || '');
-      dataAEnviar.append('cargo', formData.cargo || '');
+      dataAEnviar.append('trabaja', mergedData.trabaja || false);
+      dataAEnviar.append('empresa', mergedData.empresa || '');
+      dataAEnviar.append('cargo', mergedData.cargo || '');
 
-      // 2. Archivos (recuperados de formData.archivosSubidos ya que el paso 5 está desmontado)
-      const archivos = formData.archivosSubidos || {};
+      // Declaraciones finales
+      dataAEnviar.append('observaciones_personales', observacionesPersonales);
+
+      // 2. Archivos (recuperados de mergedData.archivosSubidos ya que el paso 5 está desmontado)
+      const archivos = mergedData.archivosSubidos || {};
 
       if (archivos['anx-identidad']) dataAEnviar.append('doc_identidad', archivos['anx-identidad']);
       if (archivos['anx-eps']) dataAEnviar.append('doc_eps', archivos['anx-eps']);
@@ -142,16 +155,26 @@ function StepForm({ onSuccess }) {
             ? `#CJ-${new Date().getFullYear()}-${respuestaData.estudianteId.toString().padStart(4, '0')}`
             : `#CJ-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
             
-          onSuccess({ ...formData, radicado: numRadicado });
+          onSuccess({ ...mergedData, radicado: numRadicado });
         } else {
+          setFormData(mergedData);
           setIsSuccess(true);
         }
       } else {
         const errorData = await respuesta.json();
-        alert(errorData.message || "Error al guardar en el servidor.");
+        const message = errorData.message || 'Error al guardar en el servidor.';
+
+        if (message.includes('documento') && message.includes('registrado')) {
+          await alertDocumentoDuplicado();
+          setCurrentStep(1);
+          setTimeout(scrollToForm, 50);
+        } else {
+          await alertErrorInscripcion(message);
+        }
       }
     } catch (error) {
-      console.error("Error al registrar:", error);
+      console.error('Error al registrar:', error);
+      await alertErrorConexion();
     }
   }
 
@@ -235,7 +258,14 @@ function StepForm({ onSuccess }) {
       {currentStep === 3 && <AcademicInfoForm onPrev={() => handleStepChange(2)} onNext={() => handleNextStep(4)} onChangeDatos={updateFormData} formData={formData} />}
       {currentStep === 4 && <LaborInfoForm onPrev={() => handleStepChange(3)} onNext={() => handleNextStep(5)} onChangeDatos={updateFormData} formData={formData} />}
       {currentStep === 5 && <AnnexesForm onPrev={() => handleStepChange(4)} onNext={() => handleNextStep(6)} onChangeDatos={updateFormData} formData={formData} />}
-      {currentStep === 6 && <FinalDeclarationsForm onPrev={() => handleStepChange(5)} onSubmitFinal={handleFinalizar} formData={formData} />}
+      {currentStep === 6 && (
+        <FinalDeclarationsForm
+          onPrev={() => handleStepChange(5)}
+          onSubmitFinal={handleFinalizar}
+          onChangeDatos={updateFormData}
+          formData={formData}
+        />
+      )}
     </section>
   )
 }

@@ -4,12 +4,16 @@ import TurnosManager from '../TurnosManager/TurnosManager';
 import EstudiantesInscriptos from '../EstudiantesInscriptos/EstudiantesInscriptos';
 import Sidebar from '../sidebar/Sidebar';
 import InicioDashboard from '../InicioDashboard/InicioDashboard';
+import { confirmCerrarSesion } from '../../../utils/swalAlerts';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
     const [activeTab, setActiveTab] = useState('inicio');
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        const confirmed = await confirmCerrarSesion();
+        if (!confirmed) return;
+
         localStorage.removeItem('adminToken');
         window.location.href = '/admin-login';
     };
@@ -35,7 +39,6 @@ const AdminDashboard = () => {
                     {activeTab === 'turnos' && <TurnosManager />}
                     {activeTab === 'periodos' && <PeriodosManager />}
                     {activeTab === 'historial' && <div>Historial de actividades.</div>}
-                    {activeTab === 'configuracion' && <div>Configuración del sistema.</div>}
                 </section>
             </main>
         </div>

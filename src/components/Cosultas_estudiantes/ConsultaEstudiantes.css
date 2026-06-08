@@ -240,6 +240,7 @@
   font-weight: 700;
 }
 
+.badge-registrado,
 .badge-confirmado {
   background-color: #bbf7d0;
   color: #166534;
@@ -250,7 +251,10 @@
   color: #991b1b;
 }
 
-/* Removido badge-pendiente */
+.badge-pendiente {
+  background-color: #fde68a;
+  color: #92400e;
+}
 
 .resultado-grid-info {
   display: grid;
