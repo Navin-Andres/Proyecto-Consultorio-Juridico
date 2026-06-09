@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './StepForm.css'
 
 // Agregamos la subcarpeta student/ a cada importación
@@ -30,6 +30,9 @@ function StepForm({ onSuccess }) {
   const [formData, setFormData] = useState({})
   const [nombrePeriodo, setNombrePeriodo] = useState('...')
   const [isSuccess, setIsSuccess] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const isSubmittingRef = useRef(false)
+  const registrationSucceededRef = useRef(false)
 
   useEffect(() => {
     fetch('http://localhost:5000/api/periodos/activo')
@@ -82,12 +85,30 @@ function StepForm({ onSuccess }) {
   }
 
   const handleFinalizar = async (finalStepData = {}) => {
+    if (isSubmittingRef.current || registrationSucceededRef.current) return;
+
+    isSubmittingRef.current = true;
+    setIsSubmitting(true);
     try {
       const mergedData = { ...formData, ...finalStepData };
-      // Intenta capturar valores actualmente en pantalla si no se han guardado aún
-      const nombres = document.getElementById('pif-nombre')?.value || mergedData.nombres || 'Ejemplo Nombres';
-      const documento = document.getElementById('pif-documento')?.value || mergedData.documento || '123456789';
-      const email = document.getElementById('pif-email')?.value || mergedData.email || 'ejemplo@correo.com';
+
+      if (!mergedData.documento?.trim()) {
+        await alertErrorInscripcion('No se encontró el número de documento. Vuelve al paso 1 y verifica tus datos.');
+        setCurrentStep(1);
+        setTimeout(scrollToForm, 50);
+        return;
+      }
+
+      const nombres = mergedData.nombres?.trim();
+      const documento = mergedData.documento.trim();
+      const email = mergedData.email?.trim();
+
+      if (!nombres || !email) {
+        await alertErrorInscripcion('Faltan datos obligatorios. Revisa el paso 1 (nombre, documento y correo).');
+        setCurrentStep(1);
+        setTimeout(scrollToForm, 50);
+        return;
+      }
       const observacionesPersonales = finalStepData.observaciones_personales
         ?? document.getElementById('fdf-observaciones')?.value?.trim()
         ?? mergedData.observaciones_personales
@@ -148,7 +169,8 @@ function StepForm({ onSuccess }) {
 
       if (respuesta.ok) {
         const respuestaData = await respuesta.json().catch(() => ({}));
-        
+        registrationSucceededRef.current = true;
+
         if (onSuccess) {
           // Generamos un radicado basado en el ID de la base de datos si está disponible
           const numRadicado = respuestaData.estudianteId 
@@ -161,6 +183,8 @@ function StepForm({ onSuccess }) {
           setIsSuccess(true);
         }
       } else {
+        if (registrationSucceededRef.current) return;
+
         const errorData = await respuesta.json();
         const message = errorData.message || 'Error al guardar en el servidor.';
 
@@ -175,6 +199,9 @@ function StepForm({ onSuccess }) {
     } catch (error) {
       console.error('Error al registrar:', error);
       await alertErrorConexion();
+    } finally {
+      isSubmittingRef.current = false;
+      setIsSubmitting(false);
     }
   }
 
@@ -264,6 +291,7 @@ function StepForm({ onSuccess }) {
           onSubmitFinal={handleFinalizar}
           onChangeDatos={updateFormData}
           formData={formData}
+          isSubmitting={isSubmitting}
         />
       )}
     </section>

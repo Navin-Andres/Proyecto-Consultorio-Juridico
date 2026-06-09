@@ -7,7 +7,8 @@ import AdminLogin from './components/Admin/AdminLogin/AdminLogin'
 import AdminDashboard from './components/Admin/AdminDashboard/AdminDashboard'
 import SuccessScreen from './components/SuccessScreen/SuccessScreen'
 import ConsultaEstudiantes from './components/Cosultas_estudiantes/ConsultaEstudiantes'
-import ManualUsuario from './components/ManualUsuario/ManualUsuario'
+import Reglamento from './components/Reglamento/Reglamento'
+import Ayuda from './components/Ayuda/Ayuda'
 import './App.css'
 
 function App() {
@@ -35,12 +36,24 @@ function App() {
     );
   }
 
-  if (path === '/manual-usuario') {
+  if (path === '/reglamento') {
     return (
       <div className="app-container">
         <Navbar />
         <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
-          <ManualUsuario />
+          <Reglamento />
+        </div>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (path === '/ayuda') {
+    return (
+      <div className="app-container">
+        <Navbar />
+        <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
+          <Ayuda />
         </div>
         <Footer />
       </div>

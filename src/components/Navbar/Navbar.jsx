@@ -33,10 +33,11 @@ function Navbar({ showInscripciones = false }) {
         {/* ── Desktop links ── */}
         <div className="navbar-links">
           <a href="/" id="nav-inicio" className="nav-link">Inicio</a>
-          <a href="/manual-usuario" id="nav-manual" className="nav-link">Manual de usuario</a>
           <a href="/consultar-inscripciones" id="nav-inscripciones" className="nav-link nav-link--bold">
             Consultar inscripciones
           </a>
+          <a href="/reglamento" id="nav-reglamento" className="nav-link">Reglamento</a>
+          <a href="/ayuda" id="nav-ayuda" className="nav-link">Ayuda</a>
           <a href="/admin"      id="nav-login"       className="nav-btn-login">LOGIN</a>
         </div>
 
@@ -58,10 +59,11 @@ function Navbar({ showInscripciones = false }) {
       {/* ── Mobile drawer ── */}
       <div className={`mobile-menu${menuOpen ? ' is-open' : ''}`} id="mobile-menu">
         <a href="/" className="mobile-link" onClick={() => setMenuOpen(false)}>Inicio</a>
-        <a href="/manual-usuario" className="mobile-link" onClick={() => setMenuOpen(false)}>Manual de usuario</a>
         <a href="/consultar-inscripciones" className="mobile-link mobile-link--bold" onClick={() => setMenuOpen(false)}>
           Consultar inscripciones
         </a>
+        <a href="/reglamento" className="mobile-link" onClick={() => setMenuOpen(false)}>Reglamento</a>
+        <a href="/ayuda" className="mobile-link" onClick={() => setMenuOpen(false)}>Ayuda</a>
         <a href="/admin"      className="mobile-link-login" onClick={() => setMenuOpen(false)}>LOGIN</a>
       </div>
     </header>

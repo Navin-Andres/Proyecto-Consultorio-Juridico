@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import './PersonalInfoForm.css'
 
-function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData = {} }) {
+function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData = {}, isSubmitting = false }) {
   const [errors, setErrors] = useState({})
   const [observaciones, setObservaciones] = useState(formData.observaciones_personales || '')
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;
     const veracidad = document.getElementById('fdf-veracidad')?.checked || false;
     const datosPersonales = document.getElementById('fdf-datos-personales')?.checked || false;
 
@@ -34,7 +35,7 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData 
       onChangeDatos(finalData);
     }
     if (onSubmitFinal) {
-      onSubmitFinal(finalData);
+      await onSubmitFinal(finalData);
     }
   };
 
@@ -96,14 +97,14 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData 
       </div>
 
       <div className="pif-actions">
-        <button type="button" onClick={onPrev} id="btn-anterior-step6" className="pif-btn-prev">
+        <button type="button" onClick={onPrev} id="btn-anterior-step6" className="pif-btn-prev" disabled={isSubmitting}>
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <path d="M16 10H4M9 15l-5-5 5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Anterior
         </button>
-        <button type="submit" id="btn-enviar-step6" className="pif-btn-next">
-          Finalizar
+        <button type="submit" id="btn-enviar-step6" className="pif-btn-next" disabled={isSubmitting}>
+          {isSubmitting ? 'Enviando...' : 'Finalizar'}
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
           </svg>

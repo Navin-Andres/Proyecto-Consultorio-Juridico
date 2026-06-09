@@ -69,11 +69,11 @@ export const alertDocumentoDuplicado = async () => {
         icon: 'warning',
         html: `
             <p class="swal-msg-primary">
-                El número de documento ingresado ya tiene una inscripción activa en el sistema.
+                Este número de documento ya está registrado en el sistema.
             </p>
             <p class="swal-msg-secondary">
-                Si ya completaste tu registro, puedes consultar el estado de tu solicitud.
-                Si necesitas corregir tus datos, comunícate con el Consultorio Jurídico.
+                Si acabas de completar tu inscripción, no necesitas volver a enviar el formulario.
+                Puedes consultar tu radicado con el botón de abajo.
             </p>
         `,
         showCancelButton: true,
