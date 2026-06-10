@@ -14,19 +14,25 @@ const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT ? Number(SMTP_PORT) : 587,
   secure: SMTP_PORT === '465',
+  connectionTimeout: 10000,
+  greetingTimeout: 10000,
+  socketTimeout: 15000,
   auth: SMTP_USER && SMTP_PASS ? {
     user: SMTP_USER,
     pass: SMTP_PASS
   } : undefined
 });
 
+const isSmtpConfigured = () => Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS && SMTP_FROM);
+
 const sendStudentRegisteredEmail = async ({ correoInstitucional, nombreCompleto, documento, turnoTexto }) => {
   if (!correoInstitucional) {
-    throw new Error('No se proporcionó correo institucional para enviar la notificación');
+    return null;
   }
 
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS || !SMTP_FROM) {
-    throw new Error('No está configurado el servidor SMTP en las variables de entorno');
+  if (!isSmtpConfigured()) {
+    console.warn('SMTP no configurado: se omitió el envío del correo de inscripción.');
+    return null;
   }
 
   const subject = 'Confirmación de inscripción - Consultorio Jurídico';

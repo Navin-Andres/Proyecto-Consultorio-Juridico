@@ -41,12 +41,23 @@ function FinalDeclarationsForm({ onPrev, onSubmitFinal, onChangeDatos, formData 
 
   return (
     <form
-      className="pif-form"
+      className={`pif-form${isSubmitting ? ' pif-form--submitting' : ''}`}
       id="form-final-declarations"
       style={{ gridTemplateColumns: '1fr' }}
       noValidate
       onSubmit={handleFormSubmit}
     >
+      {isSubmitting && (
+        <div className="pif-submitting-overlay" role="status" aria-live="polite" aria-busy="true">
+          <div className="pif-submitting-box">
+            <div className="pif-spinner" aria-hidden="true" />
+            <p className="pif-submitting-title">Procesando tu inscripción</p>
+            <span className="pif-submitting-text">
+              Estamos guardando tus datos y documentos. No cierres ni recargues esta página.
+            </span>
+          </div>
+        </div>
+      )}
       <div className="pif-card" style={{ margin: '12px 0 0' }}>
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">

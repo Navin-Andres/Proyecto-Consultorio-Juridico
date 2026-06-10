@@ -707,3 +707,62 @@ textarea.pif-input {
   border-radius: 10px;
   background-color: #fef2f2;
 }
+
+/* ── ENVÍO DE INSCRIPCIÓN ── */
+.pif-form--submitting {
+  position: relative;
+}
+
+.pif-submitting-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+}
+
+.pif-submitting-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 320px;
+  gap: 10px;
+}
+
+.pif-spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #e2e8d6;
+  border-top-color: #7FB536;
+  border-radius: 50%;
+  animation: pif-spin 0.8s linear infinite;
+}
+
+@keyframes pif-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pif-submitting-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1e2a;
+}
+
+.pif-submitting-text {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.pif-btn-next:disabled,
+.pif-btn-prev:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

@@ -135,20 +135,19 @@ const registrarEstudiante = async (data, files) => {
         await client.query('COMMIT');
 
         if (mapped.correoInstitucional) {
-            try {
-                const turnoTexto = turno
-                    ? `${turno.dia || ''} ${turno.jornada || ''} ${turno.hora_inicio?.slice(0,5) || ''} - ${turno.hora_fin?.slice(0,5) || ''}`.trim()
-                    : '';
+            const turnoTexto = turno
+                ? `${turno.dia || ''} ${turno.jornada || ''} ${turno.hora_inicio?.slice(0, 5) || ''} - ${turno.hora_fin?.slice(0, 5) || ''}`.trim()
+                : '';
 
-                await mailService.sendStudentRegisteredEmail({
-                    correoInstitucional: mapped.correoInstitucional,
-                    nombreCompleto: nuevoEstudiante.rows[0].nombre_completo,
-                    documento: mapped.documento,
-                    turnoTexto
-                });
-            } catch (mailError) {
+            // El correo se envía en segundo plano para no bloquear la respuesta al estudiante
+            mailService.sendStudentRegisteredEmail({
+                correoInstitucional: mapped.correoInstitucional,
+                nombreCompleto: nuevoEstudiante.rows[0].nombre_completo,
+                documento: mapped.documento,
+                turnoTexto
+            }).catch((mailError) => {
                 console.error('Error al enviar correo de notificación:', mailError);
-            }
+            });
         }
 
         return estudianteId;

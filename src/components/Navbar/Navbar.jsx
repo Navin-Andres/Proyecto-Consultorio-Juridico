@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import logoAreandina from '../../assets/logo_area andina.png'
 import './Navbar.css'
 
 function Navbar({ showInscripciones = false }) {
@@ -9,26 +10,22 @@ function Navbar({ showInscripciones = false }) {
       <nav className="navbar" role="navigation" aria-label="Navegación principal">
 
         {/* ── Brand ── */}
-        <div className="navbar-brand">
-          <div className="navbar-logo" aria-hidden="true">
-            <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="48" height="48" rx="6" fill="white" fillOpacity="0.15"/>
-              <rect x="23" y="10" width="2" height="28" rx="1" fill="white"/>
-              <rect x="15" y="37" width="18" height="2.5" rx="1.25" fill="white"/>
-              <rect x="12" y="11" width="24" height="2.5" rx="1.25" fill="white"/>
-              <line x1="14" y1="13.5" x2="10" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="14" y1="13.5" x2="18" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              <path d="M9 23 Q14 28 19 23" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-              <line x1="34" y1="13.5" x2="30" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              <line x1="34" y1="13.5" x2="38" y2="23" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-              <path d="M29 23 Q34 28 39 23" stroke="white" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
-            </svg>
+        <a href="/" className="navbar-brand" aria-label="Inicio — Consultorio Jurídico Areandina">
+          <div className="navbar-logo">
+            <img
+              src={logoAreandina}
+              alt="Logo Fundación Universitaria del Área Andina"
+              className="navbar-logo-img"
+            />
           </div>
           <div className="navbar-title">
-            <span className="navbar-title-main">Consultorio Jurídico</span>
-            <span className="navbar-title-sub">ÁREA ANDINA</span>
+            <span className="navbar-title-main">
+              Consultorio Jurídico y Centro de Conciliación
+            </span>
+            <span className="navbar-title-quote">“Julio Eastman Díaz”</span>
+            <span className="navbar-title-sub">Areandina Seccional Pereira</span>
           </div>
-        </div>
+        </a>
 
         {/* ── Desktop links ── */}
         <div className="navbar-links">
