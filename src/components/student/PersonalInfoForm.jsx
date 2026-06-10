@@ -11,8 +11,18 @@ function formatTime12h(timeStr) {
   if (!timeStr) return '';
   const [hourStr, minStr] = timeStr.split(':');
   let hour = parseInt(hourStr, 10);
-  const ampm = hour >= 12 ? 'PM' : 'AM';
-  hour = hour % 12 || 12;
+  let ampm = 'AM';
+  
+  if (hour === 12) {
+    ampm = 'M'; // Medio día
+  } else if (hour > 12) {
+    ampm = 'PM';
+    hour = hour - 12;
+  } else if (hour === 0) {
+    hour = 12;
+    ampm = 'AM';
+  }
+  
   return `${hour}:${minStr} ${ampm}`;
 }
 
