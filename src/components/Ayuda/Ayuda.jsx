@@ -45,7 +45,7 @@ export default function Ayuda() {
         <div className="info-section">
           <h2>Contacto</h2>
           <div className="info-contact-box">
-            <strong>Consultorio Jurídico — Sede Bogotá</strong>
+            <strong>Consultorio Jurídico — Seccional Pereira</strong>
             <br />
             Correo:{' '}
             <a href="mailto:consultareandina@areandina.edu.co" className="info-link">

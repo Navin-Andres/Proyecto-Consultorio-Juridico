@@ -5,7 +5,7 @@ function Footer() {
     <footer className="footer-wrapper">
       <div className="footer-content">
         <div className="footer-brand">
-          <span className="footer-brand-highlight">Areandina</span> Sede Bogotá - Consultorio Jurídico
+          <span className="footer-brand-highlight">Areandina</span> Seccional Pereira - Consultorio Jurídico
         </div>
         <div className="footer-links">
           <a href="#politica" className="footer-link">Política y privacidad</a>

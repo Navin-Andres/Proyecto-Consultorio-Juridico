@@ -35,7 +35,6 @@ function Navbar({ showInscripciones = false }) {
           </a>
           <a href="/reglamento" id="nav-reglamento" className="nav-link">Reglamento</a>
           <a href="/ayuda" id="nav-ayuda" className="nav-link">Ayuda</a>
-          <a href="/admin"      id="nav-login"       className="nav-btn-login">LOGIN</a>
         </div>
 
         {/* ── Hamburger (mobile only) ── */}
@@ -61,7 +60,6 @@ function Navbar({ showInscripciones = false }) {
         </a>
         <a href="/reglamento" className="mobile-link" onClick={() => setMenuOpen(false)}>Reglamento</a>
         <a href="/ayuda" className="mobile-link" onClick={() => setMenuOpen(false)}>Ayuda</a>
-        <a href="/admin"      className="mobile-link-login" onClick={() => setMenuOpen(false)}>LOGIN</a>
       </div>
     </header>
   )

@@ -9,6 +9,7 @@ import SuccessScreen from './components/SuccessScreen/SuccessScreen'
 import ConsultaEstudiantes from './components/Cosultas_estudiantes/ConsultaEstudiantes'
 import Reglamento from './components/Reglamento/Reglamento'
 import Ayuda from './components/Ayuda/Ayuda'
+import ManualUsuario from './components/ManualUsuario/ManualUsuario'
 import './App.css'
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
   // Simple check for path until router is installed
   const path = window.location.pathname;
 
-  if (path === '/admin') {
+  if (path === '/login') {
     return <AdminLogin />;
   }
 
@@ -48,12 +49,12 @@ function App() {
     );
   }
 
-  if (path === '/ayuda') {
+  if (path === '/ayuda' || path === '/manual-usuario') {
     return (
       <div className="app-container">
         <Navbar />
-        <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px' }}>
-          <Ayuda />
+        <div className="main-content" style={{ justifyContent: 'center', marginTop: '40px', padding: '0 20px', width: '100%' }}>
+          <ManualUsuario />
         </div>
         <Footer />
       </div>
