@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PeriodosManager.css';
+import { API_URL } from '../../../utils/apiConfig';
 
 const PeriodosManager = () => {
     const [periodos, setPeriodos] = useState([]);
@@ -17,7 +18,7 @@ const PeriodosManager = () => {
 
     const fetchPeriodos = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/periodos');
+            const response = await fetch(`${API_URL}/api/periodos`);
             const data = await response.json();
             setPeriodos(data);
         } catch (error) {
@@ -52,7 +53,7 @@ const PeriodosManager = () => {
     const handleDelete = async (id, nombre) => {
         if (window.confirm(`¿Estás seguro de eliminar el periodo ${nombre}?`)) {
             try {
-                const response = await fetch(`http://localhost:5000/api/periodos/${id}`, {
+                const response = await fetch(`${API_URL}/api/periodos/${id}`, {
                     method: 'DELETE'
                 });
                 
@@ -72,8 +73,8 @@ const PeriodosManager = () => {
         e.preventDefault();
         try {
             const url = editingId 
-                ? `http://localhost:5000/api/periodos/${editingId}`
-                : 'http://localhost:5000/api/periodos';
+                ? `${API_URL}/api/periodos/${editingId}`
+                : `${API_URL}/api/periodos`;
             
             const method = editingId ? 'PUT' : 'POST';
 
@@ -101,7 +102,7 @@ const PeriodosManager = () => {
 
     const handleActivar = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/periodos/${id}/activar`, {
+            const response = await fetch(`${API_URL}/api/periodos/${id}/activar`, {
                 method: 'PUT'
             });
             

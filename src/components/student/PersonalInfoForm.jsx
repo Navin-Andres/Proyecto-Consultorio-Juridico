@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import './PersonalInfoForm.css'
+import { API_URL } from '../../utils/apiConfig'
 
 function getPillClass(booked, total) {
   if (booked >= total) return 'red'
@@ -35,7 +36,7 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/turnos')
+        const response = await fetch(`${API_URL}/api/turnos`)
         const data = await response.json()
         setTurnos(data.filter(t => t.activo))
       } catch (error) {

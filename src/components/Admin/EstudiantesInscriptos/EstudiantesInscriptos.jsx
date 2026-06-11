@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './EstudiantesInscriptos.css';
 import FichaEstudiante from './FichaEstudiante';
 import { alertQuitarError, alertQuitarExito, confirmQuitarEstudiante } from '../../../utils/swalAlerts';
+import { API_URL } from '../../../utils/apiConfig';
 
 const EstudiantesInscriptos = () => {
     // Inicializado vacío para que la tabla esté limpia
@@ -27,8 +28,8 @@ const EstudiantesInscriptos = () => {
         const fetchTurnosYPeriodos = async () => {
             try {
                 const [resTurnos, resPeriodos] = await Promise.all([
-                    fetch('http://localhost:5000/api/turnos'),
-                    fetch('http://localhost:5000/api/periodos')
+                    fetch(`${API_URL}/api/turnos`),
+                    fetch(`${API_URL}/api/periodos`)
                 ]);
                 const dataTurnos = await resTurnos.json();
                 const dataPeriodos = await resPeriodos.json();
@@ -63,7 +64,7 @@ const EstudiantesInscriptos = () => {
 
     const fetchEstudiantes = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/estudiantes`);
+            const response = await fetch(`${API_URL}/api/estudiantes`);
             const data = await response.json();
             setEstudiantes(data);
         } catch (error) {
@@ -81,7 +82,7 @@ const EstudiantesInscriptos = () => {
     };
 
     const handleQuitar = async (id) => {
-        const response = await fetch(`http://localhost:5000/api/estudiantes/${id}`, {
+        const response = await fetch(`${API_URL}/api/estudiantes/${id}`, {
             method: 'DELETE',
         });
 

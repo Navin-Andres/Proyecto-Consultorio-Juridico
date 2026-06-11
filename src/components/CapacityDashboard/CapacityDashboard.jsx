@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './CapacityDashboard.css'
 import unnamedImg from '../../assets/unnamed.png'
+import { API_URL } from '../../utils/apiConfig'
 
 const DEFAULT_DATA = [
   { id: 'lunes', name: 'Lunes', booked: 12, total: 50, color: '#7FB536' }, // Verde
@@ -16,7 +17,7 @@ export default function CapacityDashboard() {
   useEffect(() => {
     const fetchCapacity = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/turnos')
+        const response = await fetch(`${API_URL}/api/turnos`)
         if (!response.ok) throw new Error('Error en la respuesta del servidor')
         const data = await response.json()
         const activeTurnos = data.filter(t => t.activo)
