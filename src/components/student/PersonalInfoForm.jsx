@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import './PersonalInfoForm.css'
-import { API_URL } from '../../utils/apiConfig'
 
 function getPillClass(booked, total) {
   if (booked >= total) return 'red'
@@ -13,7 +12,7 @@ function formatTime12h(timeStr) {
   const [hourStr, minStr] = timeStr.split(':');
   let hour = parseInt(hourStr, 10);
   let ampm = 'AM';
-  
+
   if (hour === 12) {
     ampm = 'M'; // Medio día
   } else if (hour > 12) {
@@ -23,7 +22,7 @@ function formatTime12h(timeStr) {
     hour = 12;
     ampm = 'AM';
   }
-  
+
   return `${hour}:${minStr} ${ampm}`;
 }
 
@@ -36,7 +35,7 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
   useEffect(() => {
     const fetchTurnos = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/turnos`)
+        const response = await fetch('http://localhost:5000/api/turnos')
         const data = await response.json()
         setTurnos(data.filter(t => t.activo))
       } catch (error) {
@@ -58,7 +57,7 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
 
   // Agrupar turnos por día
   const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes']
-  
+
   const getTurnoPorJornada = (dia, jornada) => {
     return turnos.find(t => t.dia.toLowerCase() === dia && t.jornada.toLowerCase() === jornada)
   }
@@ -146,18 +145,18 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
         <div className="pif-stripe" aria-hidden="true" />
         <div className="pif-content">
           <h2 className="pif-section-title">
-            Información Personal & Disponibilidad 
+            Información Personal & Disponibilidad
           </h2>
 
           <div className="pif-form">
             <div className="pif-field">
               <label htmlFor="pif-email" className="pif-label">Correo Electrónico *</label>
-              <input 
-                id="pif-email" 
-                type="email" 
-                className={`pif-input ${errors.email ? 'is-invalid' : ''}`} 
-                placeholder="ejemplo@correo.com" 
-                autoComplete="email" 
+              <input
+                id="pif-email"
+                type="email"
+                className={`pif-input ${errors.email ? 'is-invalid' : ''}`}
+                placeholder="ejemplo@correo.com"
+                autoComplete="email"
                 defaultValue={formData.email || ''}
               />
               {errors.email && <span className="pif-error-msg">{errors.email}</span>}
@@ -165,12 +164,12 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
 
             <div className="pif-field">
               <label htmlFor="pif-nombre" className="pif-label">Nombre Completo *</label>
-              <input 
-                id="pif-nombre" 
-                type="text" 
-                className={`pif-input ${errors.nombre ? 'is-invalid' : ''}`} 
-                placeholder="Como aparece en su documento" 
-                autoComplete="name" 
+              <input
+                id="pif-nombre"
+                type="text"
+                className={`pif-input ${errors.nombre ? 'is-invalid' : ''}`}
+                placeholder="Como aparece en su documento"
+                autoComplete="name"
                 defaultValue={formData.nombres || ''}
               />
               {errors.nombre && <span className="pif-error-msg">{errors.nombre}</span>}
@@ -178,11 +177,11 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
 
             <div className="pif-field">
               <label htmlFor="pif-documento" className="pif-label">Documento de Identidad *</label>
-              <input 
-                id="pif-documento" 
-                type="text" 
-                className={`pif-input ${errors.documento ? 'is-invalid' : ''}`} 
-                placeholder="CC / TI / CE" 
+              <input
+                id="pif-documento"
+                type="text"
+                className={`pif-input ${errors.documento ? 'is-invalid' : ''}`}
+                placeholder="CC / TI / CE"
                 defaultValue={formData.documento || ''}
               />
               {errors.documento && <span className="pif-error-msg">{errors.documento}</span>}
@@ -190,10 +189,10 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
 
             <div className="pif-field">
               <label htmlFor="pif-fecha" className="pif-label">Fecha de Nacimiento *</label>
-              <input 
-                id="pif-fecha" 
-                type="date" 
-                className={`pif-input pif-input--date ${errors.fecha ? 'is-invalid' : ''}`} 
+              <input
+                id="pif-fecha"
+                type="date"
+                className={`pif-input pif-input--date ${errors.fecha ? 'is-invalid' : ''}`}
                 defaultValue={formData.fechaNacimiento || ''}
               />
               {errors.fecha && <span className="pif-error-msg">{errors.fecha}</span>}
@@ -239,7 +238,7 @@ function PersonalInfoForm({ onNext, onChangeDatos, formData = {} }) {
                   {diasSemana.map((dia) => {
                     const turnoManana = getTurnoPorJornada(dia, 'mañana')
                     const turnoTarde = getTurnoPorJornada(dia, 'tarde')
-                    
+
                     if (!turnoManana && !turnoTarde) return null;
 
                     return (

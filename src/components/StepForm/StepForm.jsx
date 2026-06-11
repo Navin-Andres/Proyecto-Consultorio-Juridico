@@ -14,7 +14,6 @@ import {
   alertErrorConexion,
   alertErrorInscripcion,
 } from '../../utils/swalAlerts'
-import { API_URL } from '../../utils/apiConfig'
 
 const STEPS = [
   { id: 1, label: 'INFORMACIÓN PERSONAL' },
@@ -36,7 +35,7 @@ function StepForm({ onSuccess }) {
   const registrationSucceededRef = useRef(false)
 
   useEffect(() => {
-    fetch(`${API_URL}/api/periodos/activo`)
+    fetch('http://localhost:5000/api/periodos/activo')
       .then(res => {
         if (!res.ok) throw new Error('No hay periodo activo')
         return res.json()
@@ -163,7 +162,7 @@ function StepForm({ onSuccess }) {
 
 
       // 3. Enviamos sin { Content-Type: json }
-      const respuesta = await fetch(`${API_URL}/api/estudiantes`, {
+      const respuesta = await fetch('http://localhost:5000/api/estudiantes', {
         method: 'POST',
         body: dataAEnviar
       });
@@ -174,10 +173,10 @@ function StepForm({ onSuccess }) {
 
         if (onSuccess) {
           // Generamos un radicado basado en el ID de la base de datos si está disponible
-          const numRadicado = respuestaData.estudianteId 
+          const numRadicado = respuestaData.estudianteId
             ? `#CJ-${new Date().getFullYear()}-${respuestaData.estudianteId.toString().padStart(4, '0')}`
             : `#CJ-${new Date().getFullYear()}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-            
+
           onSuccess({ ...mergedData, radicado: numRadicado });
         } else {
           setFormData(mergedData);

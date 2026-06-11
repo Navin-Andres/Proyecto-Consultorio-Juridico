@@ -5,7 +5,6 @@ import {
     alertSeleccionarPeriodo,
     confirmGenerarTurnos,
 } from '../../../utils/swalAlerts';
-import { API_URL } from '../../../utils/apiConfig';
 
 const TurnosManager = () => {
     const [turnos, setTurnos] = useState([]);
@@ -16,7 +15,7 @@ const TurnosManager = () => {
     const [filtroPeriodo, setFiltroPeriodo] = useState('');
     const [vista, setVista] = useState('cuadro'); // 'cuadro', 'lista', 'estudiante'
     const [busquedaEstudiante, setBusquedaEstudiante] = useState('');
-    
+
     const [formData, setFormData] = useState({
         periodo_id: '',
         dia: 'lunes',
@@ -35,10 +34,10 @@ const TurnosManager = () => {
 
     const fetchPeriodos = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/periodos`);
+            const response = await fetch('http://localhost:5000/api/periodos');
             const data = await response.json();
             setPeriodos(data);
-            
+
             // Auto seleccionar el periodo activo si no hay filtro asignado
             if (data.length > 0 && !filtroPeriodo) {
                 const activo = data.find(p => p.activo);
@@ -57,7 +56,7 @@ const TurnosManager = () => {
 
     const fetchTurnos = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/turnos`);
+            const response = await fetch('http://localhost:5000/api/turnos');
             const data = await response.json();
             setTurnos(data);
         } catch (error) {
@@ -67,7 +66,7 @@ const TurnosManager = () => {
 
     const fetchEstudiantes = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/estudiantes`);
+            const response = await fetch('http://localhost:5000/api/estudiantes');
             const data = await response.json();
             setEstudiantes(data);
         } catch (error) {
@@ -93,8 +92,8 @@ const TurnosManager = () => {
             periodo_id: turno.periodo_id,
             dia: turno.dia,
             jornada: turno.jornada,
-            hora_inicio: turno.hora_inicio.slice(0,5), // Quitar los segundos ej: "08:00:00" -> "08:00"
-            hora_fin: turno.hora_fin.slice(0,5),
+            hora_inicio: turno.hora_inicio.slice(0, 5), // Quitar los segundos ej: "08:00:00" -> "08:00"
+            hora_fin: turno.hora_fin.slice(0, 5),
             cupos_totales: turno.cupos_totales,
             activo: turno.activo
         });
@@ -104,10 +103,10 @@ const TurnosManager = () => {
     const handleDelete = async (id, dia, jornada) => {
         if (window.confirm(`¿Estás seguro de eliminar el turno del día ${dia} en la ${jornada}?`)) {
             try {
-                const response = await fetch(`${API_URL}/api/turnos/${id}`, {
+                const response = await fetch(`http://localhost:5000/api/turnos/${id}`, {
                     method: 'DELETE'
                 });
-                
+
                 if (response.ok) {
                     fetchTurnos();
                     alert('Turno eliminado');
@@ -123,10 +122,10 @@ const TurnosManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = editingId 
-                ? `${API_URL}/api/turnos/${editingId}`
-                : `${API_URL}/api/turnos`;
-            
+            const url = editingId
+                ? `http://localhost:5000/api/turnos/${editingId}`
+                : 'http://localhost:5000/api/turnos';
+
             const method = editingId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -136,12 +135,12 @@ const TurnosManager = () => {
                 },
                 body: JSON.stringify(formData)
             });
-            
+
             if (response.ok) {
                 // Reset selectos manteniendo periodo_id igual para facilidad de carga
-                setFormData({ 
-                    ...formData, 
-                    hora_inicio: '08:00', hora_fin: '12:00', cupos_totales: 11, activo: true 
+                setFormData({
+                    ...formData,
+                    hora_inicio: '08:00', hora_fin: '12:00', cupos_totales: 11, activo: true
                 });
                 setEditingId(null);
                 setShowForm(false);
@@ -181,7 +180,7 @@ const TurnosManager = () => {
 
         const confirmed = await confirmGenerarTurnos(periodoNombre);
         if (!confirmed) return;
-        
+
         const dias = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes'];
         const defaultTurnos = [];
         dias.forEach(d => {
@@ -204,20 +203,20 @@ const TurnosManager = () => {
                 cupos_totales: 11
             });
         });
-        
+
         let creados = 0;
         let errores = 0;
-        
+
         for (const t of defaultTurnos) {
-            const existe = turnos.some(existente => 
+            const existe = turnos.some(existente =>
                 existente.periodo_id.toString() === t.periodo_id.toString() &&
                 existente.dia.toLowerCase() === t.dia.toLowerCase() &&
                 existente.jornada.toLowerCase() === t.jornada.toLowerCase()
             );
-            
+
             if (!existe) {
                 try {
-                    const response = await fetch(`${API_URL}/api/turnos`, {
+                    const response = await fetch('http://localhost:5000/api/turnos', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(t)
@@ -229,7 +228,7 @@ const TurnosManager = () => {
                 }
             }
         }
-        
+
         fetchTurnos();
         await alertGenerarTurnosResultado(creados, errores);
     };
@@ -253,11 +252,11 @@ const TurnosManager = () => {
                 t.activo ? status : 'Inactivo'
             ];
         });
-        
+
         // CSV Format
-        const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
+        const csvContent = "data:text/csv;charset=utf-8,\uFEFF"
             + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
-        
+
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
@@ -268,7 +267,7 @@ const TurnosManager = () => {
     };
 
     // Filtros de los visualizados
-    const turnosMostrados = filtroPeriodo 
+    const turnosMostrados = filtroPeriodo
         ? turnos.filter(t => t.periodo_id.toString() === filtroPeriodo.toString())
         : turnos;
 
@@ -285,7 +284,7 @@ const TurnosManager = () => {
 
     // Estudiantes filtrados por periodo y búsqueda
     const selectedPeriodObj = periodos.find(p => p.id.toString() === filtroPeriodo.toString());
-    const estudiantesDelPeriodo = estudiantes.filter(e => 
+    const estudiantesDelPeriodo = estudiantes.filter(e =>
         selectedPeriodObj && e.periodo === selectedPeriodObj.nombre
     );
     const estudiantesFiltrados = estudiantesDelPeriodo.filter(e => {
@@ -313,7 +312,7 @@ const TurnosManager = () => {
     // Format hour to include AM/PM as requested by the user
     const formatHour = (hora) => {
         if (!hora) return '';
-        const time = hora.slice(0,5);
+        const time = hora.slice(0, 5);
         const [hourStr, minuteStr] = time.split(':');
         const hour = parseInt(hourStr, 10);
         const minute = minuteStr || '00';
@@ -351,11 +350,11 @@ const TurnosManager = () => {
                         <form className="turnos-form" onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label>Periodo Académico</label>
-                                <select 
-                                    name="periodo_id" 
-                                    value={formData.periodo_id} 
-                                    onChange={handleInputChange} 
-                                    disabled={editingId !== null} 
+                                <select
+                                    name="periodo_id"
+                                    value={formData.periodo_id}
+                                    onChange={handleInputChange}
+                                    disabled={editingId !== null}
                                     required
                                 >
                                     <option value="" disabled>Seleccione un periodo...</option>
@@ -368,11 +367,11 @@ const TurnosManager = () => {
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>Día</label>
-                                    <select 
-                                        name="dia" 
-                                        value={formData.dia} 
+                                    <select
+                                        name="dia"
+                                        value={formData.dia}
                                         onChange={handleInputChange}
-                                        disabled={editingId !== null} 
+                                        disabled={editingId !== null}
                                         required
                                     >
                                         <option value="lunes">Lunes</option>
@@ -384,11 +383,11 @@ const TurnosManager = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Jornada</label>
-                                    <select 
-                                        name="jornada" 
-                                        value={formData.jornada} 
-                                        onChange={handleInputChange} 
-                                        disabled={editingId !== null} 
+                                    <select
+                                        name="jornada"
+                                        value={formData.jornada}
+                                        onChange={handleInputChange}
+                                        disabled={editingId !== null}
                                         required
                                     >
                                         <option value="mañana">Mañana</option>
@@ -400,35 +399,35 @@ const TurnosManager = () => {
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>Hora Inicio</label>
-                                    <input 
-                                        type="time" 
-                                        name="hora_inicio" 
-                                        value={formData.hora_inicio} 
-                                        onChange={handleInputChange} 
-                                        required 
+                                    <input
+                                        type="time"
+                                        name="hora_inicio"
+                                        value={formData.hora_inicio}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                     <span className="time-hint">{formatHour(formData.hora_inicio)}</span>
                                 </div>
                                 <div className="form-group">
                                     <label>Hora Fin</label>
-                                    <input 
-                                        type="time" 
-                                        name="hora_fin" 
-                                        value={formData.hora_fin} 
-                                        onChange={handleInputChange} 
-                                        required 
+                                    <input
+                                        type="time"
+                                        name="hora_fin"
+                                        value={formData.hora_fin}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                     <span className="time-hint">{formatHour(formData.hora_fin)}</span>
                                 </div>
                                 <div className="form-group">
                                     <label>Cupos Totales</label>
-                                    <input 
-                                        type="number" 
-                                        name="cupos_totales" 
-                                        value={formData.cupos_totales} 
-                                        onChange={handleInputChange} 
+                                    <input
+                                        type="number"
+                                        name="cupos_totales"
+                                        value={formData.cupos_totales}
+                                        onChange={handleInputChange}
                                         min="1"
-                                        required 
+                                        required
                                     />
                                 </div>
                             </div>
@@ -436,11 +435,11 @@ const TurnosManager = () => {
                             {editingId && (
                                 <div className="form-group row-checkbox">
                                     <label>
-                                        <input 
-                                            type="checkbox" 
-                                            name="activo" 
-                                            checked={formData.activo} 
-                                            onChange={handleInputChange} 
+                                        <input
+                                            type="checkbox"
+                                            name="activo"
+                                            checked={formData.activo}
+                                            onChange={handleInputChange}
                                         />
                                         Activar Turno
                                     </label>
@@ -503,26 +502,26 @@ const TurnosManager = () => {
                 {/* View Switcher exactly like Mockup */}
                 <div className="view-switcher-container">
                     <div className="view-tabs">
-                        <button 
+                        <button
                             className={`view-tab-btn ${vista === 'cuadro' ? 'active' : ''}`}
                             onClick={() => setVista('cuadro')}
                         >
                             Vista cuadro
                         </button>
-                        <button 
+                        <button
                             className={`view-tab-btn ${vista === 'lista' ? 'active' : ''}`}
                             onClick={() => setVista('lista')}
                         >
                             Vista lista
                         </button>
-                        <button 
+                        <button
                             className={`view-tab-btn ${vista === 'estudiante' ? 'active' : ''}`}
                             onClick={() => setVista('estudiante')}
                         >
                             Por estudiante
                         </button>
                     </div>
-                    
+
                     <div className="filter-group">
                         <label>Ver del periodo: </label>
                         <select value={filtroPeriodo} onChange={handleFilterChange}>
@@ -558,7 +557,7 @@ const TurnosManager = () => {
                                                         <div className="turno-card-header">
                                                             <span className="turno-jornada-label">{turno.jornada}</span>
                                                             <span className="turno-status-icon">●</span>
-                                                            
+
                                                             {/* Floating Hover Actions */}
                                                             <div className="card-actions">
                                                                 <button className="btn-editar-icon" title="Editar" onClick={() => handleEdit(turno)}>
@@ -582,8 +581,8 @@ const TurnosManager = () => {
                                                                 {formatHour(turno.hora_inicio)} &ndash; {formatHour(turno.hora_fin)}
                                                             </div>
                                                             <div className="cupos-barra-bg">
-                                                                <div 
-                                                                    className={`cupos-barra-fill ${isFull ? 'llena' : almostFull ? 'casi-llena' : 'abierto'}`} 
+                                                                <div
+                                                                    className={`cupos-barra-fill ${isFull ? 'llena' : almostFull ? 'casi-llena' : 'abierto'}`}
                                                                     style={{ width: `${porcentaje}%` }}
                                                                 ></div>
                                                             </div>
@@ -628,7 +627,7 @@ const TurnosManager = () => {
                                         const almostFull = !isFull && porcentaje >= 80;
                                         const statusText = isFull ? 'Lleno' : almostFull ? 'Casi lleno' : 'Abierto';
                                         const statusClass = isFull ? 'full' : almostFull ? 'almost-full' : 'open';
-                                        
+
                                         return (
                                             <tr key={turno.id} className={!turno.activo ? 'row-inactivo' : ''}>
                                                 <td className="text-capitalize">{turno.dia}</td>
@@ -640,8 +639,8 @@ const TurnosManager = () => {
                                                     <div className="table-ocupacion-cell">
                                                         <span className="table-ocupacion-number">{Math.round(porcentaje)}%</span>
                                                         <div className="cupos-barra-bg table-bar">
-                                                            <div 
-                                                                className={`cupos-barra-fill ${isFull ? 'llena' : almostFull ? 'casi-llena' : 'abierto'}`} 
+                                                            <div
+                                                                className={`cupos-barra-fill ${isFull ? 'llena' : almostFull ? 'casi-llena' : 'abierto'}`}
                                                                 style={{ width: `${porcentaje}%` }}
                                                             ></div>
                                                         </div>
@@ -685,9 +684,9 @@ const TurnosManager = () => {
                 {vista === 'estudiante' && (
                     <div className="vista-estudiantes-container">
                         <div className="table-search-bar">
-                            <input 
-                                type="text" 
-                                placeholder="Buscar estudiante por nombre o documento..." 
+                            <input
+                                type="text"
+                                placeholder="Buscar estudiante por nombre o documento..."
                                 value={busquedaEstudiante}
                                 onChange={(e) => setBusquedaEstudiante(e.target.value)}
                                 className="search-input"

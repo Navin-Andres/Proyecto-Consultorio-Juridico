@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import './CapacityDashboard.css'
 import unnamedImg from '../../assets/unnamed.png'
-import { API_URL } from '../../utils/apiConfig'
 
 const DEFAULT_DATA = [
   { id: 'lunes', name: 'Lunes', booked: 12, total: 50, color: '#7FB536' }, // Verde
@@ -17,11 +16,11 @@ export default function CapacityDashboard() {
   useEffect(() => {
     const fetchCapacity = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/turnos`)
+        const response = await fetch('http://localhost:5000/api/turnos')
         if (!response.ok) throw new Error('Error en la respuesta del servidor')
         const data = await response.json()
         const activeTurnos = data.filter(t => t.activo)
-        
+
         if (activeTurnos.length === 0) {
           setCapacityData(DEFAULT_DATA)
           return
@@ -76,7 +75,7 @@ export default function CapacityDashboard() {
     }
 
     fetchCapacity()
-    
+
     // Opcional: Actualizar periódicamente
     const interval = setInterval(fetchCapacity, 30000)
     return () => clearInterval(interval)
@@ -92,7 +91,7 @@ export default function CapacityDashboard() {
         <div className="capacity-list">
           {capacityData.map((item) => {
             const percentage = item.total > 0 ? Math.round((item.booked / item.total) * 100) : 0
-            
+
             return (
               <div key={item.id} className="capacity-item">
                 <div className="capacity-item-header">
@@ -102,12 +101,12 @@ export default function CapacityDashboard() {
                   </span>
                 </div>
                 <div className="capacity-bar-bg">
-                  <div 
-                    className="capacity-bar-fill" 
-                    style={{ 
-                      width: `${percentage}%`, 
-                      backgroundColor: item.color 
-                    }} 
+                  <div
+                    className="capacity-bar-fill"
+                    style={{
+                      width: `${percentage}%`,
+                      backgroundColor: item.color
+                    }}
                   />
                 </div>
               </div>

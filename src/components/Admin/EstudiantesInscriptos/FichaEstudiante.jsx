@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { API_URL } from '../../../utils/apiConfig';
 
 const mapAreaInteres = (area) => {
     if (!area || area === 'N/A') return 'N/A';
@@ -53,87 +52,87 @@ const FichaEstudiante = ({ selectedEstudiante, onBack, onQuitar }) => {
                 doc.font('Helvetica').fontSize(10).fillColor('#000').text(value || 'N/A', { continued: false });
             };
 
-        doc.font('Helvetica-Bold').fontSize(18).fillColor('#0D3B66').text('Ficha del Estudiante', { align: 'center' });
-        doc.moveDown(0.8);
+            doc.font('Helvetica-Bold').fontSize(18).fillColor('#0D3B66').text('Ficha del Estudiante', { align: 'center' });
+            doc.moveDown(0.8);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Datos Personales');
-        doc.moveDown(0.3);
-        addField('Nombre completo', `${selectedEstudiante.nombres || ''} ${selectedEstudiante.apellidos || ''}`.trim() || 'N/A');
-        addField('Tipo documento', selectedEstudiante.tipoDoc);
-        addField('Número documento', selectedEstudiante.documento);
-        addField('Fecha nacimiento', selectedEstudiante.fechaNacimiento);
-        addField('EPS', selectedEstudiante.eps);
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Datos Personales');
+            doc.moveDown(0.3);
+            addField('Nombre completo', `${selectedEstudiante.nombres || ''} ${selectedEstudiante.apellidos || ''}`.trim() || 'N/A');
+            addField('Tipo documento', selectedEstudiante.tipoDoc);
+            addField('Número documento', selectedEstudiante.documento);
+            addField('Fecha nacimiento', selectedEstudiante.fechaNacimiento);
+            addField('EPS', selectedEstudiante.eps);
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Información Académica');
-        doc.moveDown(0.3);
-        addField('Consultorio', selectedEstudiante.nivel);
-        addField('Semestre', selectedEstudiante.semestre ? `${selectedEstudiante.semestre}° Semestre` : 'N/A');
-        addField('Consultorios en sede', selectedEstudiante.consultoriosRealizados);
-        addField('Consultorios externos', selectedEstudiante.consultorioExterno);
-        addField('Jornada asignaturas', selectedEstudiante.jornadaAsignaturas);
-        addField('Período académico', selectedEstudiante.periodo);
-        addField('Área de interés', mapAreaInteres(selectedEstudiante.areaInteres));
-        addField('Consecutivos (radicados)', selectedEstudiante.radicados || 'Ninguno');
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Información Académica');
+            doc.moveDown(0.3);
+            addField('Consultorio', selectedEstudiante.nivel);
+            addField('Semestre', selectedEstudiante.semestre ? `${selectedEstudiante.semestre}° Semestre` : 'N/A');
+            addField('Consultorios en sede', selectedEstudiante.consultoriosRealizados);
+            addField('Consultorios externos', selectedEstudiante.consultorioExterno);
+            addField('Jornada asignaturas', selectedEstudiante.jornadaAsignaturas);
+            addField('Período académico', selectedEstudiante.periodo);
+            addField('Área de interés', mapAreaInteres(selectedEstudiante.areaInteres));
+            addField('Consecutivos (radicados)', selectedEstudiante.radicados || 'Ninguno');
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Contacto y Ubicación');
-        doc.moveDown(0.3);
-        addField('Correo institucional', selectedEstudiante.correoInstitucional !== 'N/A' ? selectedEstudiante.correoInstitucional : selectedEstudiante.email);
-        addField('Correo personal', selectedEstudiante.email);
-        addField('Teléfono celular', selectedEstudiante.telefono);
-        addField('Municipio / Depto.', selectedEstudiante.municipio_depto);
-        addField('Dirección residencia', selectedEstudiante.residencia);
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Contacto y Ubicación');
+            doc.moveDown(0.3);
+            addField('Correo institucional', selectedEstudiante.correoInstitucional !== 'N/A' ? selectedEstudiante.correoInstitucional : selectedEstudiante.email);
+            addField('Correo personal', selectedEstudiante.email);
+            addField('Teléfono celular', selectedEstudiante.telefono);
+            addField('Municipio / Depto.', selectedEstudiante.municipio_depto);
+            addField('Dirección residencia', selectedEstudiante.residencia);
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Práctica Asignada');
-        doc.moveDown(0.3);
-        addField('Día', selectedEstudiante.turnoObj?.dia || 'Sin asignar');
-        if (selectedEstudiante.turnoObj?.detalle) {
-            addField('Detalle', selectedEstudiante.turnoObj.detalle);
-        }
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Práctica Asignada');
+            doc.moveDown(0.3);
+            addField('Día', selectedEstudiante.turnoObj?.dia || 'Sin asignar');
+            if (selectedEstudiante.turnoObj?.detalle) {
+                addField('Detalle', selectedEstudiante.turnoObj.detalle);
+            }
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Información Laboral');
-        doc.moveDown(0.3);
-        addField('¿Trabaja?', selectedEstudiante.trabaja || 'No');
-        addField('Empresa', selectedEstudiante.empresa);
-        addField('Cargo', selectedEstudiante.cargo);
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Información Laboral');
+            doc.moveDown(0.3);
+            addField('¿Trabaja?', selectedEstudiante.trabaja || 'No');
+            addField('Empresa', selectedEstudiante.empresa);
+            addField('Cargo', selectedEstudiante.cargo);
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Observaciones Personales');
-        doc.moveDown(0.3);
-        doc.font('Helvetica').fontSize(10).fillColor('#000').text(
-            selectedEstudiante.observacionesPersonales?.trim() || 'El estudiante no registró observaciones adicionales.',
-            { width: 510, align: 'left' }
-        );
-        doc.moveDown(0.6);
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Observaciones Personales');
+            doc.moveDown(0.3);
+            doc.font('Helvetica').fontSize(10).fillColor('#000').text(
+                selectedEstudiante.observacionesPersonales?.trim() || 'El estudiante no registró observaciones adicionales.',
+                { width: 510, align: 'left' }
+            );
+            doc.moveDown(0.6);
 
-        doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Documentación Anexa');
-        doc.moveDown(0.3);
-        if (selectedEstudiante.anexos && selectedEstudiante.anexos.length > 0) {
-            selectedEstudiante.anexos.forEach((anexo, index) => {
-                doc.font('Helvetica-Bold').fontSize(10).fillColor('#222').text(`${index + 1}. ${anexo.tipo || 'Documento'}`);
-                doc.font('Helvetica').fontSize(10).fillColor('#000').text(anexo.ruta || 'Archivo cargado', { indent: 12, continued: false });
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#0D3B66').text('Documentación Anexa');
+            doc.moveDown(0.3);
+            if (selectedEstudiante.anexos && selectedEstudiante.anexos.length > 0) {
+                selectedEstudiante.anexos.forEach((anexo, index) => {
+                    doc.font('Helvetica-Bold').fontSize(10).fillColor('#222').text(`${index + 1}. ${anexo.tipo || 'Documento'}`);
+                    doc.font('Helvetica').fontSize(10).fillColor('#000').text(anexo.ruta || 'Archivo cargado', { indent: 12, continued: false });
+                });
+            } else {
+                doc.font('Helvetica').fontSize(10).fillColor('#000').text('No se han cargado documentos para este estudiante.');
+            }
+
+            doc.end();
+
+            stream.on('finish', () => {
+                const blob = stream.toBlob('application/pdf');
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(url);
             });
-        } else {
-            doc.font('Helvetica').fontSize(10).fillColor('#000').text('No se han cargado documentos para este estudiante.');
+        } catch (error) {
+            console.error('Error generando PDF:', error);
         }
-
-        doc.end();
-
-        stream.on('finish', () => {
-            const blob = stream.toBlob('application/pdf');
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = filename;
-            link.click();
-            URL.revokeObjectURL(url);
-        });
-    } catch (error) {
-        console.error('Error generando PDF:', error);
-    }
     };
 
     return (
@@ -373,7 +372,7 @@ const FichaEstudiante = ({ selectedEstudiante, onBack, onQuitar }) => {
                                         <span className="anexo-file-subtitle">Archivo cargado</span>
                                     </div>
                                     <a
-                                        href={`${API_URL}/${a.ruta.replace(/\\\\/g, '/')}`}
+                                        href={`http://localhost:5000/${a.ruta.replace(/\\\\/g, '/')}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="btn-download-anexo"

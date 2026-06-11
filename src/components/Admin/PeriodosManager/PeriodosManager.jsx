@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './PeriodosManager.css';
-import { API_URL } from '../../../utils/apiConfig';
 
 const PeriodosManager = () => {
     const [periodos, setPeriodos] = useState([]);
@@ -18,7 +17,7 @@ const PeriodosManager = () => {
 
     const fetchPeriodos = async () => {
         try {
-            const response = await fetch(`${API_URL}/api/periodos`);
+            const response = await fetch('http://localhost:5000/api/periodos');
             const data = await response.json();
             setPeriodos(data);
         } catch (error) {
@@ -41,7 +40,7 @@ const PeriodosManager = () => {
             const d = new Date(fechaStr);
             return d.toISOString().split('T')[0];
         };
-        
+
         setFormData({
             nombre: periodo.nombre,
             fecha_inicio: formatFecha(periodo.fecha_inicio),
@@ -53,10 +52,10 @@ const PeriodosManager = () => {
     const handleDelete = async (id, nombre) => {
         if (window.confirm(`¿Estás seguro de eliminar el periodo ${nombre}?`)) {
             try {
-                const response = await fetch(`${API_URL}/api/periodos/${id}`, {
+                const response = await fetch(`http://localhost:5000/api/periodos/${id}`, {
                     method: 'DELETE'
                 });
-                
+
                 if (response.ok) {
                     fetchPeriodos();
                     alert('Periodo eliminado');
@@ -72,10 +71,10 @@ const PeriodosManager = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const url = editingId 
-                ? `${API_URL}/api/periodos/${editingId}`
-                : `${API_URL}/api/periodos`;
-            
+            const url = editingId
+                ? `http://localhost:5000/api/periodos/${editingId}`
+                : 'http://localhost:5000/api/periodos';
+
             const method = editingId ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -85,7 +84,7 @@ const PeriodosManager = () => {
                 },
                 body: JSON.stringify(formData)
             });
-            
+
             if (response.ok) {
                 setFormData({ nombre: '', fecha_inicio: '', fecha_fin: '' });
                 setEditingId(null);
@@ -102,10 +101,10 @@ const PeriodosManager = () => {
 
     const handleActivar = async (id) => {
         try {
-            const response = await fetch(`${API_URL}/api/periodos/${id}/activar`, {
+            const response = await fetch(`http://localhost:5000/api/periodos/${id}/activar`, {
                 method: 'PUT'
             });
-            
+
             if (response.ok) {
                 fetchPeriodos();
             } else {
@@ -132,34 +131,34 @@ const PeriodosManager = () => {
                         <form className="periodos-form" onSubmit={handleSubmit}>
                             <div className="form-group">
                                 <label>Nombre del Periodo (Ej: 2025-1)</label>
-                                <input 
-                                    type="text" 
-                                    name="nombre" 
-                                    value={formData.nombre} 
-                                    onChange={handleInputChange} 
-                                    required 
+                                <input
+                                    type="text"
+                                    name="nombre"
+                                    value={formData.nombre}
+                                    onChange={handleInputChange}
+                                    required
                                     placeholder="2025-1"
                                 />
                             </div>
                             <div className="form-row">
                                 <div className="form-group">
                                     <label>Fecha de Inicio</label>
-                                    <input 
-                                        type="date" 
-                                        name="fecha_inicio" 
-                                        value={formData.fecha_inicio} 
-                                        onChange={handleInputChange} 
-                                        required 
+                                    <input
+                                        type="date"
+                                        name="fecha_inicio"
+                                        value={formData.fecha_inicio}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="form-group">
                                     <label>Fecha de Fin</label>
-                                    <input 
-                                        type="date" 
-                                        name="fecha_fin" 
-                                        value={formData.fecha_fin} 
-                                        onChange={handleInputChange} 
-                                        required 
+                                    <input
+                                        type="date"
+                                        name="fecha_fin"
+                                        value={formData.fecha_fin}
+                                        onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                             </div>
@@ -212,23 +211,23 @@ const PeriodosManager = () => {
                                     <td>
                                         <div className="acciones-container">
                                             {!periodo.activo && (
-                                                <button 
-                                                    className="btn-activar" 
+                                                <button
+                                                    className="btn-activar"
                                                     onClick={() => handleActivar(periodo.id)}
                                                     title="Establecer como Activo"
                                                 >
                                                     ✨
                                                 </button>
                                             )}
-                                            <button 
-                                                className="btn-editar" 
+                                            <button
+                                                className="btn-editar"
                                                 onClick={() => handleEdit(periodo)}
                                                 title="Editar"
                                             >
                                                 ✏️
                                             </button>
-                                            <button 
-                                                className="btn-eliminar" 
+                                            <button
+                                                className="btn-eliminar"
                                                 onClick={() => handleDelete(periodo.id, periodo.nombre)}
                                                 title="Eliminar"
                                             >
