@@ -217,7 +217,7 @@ export default function ManualUsuario() {
                 <iframe
                   width="100%"
                   height="100%"
-                  src="https://www.youtube.com/embed/KS10KTFAXms?autoplay=1"
+                  src="https://www.youtube.com/embed/8MFhZQHT4Do?autoplay=1"
                   title="Videotutorial de Inscripción"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
