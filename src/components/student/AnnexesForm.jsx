@@ -23,6 +23,7 @@ const ANNEXES = [
     title: 'Consentimiento Informado *',
     subtitle: 'Debe estar firmado.',
     helperLinkText: 'Descargar Plantilla',
+    helperLinkUrl: '/documents/MGA-CJ-P01-F09 CONSENTIMIENTO INFORMADO PARA ACOMPAÑAMIENTO (1) (1).docx',
     dropTitle: 'Arrastra el consentimiento aquí',
     dropSubtitle: 'Click para cargar firmado',
     inputId: 'anx-consentimiento',
@@ -32,6 +33,7 @@ const ANNEXES = [
     title: 'Acta de Compromiso *',
     subtitle: 'Cargue el acta diligenciada.',
     helperLinkText: 'Descargar Formato',
+    helperLinkUrl: '/documents/MGA-CJ-P01-F03 ACTA DE COMPROMISOS ESTUDIANTES (1).docx',
     dropTitle: 'Arrastra el acta aquí',
     dropSubtitle: 'Click para cargar firmado',
     inputId: 'anx-acta-compromiso',
@@ -127,7 +129,11 @@ function AnnexesForm({ onPrev, onNext, onChangeDatos, formData = {} }) {
               <h2 className="anx-title">{annex.title}</h2>
               <p className="anx-subtitle">
                 {annex.subtitle}
-                {annex.helperLinkText && <a href="#">{annex.helperLinkText}</a>}
+                {annex.helperLinkText && (
+                  <a href={annex.helperLinkUrl || '#'} download target="_blank" rel="noopener noreferrer">
+                    {annex.helperLinkText}
+                  </a>
+                )}
               </p>
             </div>
 

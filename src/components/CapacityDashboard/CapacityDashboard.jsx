@@ -17,10 +17,29 @@ export default function CapacityDashboard() {
   useEffect(() => {
     const fetchCapacity = async () => {
       try {
+        // 1. Obtener el periodo académico activo
+        let activePeriodId = null
+        try {
+          const resPeriodo = await fetch(`${API_URL}/api/periodos/activo`)
+          if (resPeriodo.ok) {
+            const activePeriod = await resPeriodo.json()
+            activePeriodId = activePeriod.id
+          }
+        } catch (err) {
+          console.error('Error fetching active period:', err)
+        }
+
+        // 2. Obtener turnos
         const response = await fetch(`${API_URL}/api/turnos`)
         if (!response.ok) throw new Error('Error en la respuesta del servidor')
         const data = await response.json()
-        const activeTurnos = data.filter(t => t.activo)
+
+        // Filtrar turnos activos y que pertenezcan al periodo activo (si existe)
+        const activeTurnos = data.filter(t => {
+          const isActive = t.activo
+          const matchesPeriod = activePeriodId ? t.periodo_id === activePeriodId : true
+          return isActive && matchesPeriod
+        })
 
         if (activeTurnos.length === 0) {
           setCapacityData(DEFAULT_DATA)
