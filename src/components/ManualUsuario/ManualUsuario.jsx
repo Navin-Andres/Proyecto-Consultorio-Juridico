@@ -213,25 +213,17 @@ export default function ManualUsuario() {
               </button>
             </div>
             <div className="modal-body">
-              <div className="video-player-wrapper">
-                <img alt="Video Thumbnail" className="video-thumbnail" src={imageUrl} />
-                <div className="video-play-btn-wrapper">
-                  <div className="video-play-btn">
-                    <span className="material-symbols-outlined" style={{ fontSize: '3rem' }}>play_arrow</span>
-                  </div>
-                </div>
-                <div className="video-controls">
-                  <div className="video-progress-bar">
-                    <div className="video-progress-filled"></div>
-                  </div>
-                  <div className="video-time-row">
-                    <span>02:45 / 08:12</span>
-                    <div className="video-control-icons">
-                      <span className="material-symbols-outlined">settings</span>
-                      <span className="material-symbols-outlined">fullscreen</span>
-                    </div>
-                  </div>
-                </div>
+              <div className="video-player-wrapper" style={{ cursor: 'auto' }}>
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/8R4EY8h8ZUs?autoplay=1"
+                  title="Videotutorial de Inscripción"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  style={{ border: 'none' }}
+                ></iframe>
               </div>
               <div className="modal-desc">
                 <p>
