@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import API_URL from '../../../config/api';
 
 const mapAreaInteres = (area) => {
     if (!area || area === 'N/A') return 'N/A';
@@ -372,7 +373,7 @@ const FichaEstudiante = ({ selectedEstudiante, onBack, onQuitar }) => {
                                         <span className="anexo-file-subtitle">Archivo cargado</span>
                                     </div>
                                     <a
-                                        href={`http://localhost:5000/${a.ruta.replace(/\\\\/g, '/')}`}
+                                        href={`${API_URL}/${a.ruta.replace(/\\/g, '/')}`}
                                         target="_blank"
                                         rel="noreferrer"
                                         className="btn-download-anexo"

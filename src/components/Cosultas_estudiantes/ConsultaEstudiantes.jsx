@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './ConsultaEstudiantes.css';
+import API_URL from '../../config/api';
 
 export default function ConsultaEstudiantes() {
   const [query, setQuery] = useState('');
@@ -16,7 +17,7 @@ export default function ConsultaEstudiantes() {
     setStudent(null);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/estudiantes/consulta?query=${encodeURIComponent(query.trim())}`);
+      const response = await fetch(`${API_URL}/api/estudiantes/consulta?query=${encodeURIComponent(query.trim())}`);
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error('No se encontró ningún estudiante registrado con los datos proporcionados.');

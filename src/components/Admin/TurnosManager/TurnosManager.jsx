@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './TurnosManager.css';
+import API_URL from '../../../config/api';
 import {
     alertGenerarTurnosResultado,
     alertSeleccionarPeriodo,
@@ -34,7 +35,7 @@ const TurnosManager = () => {
 
     const fetchPeriodos = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/periodos');
+            const response = await fetch(`${API_URL}/api/periodos`);
             const data = await response.json();
             setPeriodos(data);
 
@@ -56,7 +57,7 @@ const TurnosManager = () => {
 
     const fetchTurnos = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/turnos');
+            const response = await fetch(`${API_URL}/api/turnos`);
             const data = await response.json();
             setTurnos(data);
         } catch (error) {
@@ -66,7 +67,7 @@ const TurnosManager = () => {
 
     const fetchEstudiantes = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/estudiantes');
+            const response = await fetch(`${API_URL}/api/estudiantes`);
             const data = await response.json();
             setEstudiantes(data);
         } catch (error) {
@@ -103,7 +104,7 @@ const TurnosManager = () => {
     const handleDelete = async (id, dia, jornada) => {
         if (window.confirm(`¿Estás seguro de eliminar el turno del día ${dia} en la ${jornada}?`)) {
             try {
-                const response = await fetch(`http://localhost:5000/api/turnos/${id}`, {
+                const response = await fetch(`${API_URL}/api/turnos/${id}`, {
                     method: 'DELETE'
                 });
 
@@ -123,8 +124,8 @@ const TurnosManager = () => {
         e.preventDefault();
         try {
             const url = editingId
-                ? `http://localhost:5000/api/turnos/${editingId}`
-                : 'http://localhost:5000/api/turnos';
+                ? `${API_URL}/api/turnos/${editingId}`
+                : `${API_URL}/api/turnos`;
 
             const method = editingId ? 'PUT' : 'POST';
 
@@ -216,7 +217,7 @@ const TurnosManager = () => {
 
             if (!existe) {
                 try {
-                    const response = await fetch('http://localhost:5000/api/turnos', {
+                    const response = await fetch(`${API_URL}/api/turnos`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(t)

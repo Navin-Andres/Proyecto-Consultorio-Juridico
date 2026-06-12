@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import './StepForm.css'
+import API_URL from '../../config/api'
 
 // Agregamos la subcarpeta student/ a cada importación
 import PersonalInfoForm from '../student/PersonalInfoForm'
@@ -35,7 +36,7 @@ function StepForm({ onSuccess }) {
   const registrationSucceededRef = useRef(false)
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/periodos/activo')
+    fetch(`${API_URL}/api/periodos/activo`)
       .then(res => {
         if (!res.ok) throw new Error('No hay periodo activo')
         return res.json()
@@ -162,7 +163,7 @@ function StepForm({ onSuccess }) {
 
 
       // 3. Enviamos sin { Content-Type: json }
-      const respuesta = await fetch('http://localhost:5000/api/estudiantes', {
+      const respuesta = await fetch(`${API_URL}/api/estudiantes`, {
         method: 'POST',
         body: dataAEnviar
       });

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './InicioDashboard.css';
+import API_URL from '../../../config/api';
 
 const InicioDashboard = ({ setActiveTab }) => {
     const [estudiantes, setEstudiantes] = useState([]);
@@ -11,17 +12,17 @@ const InicioDashboard = ({ setActiveTab }) => {
         const fetchDashboardData = async () => {
             try {
                 // Fetch estudiantes
-                const resEst = await fetch('http://localhost:5000/api/estudiantes');
+                const resEst = await fetch(`${API_URL}/api/estudiantes`);
                 const dataEst = await resEst.json();
                 setEstudiantes(dataEst);
 
                 // Fetch turnos
-                const resTurnos = await fetch('http://localhost:5000/api/turnos');
+                const resTurnos = await fetch(`${API_URL}/api/turnos`);
                 const dataTurnos = await resTurnos.json();
                 setTurnos(dataTurnos.filter(t => t.activo));
 
                 // Fetch periodo activo
-                const resPeriodo = await fetch('http://localhost:5000/api/periodos/activo');
+                const resPeriodo = await fetch(`${API_URL}/api/periodos/activo`);
                 if (resPeriodo.ok) {
                     const dataPeriodo = await resPeriodo.json();
                     setPeriodoActivo(dataPeriodo);
