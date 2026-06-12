@@ -75,7 +75,7 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }) => {
                 <button className="logout-btn" onClick={onLogout}>
                     <span className="nav-icon">
                         <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
                         </svg>
                     </span>
                     <span className="nav-label">Cerrar Sesión</span>

@@ -112,17 +112,17 @@
     background-color: white;
     border-radius: 8px;
     padding: 24px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .modal-content.periodos-form-container {
     background-color: white;
     border-radius: 8px;
     padding: 24px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
-.periodos-list-container > h3 {
+.periodos-list-container>h3 {
     margin-top: 0;
     margin-bottom: 20px;
     color: #333;
@@ -192,7 +192,8 @@
     border-collapse: collapse;
 }
 
-.periodos-table th, .periodos-table td {
+.periodos-table th,
+.periodos-table td {
     padding: 12px 16px;
     text-align: left;
     border-bottom: 1px solid #eee;
@@ -251,7 +252,8 @@
     gap: 8px;
 }
 
-.btn-editar, .btn-eliminar {
+.btn-editar,
+.btn-eliminar {
     background-color: #f8f9fa;
     border: 1px solid #ddd;
     padding: 6px 12px;

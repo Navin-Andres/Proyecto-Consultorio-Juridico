@@ -32,7 +32,7 @@ const AdminDashboard = () => {
                         <div className="avatar">A</div>
                     </div>
                 </header>
-                
+
                 <section className="content-area">
                     {activeTab === 'inicio' && <InicioDashboard setActiveTab={setActiveTab} />}
                     {activeTab === 'estudiantes' && <EstudiantesInscriptos />}

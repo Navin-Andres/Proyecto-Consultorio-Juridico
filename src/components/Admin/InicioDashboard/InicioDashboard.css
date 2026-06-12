@@ -75,7 +75,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Stats Cards */
@@ -118,6 +120,7 @@
 .stat-card.total:hover {
   border-color: #3b82f6;
 }
+
 .stat-card.total .stat-icon {
   background: rgba(59, 130, 246, 0.1);
 }
@@ -125,6 +128,7 @@
 .stat-card.active:hover {
   border-color: #7FB536;
 }
+
 .stat-card.active .stat-icon {
   background: rgba(127, 181, 54, 0.1);
 }
@@ -132,6 +136,7 @@
 .stat-card.turnos:hover {
   border-color: #0ea5e9;
 }
+
 .stat-card.turnos .stat-icon {
   background: rgba(14, 165, 233, 0.1);
 }
@@ -139,6 +144,7 @@
 .stat-card.cupos:hover {
   border-color: #8b5cf6;
 }
+
 .stat-card.cupos .stat-icon {
   background: rgba(139, 92, 246, 0.1);
 }
@@ -146,6 +152,7 @@
 .stat-card.rejected:hover {
   border-color: #ef4444;
 }
+
 .stat-card.rejected .stat-icon {
   background: rgba(239, 68, 68, 0.1);
 }
