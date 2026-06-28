@@ -12,6 +12,7 @@ import FinalDeclarationsForm from '../student/FinalDeclarationsForm'
 import SuccessScreen from '../SuccessScreen/SuccessScreen'
 import {
   alertDocumentoDuplicado,
+  alertCorreoDuplicado,
   alertErrorConexion,
   alertErrorInscripcion,
 } from '../../utils/swalAlerts'
@@ -189,8 +190,12 @@ function StepForm({ onSuccess }) {
         const errorData = await respuesta.json();
         const message = errorData.message || 'Error al guardar en el servidor.';
 
-        if (message.includes('documento') && message.includes('registrado')) {
+        if (message.toLowerCase().includes('documento') && message.toLowerCase().includes('registrado')) {
           await alertDocumentoDuplicado();
+          setCurrentStep(1);
+          setTimeout(scrollToForm, 50);
+        } else if (message.toLowerCase().includes('correo') && message.toLowerCase().includes('registrado')) {
+          await alertCorreoDuplicado();
           setCurrentStep(1);
           setTimeout(scrollToForm, 50);
         } else {

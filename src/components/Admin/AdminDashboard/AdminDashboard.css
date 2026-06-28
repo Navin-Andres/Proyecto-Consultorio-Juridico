@@ -216,3 +216,73 @@
     padding: 0;
     flex-grow: 1;
 }
+
+/* ─── Avatar Dropdown ─────────────────────────────────────────── */
+.admin-profile {
+    position: relative;
+    cursor: pointer;
+}
+
+.avatar-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 190px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.12), 0 4px 10px -3px rgba(0, 0, 0, 0.08);
+    padding: 6px;
+    z-index: 1000;
+
+    /* Estado oculto */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    pointer-events: none;
+}
+
+.avatar-dropdown--open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: all;
+}
+
+.avatar-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.avatar-dropdown__item:hover {
+    background-color: #f1f5f9;
+    color: #4a5d23;
+}
+
+.avatar-dropdown__item--danger {
+    color: #dc2626;
+}
+
+.avatar-dropdown__item--danger:hover {
+    background-color: #fef2f2;
+    color: #b91c1c;
+}
+
+.avatar-dropdown__divider {
+    border: none;
+    border-top: 1px solid #f1f5f9;
+    margin: 4px 0;
+}

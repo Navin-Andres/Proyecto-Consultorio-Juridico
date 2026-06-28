@@ -19,7 +19,19 @@ const crearEstudiante = async (req, res) => {
     } catch (error) {
         console.error('Error al crear estudiante, asignación y documentos:', error);
         
-        // Manejar el error de documento duplicado
+        // Manejar el error de documento duplicado o correo institucional duplicado
+        if (error.code === 'DUP_DOCUMENTO') {
+            return res.status(400).json({ 
+                message: 'El número de documento ingresado ya se encuentra registrado en el sistema.' 
+            });
+        }
+
+        if (error.code === 'DUP_CORREO') {
+            return res.status(400).json({ 
+                message: 'El correo institucional ingresado ya se encuentra registrado en el sistema.' 
+            });
+        }
+
         if (error.code === '23505' && error.constraint === 'estudiantes_numero_documento_key') {
             return res.status(400).json({ 
                 message: 'El número de documento ingresado ya se encuentra registrado en el sistema.' 

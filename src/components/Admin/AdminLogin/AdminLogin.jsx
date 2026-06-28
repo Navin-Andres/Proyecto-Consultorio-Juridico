@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 import './AdminLogin.css';
 import API_URL from '../../../config/api';
 
@@ -23,11 +24,21 @@ const AdminLogin = () => {
                 localStorage.setItem('adminToken', data.token);
                 window.location.href = '/admin-dashboard'; // O la ruta que prefieras
             } else {
-                alert(data.message || 'Error al iniciar sesión');
+                Swal.fire({
+                    title: 'Acceso Denegado',
+                    text: data.message || 'Credenciales inválidas',
+                    icon: 'error',
+                    confirmButtonColor: '#7FB536',
+                });
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('No se pudo conectar con el servidor');
+            Swal.fire({
+                title: 'Error de Conexión',
+                text: 'No se pudo conectar con el servidor',
+                icon: 'error',
+                confirmButtonColor: '#7FB536',
+            });
         }
     };
 

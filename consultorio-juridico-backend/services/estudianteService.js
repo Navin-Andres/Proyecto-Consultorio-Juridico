@@ -34,6 +34,32 @@ const registrarEstudiante = async (data, files) => {
         // Mapeamos los datos del Frontend a variables del Backend usando el mapper
         const mapped = mapFrontendDataToDb(data);
 
+        // Validar duplicado de cédula (documento)
+        if (mapped.documento) {
+            const checkDoc = await client.query(
+                'SELECT id FROM estudiantes WHERE TRIM(numero_documento) = TRIM($1) LIMIT 1',
+                [mapped.documento]
+            );
+            if (checkDoc.rows.length > 0) {
+                const err = new Error('El número de documento ingresado ya se encuentra registrado en el sistema.');
+                err.code = 'DUP_DOCUMENTO';
+                throw err;
+            }
+        }
+
+        // Validar duplicado de correo institucional
+        if (mapped.correoInstitucional) {
+            const checkCorreo = await client.query(
+                'SELECT id FROM estudiantes WHERE LOWER(TRIM(correo_institucional)) = LOWER(TRIM($1)) LIMIT 1',
+                [mapped.correoInstitucional]
+            );
+            if (checkCorreo.rows.length > 0) {
+                const err = new Error('El correo institucional ingresado ya se encuentra registrado en el sistema.');
+                err.code = 'DUP_CORREO';
+                throw err;
+            }
+        }
+
         // 1. Obtener periodo_id del turno o el periodo activo actual
         let periodoId = null;
         let turno = null;

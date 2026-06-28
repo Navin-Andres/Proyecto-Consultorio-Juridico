@@ -87,6 +87,31 @@ export const alertDocumentoDuplicado = async () => {
     }
 };
 
+export const alertCorreoDuplicado = async () => {
+    const result = await Swal.fire({
+        ...swalInscripcionBase,
+        title: 'Correo ya registrado',
+        icon: 'warning',
+        html: `
+            <p class="swal-msg-primary">
+                Este correo institucional ya está registrado en el sistema.
+            </p>
+            <p class="swal-msg-secondary">
+                Si acabas de completar tu inscripción, no necesitas volver a enviar el formulario.
+                Puedes consultar tu radicado con el botón de abajo.
+            </p>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Consultar mi inscripción',
+        cancelButtonText: 'Volver al formulario',
+        confirmButtonColor: '#7FB536',
+    });
+
+    if (result.isConfirmed) {
+        window.location.href = '/consultar-inscripciones';
+    }
+};
+
 export const alertErrorInscripcion = (message) =>
     Swal.fire({
         ...swalInscripcionBase,

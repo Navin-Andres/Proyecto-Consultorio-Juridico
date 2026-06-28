@@ -1,0 +1,217 @@
+.configuracion-container-vertical {
+    max-width: 550px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Outfit', 'Inter', sans-serif;
+    animation: fadeInVertical 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.configuracion-card-vertical {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+    padding: 36px;
+}
+
+.card-header-vertical {
+    margin-bottom: 24px;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 16px;
+    text-align: left;
+}
+
+.card-header-vertical h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+}
+
+.card-header-vertical p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.configuracion-form-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label-vertical {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: left;
+}
+
+.highlight-label {
+    color: #0f172a;
+    font-weight: 700;
+}
+
+.input-group-vertical {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-icon-vertical {
+    position: absolute;
+    left: 14px;
+    color: #94a3b8;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+.form-input-vertical {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 44px 12px 42px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.form-input-vertical:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: #7FB536;
+    box-shadow: 0 0 0 3px rgba(127, 181, 54, 0.15);
+}
+
+.toggle-password-vertical {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.toggle-password-vertical:hover {
+    color: #0f172a;
+    background-color: #f1f5f9;
+}
+
+.form-divider-vertical {
+    border-top: 1px solid #e2e8f0;
+    margin: 10px 0;
+}
+
+.form-section-title-vertical {
+    text-align: left;
+    margin-bottom: 4px;
+}
+
+.form-section-title-vertical h3 {
+    font-size: 1.15rem;
+    color: #1e293b;
+    margin: 0;
+    font-weight: 600;
+}
+
+.submit-btn-vertical-premium {
+    margin-top: 12px;
+    padding: 14px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #7FB536;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(127, 181, 54, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.submit-btn-vertical-premium:hover:not(:disabled) {
+    background-color: #6da22e;
+    box-shadow: 0 6px 16px rgba(127, 181, 54, 0.3);
+}
+
+.submit-btn-vertical-premium:active:not(:disabled) {
+    transform: scale(0.99);
+}
+
+.submit-btn-vertical-premium:disabled {
+    background-color: #cbd5e1;
+    color: #94a3b8;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Loading indicators */
+.configuracion-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px;
+    gap: 16px;
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid #e2e8f0;
+    border-top: 3px solid #7FB536;
+    border-radius: 50%;
+    animation: spinVertical 0.8s linear infinite;
+}
+
+.btn-spinner-vertical {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid #ffffff;
+    border-radius: 50%;
+    animation: spinVertical 0.8s linear infinite;
+}
+
+@keyframes spinVertical {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeInVertical {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
