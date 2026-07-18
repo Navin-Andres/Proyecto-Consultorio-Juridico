@@ -71,6 +71,31 @@
     margin-top: 2px;
 }
 
+/* Badge de rol en el sidebar */
+.sidebar-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 14px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.7px;
+}
+
+.sidebar-role-badge--super {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fcd34d;
+}
+
+.sidebar-role-badge--admin {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    border: 1px solid #c7d2fe;
+}
+
 .sidebar-nav {
     padding: 10px 0;
 }

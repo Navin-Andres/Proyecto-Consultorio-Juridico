@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Sidebar = ({ activeTab, setActiveTab, onLogout }) => {
+const Sidebar = ({ activeTab, setActiveTab, onLogout, userRole }) => {
+    const isSuperAdmin = userRole === 'superadmin';
+
     return (
         <aside className="admin-sidebar">
             <div className="sidebar-header">
@@ -14,6 +16,17 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }) => {
                         <h2>Consultorio Jurídico</h2>
                         <span>GESTIÓN ESTUDIANTIL</span>
                     </div>
+                </div>
+
+                {/* Badge de rol */}
+                <div className={`sidebar-role-badge ${isSuperAdmin ? 'sidebar-role-badge--super' : 'sidebar-role-badge--admin'}`}>
+                    <svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        {isSuperAdmin
+                            ? <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                            : <><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></>
+                        }
+                    </svg>
+                    {isSuperAdmin ? 'SUPERADMIN' : 'ADMIN'}
                 </div>
             </div>
 
@@ -68,6 +81,22 @@ const Sidebar = ({ activeTab, setActiveTab, onLogout }) => {
                         </span>
                         <span className="nav-label">Periodos</span>
                     </li>
+
+                    {/* Solo visible para superadmin */}
+                    {isSuperAdmin && (
+                        <li className={`nav-item ${activeTab === 'admins' ? 'active' : ''}`} onClick={() => setActiveTab('admins')}>
+                            <span className="nav-icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <line x1="19" y1="8" x2="19" y2="14" />
+                                    <line x1="22" y1="11" x2="16" y2="11" />
+                                </svg>
+                            </span>
+                            <span className="nav-label">Gestión de Admins</span>
+                        </li>
+                    )}
+
                     <li className={`nav-item ${activeTab === 'configuracion' ? 'active' : ''}`} onClick={() => setActiveTab('configuracion')}>
                         <span className="nav-icon">
                             <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">

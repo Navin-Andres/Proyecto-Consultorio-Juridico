@@ -20,4 +20,12 @@ const authMiddleware = (req, res, next) => {
   }
 };
 
-module.exports = authMiddleware;
+// Solo permite acceso a usuarios con rol 'superadmin'
+const requireSuperAdmin = (req, res, next) => {
+  if (!req.user || req.user.role !== 'superadmin') {
+    return res.status(403).json({ message: 'Acceso denegado. Se requiere rol de superadministrador.' });
+  }
+  next();
+};
+
+module.exports = { authMiddleware, requireSuperAdmin };

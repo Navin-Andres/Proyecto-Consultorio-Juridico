@@ -20,9 +20,10 @@ const AdminLogin = () => {
             const data = await response.json();
 
             if (response.ok) {
-                // Guardar token y redirigir
+                // Guardar token, rol y redirigir
                 localStorage.setItem('adminToken', data.token);
-                window.location.href = '/admin-dashboard'; // O la ruta que prefieras
+                localStorage.setItem('adminRole', data.user?.rol || 'admin');
+                window.location.href = '/admin-dashboard';
             } else {
                 Swal.fire({
                     title: 'Acceso Denegado',

@@ -40,7 +40,7 @@ const crearPeriodo = async (req, res) => {
 const activarPeriodo = async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
-  
+
   try {
     await client.query('BEGIN');
     await client.query('UPDATE periodos_academicos SET activo = false');

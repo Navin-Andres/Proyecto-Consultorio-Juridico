@@ -43,7 +43,7 @@ router.post('/', async (req, res) => {
     console.error(error);
     // Control unique constraint error from Postgres (code 23505)
     if (error.code === '23505') {
-        return res.status(400).json({ message: 'Ya existe un turno para este periodo, día y jornada.' });
+      return res.status(400).json({ message: 'Ya existe un turno para este periodo, día y jornada.' });
     }
     res.status(500).json({ message: 'Error al crear el turno' });
   }

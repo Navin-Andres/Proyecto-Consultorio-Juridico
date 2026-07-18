@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import PeriodosManager from '../PeriodosManager/PeriodosManager';
 import TurnosManager from '../TurnosManager/TurnosManager';
 import EstudiantesInscriptos from '../EstudiantesInscriptos/EstudiantesInscriptos';
+import AdminsManager from '../AdminsManager/AdminsManager';
 import Sidebar from '../sidebar/Sidebar';
 import InicioDashboard from '../InicioDashboard/InicioDashboard';
 import Configuracion from '../Configuracion/Configuracion';
 import { confirmCerrarSesion } from '../../../utils/swalAlerts';
+import { getAdminRole, clearAdminSession } from '../../../utils/auth';
 import API_URL from '../../../config/api';
 import './AdminDashboard.css';
 
@@ -15,6 +17,7 @@ const AdminDashboard = () => {
     const [menuOpen, setMenuOpen] = useState(false);
     const profileRef = useRef(null);
     const closeTimeout = useRef(null);
+    const userRole = getAdminRole(); // 'admin' | 'superadmin'
 
     useEffect(() => {
         const fetchAdminProfile = async () => {
@@ -53,7 +56,7 @@ const AdminDashboard = () => {
         const confirmed = await confirmCerrarSesion();
         if (!confirmed) return;
 
-        localStorage.removeItem('adminToken');
+        clearAdminSession();
         window.location.href = '/login';
     };
 
@@ -65,7 +68,7 @@ const AdminDashboard = () => {
     return (
         <div className="admin-dashboard-container">
             {/* Sidebar */}
-            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
+            <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} userRole={userRole} />
 
             {/* Main Content Area */}
             <main className="admin-main-content">
@@ -120,6 +123,7 @@ const AdminDashboard = () => {
                     {activeTab === 'periodos' && <PeriodosManager />}
                     {activeTab === 'configuracion' && <Configuracion />}
                     {activeTab === 'historial' && <div>Historial de actividades.</div>}
+                    {activeTab === 'admins' && userRole === 'superadmin' && <AdminsManager />}
                 </section>
             </main>
         </div>

@@ -18,11 +18,16 @@ const login = async (req, res) => {
       return res.status(401).json({ message: 'Credenciales inválidas' });
     }
 
-    const token = jwt.sign({ id: user.id, role: 'admin' }, process.env.JWT_SECRET, {
-      expiresIn: '8h',
-    });
+    const token = jwt.sign(
+      { id: user.id, role: user.rol },
+      process.env.JWT_SECRET,
+      { expiresIn: '8h' }
+    );
 
-    res.json({ token, user: { name: user.nombre, email: user.email } });
+    res.json({
+      token,
+      user: { name: user.nombre, email: user.email, rol: user.rol },
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error en el servidor' });

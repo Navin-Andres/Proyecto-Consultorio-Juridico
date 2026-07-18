@@ -9,6 +9,7 @@ const authRoutes = require('./routes/auth');
 const periodosRoutes = require('./routes/periodos');
 const turnosRoutes = require('./routes/turnos');
 const estudiantesRoutes = require('./routes/estudiantes');
+const adminsRoutes = require('./routes/admins');
 
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Definir los prefijos para las rutas
 app.use('/api/admin', authRoutes);
+app.use('/api/admins', adminsRoutes);
 app.use('/api/periodos', periodosRoutes);
 app.use('/api/turnos', turnosRoutes);
 app.use('/api/estudiantes', estudiantesRoutes);
