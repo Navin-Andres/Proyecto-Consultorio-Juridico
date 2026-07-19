@@ -69,7 +69,7 @@ export const alertDocumentoDuplicado = async () => {
         icon: 'warning',
         html: `
             <p class="swal-msg-primary">
-                Este número de documento ya está registrado en el sistema.
+                Este número de documento ya está registrado para el período académico activo.
             </p>
             <p class="swal-msg-secondary">
                 Si acabas de completar tu inscripción, no necesitas volver a enviar el formulario.
@@ -94,7 +94,7 @@ export const alertCorreoDuplicado = async () => {
         icon: 'warning',
         html: `
             <p class="swal-msg-primary">
-                Este correo institucional ya está registrado en el sistema.
+                Este correo institucional ya está registrado para el período académico activo.
             </p>
             <p class="swal-msg-secondary">
                 Si acabas de completar tu inscripción, no necesitas volver a enviar el formulario.
