@@ -13,10 +13,14 @@ const {
 const transporter = nodemailer.createTransport({
   host: SMTP_HOST,
   port: SMTP_PORT ? Number(SMTP_PORT) : 587,
-  secure: SMTP_PORT === '465',
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
+  secure: Number(SMTP_PORT) === 465,   // true solo para port 465
+  connectionTimeout: 20000,
+  greetingTimeout: 15000,
+  socketTimeout: 25000,
+  pool: false,
+  tls: {
+    rejectUnauthorized: false          // necesario en algunos entornos cloud
+  },
   auth: SMTP_USER && SMTP_PASS ? {
     user: SMTP_USER,
     pass: SMTP_PASS
